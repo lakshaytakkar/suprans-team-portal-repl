@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Phone, Mail, MapPin, MessageCircle, Clock, Send } from "lucide-react";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Phone, Mail, MapPin, MessageCircle, Clock, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import PublicLayout from "@/components/public/PublicLayout";
 import type { Service } from "@shared/schema";
 
 export default function PublicContact() {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,10 +27,38 @@ export default function PublicContact() {
     },
   });
 
+  const createLead = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const res = await fetch("/api/public/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          message: data.message,
+          service: data.service,
+          source: "contact_form",
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to submit");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Thank you!", description: "We'll get back to you within 24 hours." });
+      setFormData({ name: "", email: "", phone: "", service: "", message: "" });
+    },
+    onError: (err: Error) => {
+      toast({ title: "Error", description: err.message, variant: "destructive" });
+    },
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    alert("Thank you for your inquiry! We will get back to you within 24 hours.");
+    createLead.mutate(formData);
   };
 
   return (
@@ -138,7 +168,7 @@ export default function PublicContact() {
             <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
               
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5" data-testid="form-contact">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">Name *</label>
@@ -147,6 +177,7 @@ export default function PublicContact() {
                       placeholder="Your name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      data-testid="input-contact-name"
                     />
                   </div>
                   <div className="space-y-2">
@@ -156,6 +187,7 @@ export default function PublicContact() {
                       placeholder="+91 XXXXX XXXXX"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      data-testid="input-contact-phone"
                     />
                   </div>
                 </div>
@@ -168,6 +200,7 @@ export default function PublicContact() {
                     placeholder="your@email.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    data-testid="input-contact-email"
                   />
                 </div>
 
@@ -177,6 +210,7 @@ export default function PublicContact() {
                     className="w-full h-10 px-3 border border-gray-200 rounded-md bg-white"
                     value={formData.service}
                     onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                    data-testid="select-contact-service"
                   >
                     <option value="">Select a service (optional)</option>
                     {services.map((service) => (
@@ -195,15 +229,22 @@ export default function PublicContact() {
                     rows={4}
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    data-testid="input-contact-message"
                   />
                 </div>
 
                 <Button
                   type="submit"
                   className="w-full bg-[#F34147] hover:bg-[#D93036] text-white py-3"
+                  disabled={createLead.isPending}
+                  data-testid="button-submit-contact"
                 >
-                  <Send className="w-4 h-4 mr-2" />
-                  Send Message
+                  {createLead.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4 mr-2" />
+                  )}
+                  {createLead.isPending ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </div>

@@ -377,7 +377,7 @@ export async function registerRoutes(
   // Public lead submission (no auth required)
   app.post("/api/public/leads", async (req, res, next) => {
     try {
-      const { name, phone, email, message, service } = req.body;
+      const { name, phone, email, message, service, source } = req.body;
       
       if (!name || !phone || !email) {
         return res.status(400).json({ message: "Name, phone, and email are required" });
@@ -397,6 +397,11 @@ export async function registerRoutes(
         return res.json({ message: "Thank you! We'll get back to you soon.", duplicate: true });
       }
       
+      // Validate and determine source - only allow whitelisted values
+      const allowedSources = ["Website", "contact_form", "callback_form", "travel_enquiry", "event_registration"];
+      const leadSource = source && allowedSources.includes(source) ? source : "Website";
+      const tags = message ? ["website-lead", `Note: ${message}`] : ["website-lead"];
+      
       // Create new lead - unassigned by default
       const lead = await storage.createLead({
         name,
@@ -404,11 +409,11 @@ export async function registerRoutes(
         email,
         company: name, // Use name as company fallback
         service: service || "General Inquiry",
-        source: "Website",
+        source: leadSource,
         stage: "new",
         value: 0,
         assignedTo: null,
-        tags: ["website-lead"],
+        tags,
         temperature: "warm",
       });
       
