@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Menu, X, ChevronDown, ChevronRight, Phone, Mail, Zap, Facebook, Linkedin, Instagram, Youtube, ArrowUp, MessageCircle, Factory, Globe, Building2, Users, Plane } from "lucide-react";
+import { SiInstagram } from "react-icons/si";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -298,13 +299,25 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               </Button>
             </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden text-2xl text-[#F34147]"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X /> : <Menu />}
-            </button>
+            {/* Mobile Menu Button + Instagram */}
+            <div className="flex items-center gap-3 md:hidden">
+              <a
+                href="https://www.instagram.com/suprans.china"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-gradient-to-br from-[#f09433] via-[#e6683c] to-[#dc2743] text-white"
+                data-testid="link-mobile-instagram"
+              >
+                <SiInstagram className="w-5 h-5" />
+              </a>
+              <button
+                className="text-2xl text-[#F34147]"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                data-testid="button-mobile-menu"
+              >
+                {isMenuOpen ? <X /> : <Menu />}
+              </button>
+            </div>
           </div>
         </div>
 
