@@ -1,0 +1,24 @@
+City	Category	Name	Airport Distance	Location	Hall Image	Outer Image	Contact	Email	POC Contact Person	First Contact	Quotation	Stage	Notes
+Hyderabad	5 Star	Hyderabad Marriott Hotel & Convention Centre	32 km	Tank Bund Rd, Opposite Hussain Sagar Lake, Hyderabad – 500080			040-6652 2228	reservationshyderabad@marriotthotels.com		FALSE		Pending	team asked me to sent the mail, mail sent
+Hyderabad	5 Star	ITC Kakatiya, a Luxury Collection Hotel	33 km	6-3-1187, Begumpet, Hyderabad – 500016			40-2340 0132	reservations@itchotels.in	Navdeep			Pending	Connected over whatsapp regarding the details
+Hyderabad	5 Star	Trident	32 km	Survey No.64, HITECH City Main Rd, Madhapur, Hyderabad – 500081			40-6623 2323	reservations@tridenthotels.com				Pending	Waiting for the mail
+Hyderabad	5 Star	Mariott					040 6652 2222						Sent the mail
+Hyderabad	5 Star	The park Hyderabad	28-30 km	https://www.google.com/maps/place/Park+Hyatt+Hyderabad/@17.4248087,78.4270133,17z/data=!4m9!3m8!1s0x3bcb96c8b88d1c6d:0xc1fe47535add38d3!5m2!4m1!1i2!8m2!3d17.4248087!4d78.4295882!16s%2Fm%2F0ztkg1k?entry=ttu&g_ep=EgoyMDI2MDExOS4wIKXMDSoASAFQAw%3D%3D			7702202551		Samridhi			Pending	Contacted with the person but didn't picked up
+Hyderabad	5 Star	The Westin Hyderabad Mindspace	34 km	Raheja IT Park, Hitec City, Madhapur, Hyderabad – 500081			40-6767 6767	reservations.hyderabad@westin.com					
+Mumbai	5 Star	Radisson Hotel Mumbai Andheri MIDC	6–8 km	Hanuman Nagar, MIDC Central Rd, Andheri East, Mumbai			9152035824	events.mumbai@radisson.com	Mr. Prem	Done		not available	Not available for the 5th and 6 feb
+Mumbai	4 Star	Holiday Inn Mumbai International Airport by IHG	3-5 km	Andheri-Kurla Rd, Andheri East, Mumbai			7002291948	Reservations.HIMIA@ihg.com	Mr. Raja				
+Mumbai	5 Star	The Westin Mumbai Garden City	6-8 km	Goregaon, Mumbai			22 4231 1234						
+Mumbai	5 Star	Four Seasons Hotel Mumbai	12-15 km	Worli, Mumbai									
+Chennai	5 Star	Radisson Blu Hotel	13–15 km	Egmore, Chennai (Central)			7299042523		Michael	Done	1.5 lakh + Tax	Pending	Connected over whatsapp regarding the quotation
+Chennai	5 Star	Taj Coromandel	15-18 km	Nungambakkam, Central Chennai			44 6600 04200	kayshelle.m@tajhotels.com	kayshelle.m@tajhotels.com	Done	85000	Pending	Connected with the relevant person on the same number in conference, did not provide any other number, waiting for quoation over the mal
+Chennai	4 Star	The Accord Metropolitan ( premium business options)	18-21 km	T. Nagar (central business/residential hub)			044 4391 1000			Done		not available	not available for  the same date
+Chennai	5 Star	Grand Chennai by GRT Hotels	18-22 km	T. Nagar, Chennai			044 2815 0500	grandbanquets@grtgrand.com		Done	2lkh Hall +500+tax per person	Pending	Asked to share quotation over the mail
+Chennai	5 Star	ITC Grand Chola	8-10 km	Mount Rd, Guindy, Chennai – central location			9920522701   9940522701	kumar.sathish@itchotels.com		Done	53100	Pending	Snack will be served for one hour+ running tea/coffee
+Chennai	4 Star	The Park chennai	10-12 km	601 Annna Salai, chennai			9962288601	resv.che@theparkhotels.com   vkumar@theparkhotels.com	Vikash	Done	46,000	Pending	Running snack and tea/coffee
+Chennai	5 Star	Green Park		NSK Salai, Arcot Road, Vadapalani, Chennai 600 026			"044 6651 5151
+"	"bookings@hotelgreenpark.com
+"				Pending	Mail sent
+Chennai	4 Star	Fairfield by Marriott Chennai OMR		169 Rajiv Gandhi Salai, Old, Mahabalipuram Road, Semmancheri, Chennai, Tamil Nadu 600119			044 6630 0600						
+Chennai	4 Star	Four Points by Sheraton Chennai OMR		"No 169 Plot 1B, Four Points 1, Survey, 1A, Rajiv Gandhi Salai, Kumaran Nagar, Sholinganallur, Chennai, Tamil Nadu 600119
+"			4449256698						
+Chennai													

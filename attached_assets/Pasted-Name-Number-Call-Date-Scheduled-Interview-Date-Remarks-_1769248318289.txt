@@ -1,0 +1,154 @@
+Name	Number 	Call Date	Scheduled Interview Date	Remarks
+Piyush	9891242501	26 Dec 2025	27 Dec 2025	Got rejected
+Rahul	9460369975	26 Dec 2025	27 Dec 2025	Got rejected
+Afsar Ali	9756329111	26 Dec 2025	27 Dec 2025	not answering my calls
+Jaikrishan	8433420417	26 Dec 2025	27 Dec 2025	not answering my calls
+Om Praksh	9934825360	26 Dec 2025	27 Dec 2025	Got rejected
+Isha	8447310668	26 Dec 2025	27 Dec 2025	Got rejected
+Kuljeet	7310533984	26 Dec 2025	29 Dec 2025	not answering my calls
+Maneet	9350114453	26 Dec 2025	29 Dec 2025	Got rejected
+Taru	9650950651	26 Dec 2025	29 Dec 2025	not answering
+Kanishka Deval	7906711005	26 Dec 2025	29 Dec 2025	got rejected 
+Subhash	7533910050	26 Dec 2025	2 Jan 2026	
+Aryan	88260 77017	27 Dec 2025	29 Dec 2025	Got rejected
+Pooja	8426908071	27 Dec 2025	29 Dec 2025	He will come after new year
+Kajal	9958594273	27 Dec 2025	30 Dec 2025	got rejected becuase of high expectations
+Satish	7027745612	27 Dec 2025	29 Dec 2025	He will come for the interview on 7 Jan
+Mohd Tufail	7037735696	27 Dec 2025	29 Dec 2025	not answering my call
+Amandeep	8968695069	27 Dec 2025	31 Dec 2025	not able to come for the interview becasue of some issue 
+Jitesh	83960 35044	27 Dec 2025	29 Dec 2025	Having location issue
+Sanjay	78380 09379	27 Dec 2025	30 Dec 2025	not able to come due to the weather condition
+Lokesh	8368481531	27 Dec 2025	29 Dec 2025	not answering my calls
+Shubham	8545060212	27 Dec 2025	5 Jan 2026	
+Ankit 	7632001725	27 Dec 2025	29 Dec 2025	He will come for the interview on wednesday
+Sunny Yadav	7983074951	27 Dec 2025	29 Dec 2025	He will come for the trial on 7th jan and will discuss the salary on that date
+Anivash	9717818690	27 Dec 2025	2 Jan 2026	he will available after 
+Kanav	7650981181	27 Dec 2025	30 Dec 2025	not interested
+Digvijay	870013 2637	27 Dec 2025	30 Dec 2025	not answering my calls
+Mahima	9718149039	29 Dec 2025	30 Dec 2025	She will come for the trial on 2 and 3 Jan and also offered her
+Sheffy	6239032977	29 Dec 2025	31 Dec 2025	
+Archna	8307848514	29 Dec 2025	31 Dec 2025	
+Arpit	72688 05142	29 Dec 2025	30 Dec 2025	not able to come because of family issue 
+Abhinav	75470 28445	29 Dec 2025	30 Dec 2025	got rejected
+Shubham	9057627564	29 Dec 2025	30 Dec 2025	not able to come because of out of station
+Deepika	8126427654	29 Dec 2025	3 Jan	She will come for the interview on monday
+Ashwani	9305505832	29 Dec 2025	4 Jan	
+Aditya	8076 637 510	30 Dec 2025	31 Dec 2025	He is not interested 
+Badal	6397219649	30 Dec 2025	3 Jan 2026	not answering my calls
+Arsha	93155 95350	26 Dec 2025	31 Dec 2025	Got selected
+Manya	88260 92616	30 Dec 2025	5 Jan 2026	Got selected she will come on 8th Jan
+Dhruv	9810770697	31 Dec 2025	5 Jan 2026	Got selected he will come on 8th Jan
+Bharti	8287366961	31 Dec 2025	3 Jan 2026	Good Candidate
+Ankita	9873860145	31 Dec 2025	5 Jan 2026	not able to come becasue of office timing and days
+Sandhaya	7827385384	2 Jan 2026	5 Jan 2026	
+Prince	7678669261	2 Jan 2026	6 Jan 2026	having lcoation issue
+Ankita	7007707329	3 Jan 2026	6 Jan 2026	She will come on 7 Jan
+Mithlash	96542 88785	3 Jan 2026	5 Jan 2026	not rejected
+Daksh	7678620114	3 Jan 2026	20 Jan 2026	
+Shivam	99710 59204	3 Jan 2026	5 Jan 2026	
+Hardik Arora	9354331316	3 Jan 2026	5 Jan 2026	got rejected 
+Robin	8227013155	3 Jan 2026	5 Jan 2026	not able to come 
+Nisha	8851221285	3 Jan 2026	5 Jan 2026	She will come for the interview on wednesday
+Saloni	870 064 9676	3 Jan 2026	6 Jan 2026	She will come on 7 Jan
+Bhoomika	8708894230	5 Jan 2026	8 Jan 2026	got rejected 
+Paras	7417598025	5 Jan 2026	8 Jan 2026	got rejected
+Vipin	9589682509	5 Jan 2026	8 Jan 2026	got rejected becasue of high asks
+Harit	93152 17744	5 Jan 2026	8 Jan 2026	got rejected
+Sakshi	9873499324	5 Jan 2026	8 Jan 2026	not answering
+Faizan	98718 12304	5 Jan 2026	8 Jan 2026	
+Sahil	9873461220	5 Jan 2026	8 Jan 2026	not answering
+Ajay	72062 14429	5 Jan 2026	8 Jan 2026	not selected
+Shashank	8429270516	5 Jan 2026	8 Jan 2026	not coming for the interview
+Abhinav	9736554483	5 Jan 2026	8 Jan 2026	got rejected
+Surbhi 	9411973078	5 Jan 2026	8 Jan 2026	got rejected
+Akshay	8252149197	5 Jan 2026	8 Jan 2026	got selected
+Ayush	9643425609	5 Jan 2026	8 Jan 2026	got rejected
+Nisha Yadav	9818306885	5 Jan 2026	8 Jan 2026	not answering
+Aarti	9466100088	5 Jan 2026	8 Jan 2026	not able to come 
+Aasum	6394932779	5 Jan 2026	8 Jan 2026	not answering
+Sweekriti	9560922603	6 Jan 2026	8 Jan 2026	not answering
+Anupam	9818285934	6 Jan 2026	8 Jan 2026	got rejected
+Ajit	9471605998	6 Jan 2026	8 Jan 2026	not answering
+Ashish	7065277012	6 Jan 2026	8 Jan 2026	Having location issue
+Dikasha	7895303507	6 Jan 2026	8 Jan 2026	not able to come becasue of location issue 
+Kohinoor	7011060790	6 Jan 2026	7 Jan 2026	Having location issue
+Neha	6392152116	6 Jan 2026	16 Jan 2026	
+Anshika	9045282606	6 Jan 2026	8 Jan 2026	not able to come for the interview
+Akansha	8826473741	6 Jan 2026	8 Jan 2026	not able to come for the interview
+Shloke	6387623381	6 Jan 2026	8 Jan 2026	12 Jan he is asking for this date
+unnati	8929790615	6 Jan 2026	8 Jan 2026	got rejected
+Satyam	93087 52980	6 Jan 2026	8 Jan 2026	
+Sanya	7428061059	6 Jan 2026	8 Jan 2026	having location issue
+Poonam	 70538 47728	6 Jan 2026	8 Jan 2026	
+Zaid	8979731765	6 Jan 2026	10 Jan 2026	He will come for the interview on 12 Jan
+Aman	82733 58047	6 Jan 2026	8 Jan 2026	not answering 
+Ritika	9872232365	6 Jan 2026	8 Jan 2026	not answering 
+Adit	7701971324	6 Jan 2026	8 Jan 2026	not able to come for the F2F interview
+Mehul Malik	8447708971	7 Jan 2026	8 Jan 2026	
+Lata	9315375941	7 Jan 2026	8 Jan 2026	
+Prasen	8882115877	7 Jan 2026	8 Jan 2026	not answering 
+Bablu	8461019747	7 Jan 2026	8 Jan 2026	
+Neelam	8527267388	7 Jan 2026	12 Jan 2026	She will come on 13 Jan
+Pragya	9026034987	7 Jan 2026	13 Jan 2026	
+Ajeet	7563953613	10 Jan 2026	12 Jan 2026	
+Mahima	8953508912	10 Jan 2026	12 Jan 2026	
+Abhay	6386864976	10 Jan 2026	12 Jan 2026	
+Ranbeer	9650258460	10 Jan 2026	12 Jan 2026	
+Mansi	870 743 6519	12 Jan 2026	13 Jan 2026	
+Shweta	6392075258	12 Jan 2026	13 Jan 2026	
+Mansi	870 743 6519	12 Jan 2026	14 Jan 2026	
+Akash	8447146281	13 Jan 2026	16 Jan 2026	
+Sanjeev	8375820545	13 Jan 2026	16 Jan 2026	
+Irshad	7827113100	13 Jan 2026	16 Jan 2026	
+Utkarsh	9027339674	13 Jan 2026	16 Jan 2026	
+Ritesh	9509957196	13 Jan 2026	16 Jan 2026	
+Aviral	9305504562	14 Jan 2026	20 Jan 2026	
+Karan	9319242842	14 Jan 2026	16 Jan 2026	
+Sania	9798867281	14 Jan 2026	16 Jan 2026	
+Sharddha	9717621488	14 Jan 2026	22 Jan 2026	
+ANAMIKA	8349248046	14 Jan 2026	16 Jan 2026	
+Abhishek	8882124820	14 Jan 2026	16 Jan 2026	
+Shailja	6203907137	14 Jan 2026	16 Jan 2026	
+Mohd Raza	9315445773	14 Jan 2026	16 Jan 2026	
+Aviral	93055 0456	14 Jan 2026	20 Jan 2026	
+Vidhi	9720661165	14 Jan 2026	16 Jan 2026	
+Amrit	8506078410	15 Jan 2026	16 Jan 2026	
+Ayush	75056 01446	15 Jan 2026	16 Jan 2026	
+Ekta	7838316574	15 Jan 2026	16 Jan 2026	
+Alok	9218009031/97174 39508	15 Jan 2026	16 Jan 2026	
+Nishant	85120 52731	15 Jan 2026	16 Jan 2026	
+Dhruv	98105 39445	16 Jan 2026	16 Jan 2026	
+Aksh	87550 22101	16 Jan 2026	16 Jan 2026	
+Vinayak	9625011885	16 Jan 2026	17 Jan 2026	
+Bhanu	7876711280	17 Jan 2026	19 Jan 2026	
+Suraj	9660935058	17 Jan 2026	19 Jan 2026	
+Parveen	7027584401	17 Jan 2026	19 Jan 2026	
+Rajat	8920779652	17 Jan 2026	19 Jan 2026	
+Shyam	9991984053	17 Jan 2026	19 Jan 2026	
+Aditya	8439204749	19 Jan 2026	20 Jan 2026	
+Devansh	8930220274	19 Jan 2026	20 Jan 2026	
+Prajwal	9643975151	19 Jan 2026	22 Jan 2026	
+Mohd Ayaan	8009940464	19 Jan 2026	20 Jan 2026	
+Rakesh	93361 60473	19 Jan 2026	21 Jan 2026	
+Ishaan	8010369727	19 Jan 2026	20 Jan 2026	
+Khushi	9817152889	20 Jan 2026	24 Jan 2026	
+Sangeeta	7668387836	20 Jan 2026	21 Jan 2026	
+Sumit	8507400861	20 Jan 2026	21 Jan 2026	
+Akshaya	9958028026	21 Jan 2026	24 Jan 2026	
+Rizwi	7549970997	21 Jan 2026	27 Jan 2026	
+Ruchika	9050202146	21 Jan 2026	22 Jan 2026	
+Anjali Yadav	9311469987	21 Jan 2026	24 Jan 2026	
+Muskan	6395849714	21 Jan 2026	24 Jan 2026	
+Kuldeep	8930290272	21 Jan 2026	22 Jan 2026	
+Aman	8445638737	22 Jan 2026	24 Jan 2026	he will come on 27 Jan for the interview 
+Mukul	9643456540	22 Jan 2026	24 Jan 2026	
+Umang	9999190237	22 Jan 2026	24 Jan 2026	
+Pragati	9140210863	22 Jan 2026	24 Jan 2026	
+Prachi	7060907417	22 Jan 2026	27 Jan 2026	
+Pankaj / Rewari	7206019016	23 Jan 2026	24 Jan 2026	
+Vaishnavi	98105 84772	23 Jan 2026	27 Jan 2026	
+Varsha	9306557029	23 Jan 2026	24 Jan 2026	
+Yogesh	80598 53474	23 Jan 2026	24 Jan 2026	
+Daksh	7678620114	23 Jan 2026	24 Jan 2026	
+Prince	96714 72981	23 Jan 2026	24 Jan 2026	
+Ritik	8052759297	23 Jan 2026	27 Jan 2026	

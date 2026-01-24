@@ -1,18 +1,1044 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, timestamp, jsonb, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
+// Offices table
+export const offices = pgTable("offices", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  name: text("name").notNull(),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertOfficeSchema = createInsertSchema(offices).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertOffice = z.infer<typeof insertOfficeSchema>;
+export type Office = typeof offices.$inferSelect;
+
+// Users table
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  password: text("password").notNull(),
+  role: text("role").notNull().default('sales_executive'), // 'sales_executive' | 'superadmin'
+  phone: text("phone"),
+  avatar: text("avatar"),
+  officeId: varchar("office_id").references(() => offices.id),
+  salary: integer("salary"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+
+// Leads table
+export const leads = pgTable("leads", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  company: text("company").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  service: text("service").notNull(),
+  value: integer("value").notNull().default(0),
+  stage: text("stage").notNull().default('new'), // 'new' | 'contacted' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost'
+  assignedTo: varchar("assigned_to").references(() => users.id),
+  source: text("source").notNull(),
+  address: text("address"),
+  avatar: text("avatar"),
+  rating: integer("rating").default(0), // 1-5
+  tags: jsonb("tags").$type<string[]>().default([]),
+  temperature: text("temperature"), // 'hot' | 'warm' | 'cold'
+  nextFollowUp: timestamp("next_follow_up"),
+  wonAmount: integer("won_amount"),
+  wonDate: timestamp("won_date"),
+  lostReason: text("lost_reason"),
+  lastConnected: jsonb("last_connected").$type<{
+    date: string;
+    outcome: string;
+    duration: string;
+    agent: string;
+    nextFollowUp?: string;
+  }>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertLeadSchema = createInsertSchema(leads).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertLead = z.infer<typeof insertLeadSchema>;
+export type Lead = typeof leads.$inferSelect;
+
+// Activities table
+export const activities = pgTable("activities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  leadId: varchar("lead_id").notNull().references(() => leads.id, { onDelete: 'cascade' }),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  type: text("type").notNull(), // 'call' | 'email' | 'meeting' | 'stage_change' | 'note'
+  notes: text("notes").notNull(),
+  duration: integer("duration"), // minutes
+  outcome: text("outcome"),
+  fromStage: text("from_stage"),
+  toStage: text("to_stage"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertActivitySchema = createInsertSchema(activities).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertActivity = z.infer<typeof insertActivitySchema>;
+export type Activity = typeof activities.$inferSelect;
+
+// Tasks table
+export const tasks = pgTable("tasks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  status: text("status").notNull().default('todo'), // 'todo' | 'in_progress' | 'review' | 'done'
+  priority: text("priority").notNull().default('medium'), // 'low' | 'medium' | 'high'
+  dueDate: timestamp("due_date").notNull(),
+  assignedTo: varchar("assigned_to").notNull().references(() => users.id),
+  tags: jsonb("tags").$type<string[]>().default([]),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertTaskSchema = createInsertSchema(tasks).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertTask = z.infer<typeof insertTaskSchema>;
+export type Task = typeof tasks.$inferSelect;
+
+// Services table
+export const services = pgTable("services", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  slug: text("slug"),
+  category: text("category").notNull(),
+  shortDescription: text("short_description"),
+  description: text("description"),
+  thumbnail: text("thumbnail"),
+  ctaText: text("cta_text").default('Learn More'),
+  ctaLink: text("cta_link"),
+  pricing: integer("pricing"),
+  displayOrder: integer("display_order").default(0),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertServiceSchema = createInsertSchema(services).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertService = z.infer<typeof insertServiceSchema>;
+export type Service = typeof services.$inferSelect;
+
+// Templates table
+export const templates = pgTable("templates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  type: text("type").notNull(), // 'script' | 'email' | 'message' | 'objection'
+  subject: text("subject"), // for email templates
+  content: text("content").notNull(),
+  category: text("category"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertTemplateSchema = createInsertSchema(templates).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertTemplate = z.infer<typeof insertTemplateSchema>;
+export type Template = typeof templates.$inferSelect;
+
+// Employees table (for public-facing sales team)
+export const employees = pgTable("employees", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  role: text("role").notNull(), // 'sales_manager' | 'sales_executive' | 'support'
+  phone: text("phone").notNull(),
+  whatsapp: text("whatsapp"),
+  avatar: text("avatar"),
+  isActive: boolean("is_active").default(true).notNull(),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  // HR & Personal Details
+  fatherName: text("father_name"),
+  relation: text("relation"), // Son, Daughter
+  dateOfBirth: text("date_of_birth"),
+  address: text("address"),
+  employeeType: text("employee_type"), // FTE, Internship, Intern, Maid
+  salary: text("salary"),
+  hasPF: boolean("has_pf").default(false),
+  hasESIC: boolean("has_esic").default(false),
+  panCard: text("pan_card"),
+  // Bank Details
+  bankName: text("bank_name"),
+  accountNumber: text("account_number"),
+  ifscCode: text("ifsc_code"),
+  // Employment Status
+  employmentStatus: text("employment_status").default("active"), // active, inactive, resigned
+  joiningDate: text("joining_date"),
+  lastWorkingDay: text("last_working_day"),
+  // Link to candidate if hired from recruitment
+  candidateId: varchar("candidate_id"),
+});
+
+export const insertEmployeeSchema = createInsertSchema(employees).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEmployee = z.infer<typeof insertEmployeeSchema>;
+export type Employee = typeof employees.$inferSelect;
+
+// Note: Callback requests are stored as leads with source='callback_request'
+// The leads table handles all incoming inquiries with the source field differentiating origin
+
+// Travel Packages table
+export const travelPackages = pgTable("travel_packages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  slug: text("slug").notNull().unique(),
+  destination: text("destination").notNull(),
+  duration: text("duration").notNull(), // e.g., "5 Days/4 Nights"
+  days: integer("days").notNull().default(5),
+  nights: integer("nights").notNull().default(4),
+  price: integer("price").notNull(),
+  originalPrice: integer("original_price"),
+  image: text("image").notNull(),
+  gallery: jsonb("gallery").$type<string[]>().default([]),
+  category: text("category").notNull().default('business'), // 'canton_fair' | 'business' | 'sourcing'
+  shortDescription: text("short_description").notNull(),
+  description: text("description").notNull(),
+  highlights: jsonb("highlights").$type<string[]>().default([]),
+  inclusions: jsonb("inclusions").$type<string[]>().default([]),
+  exclusions: jsonb("exclusions").$type<string[]>().default([]),
+  itinerary: jsonb("itinerary").$type<{
+    day: number;
+    title: string;
+    description: string;
+    activities: string[];
+    meals: string[];
+    accommodation: string;
+  }[]>().default([]),
+  accommodation: text("accommodation").default("4 Star Hotel"),
+  meals: text("meals").default("Breakfast included"),
+  transportation: text("transportation").default("Private Car + Metro"),
+  groupSize: integer("group_size").default(40),
+  ageRange: text("age_range").default("18-60"),
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  isFeatured: boolean("is_featured").default(false).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  displayOrder: integer("display_order").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertTravelPackageSchema = createInsertSchema(travelPackages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertTravelPackage = z.infer<typeof insertTravelPackageSchema>;
+export type TravelPackage = typeof travelPackages.$inferSelect;
+
+// Travel Bookings table - Track package bookings and payments
+export const travelBookings = pgTable("travel_bookings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  packageId: varchar("package_id").notNull().references(() => travelPackages.id),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  numberOfTravelers: integer("number_of_travelers").notNull().default(1),
+  amount: integer("amount").notNull(), // Amount in paise
+  currency: text("currency").notNull().default('INR'),
+  razorpayOrderId: text("razorpay_order_id"),
+  razorpayPaymentId: text("razorpay_payment_id"),
+  razorpaySignature: text("razorpay_signature"),
+  status: text("status").notNull().default('pending'), // 'pending' | 'paid' | 'failed' | 'refunded'
+  notes: text("notes"),
+  travelDate: timestamp("travel_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertTravelBookingSchema = createInsertSchema(travelBookings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertTravelBooking = z.infer<typeof insertTravelBookingSchema>;
+export type TravelBooking = typeof travelBookings.$inferSelect;
+
+// ========== EVENT MANAGEMENT SYSTEM ==========
+
+// Events table - Main event records (IBS and Seminar)
+export const events = pgTable("events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // 'ibs' | 'seminar'
+  city: text("city").notNull(),
+  venue: text("venue"),
+  venueAddress: text("venue_address"),
+  date: timestamp("date").notNull(),
+  endDate: timestamp("end_date"),
+  capacity: integer("capacity").notNull().default(60),
+  description: text("description"),
+  status: text("status").notNull().default('upcoming'), // 'upcoming' | 'ongoing' | 'completed' | 'cancelled' | 'sold_out'
+  ticketPrice: integer("ticket_price").default(0), // price in rupees for public registration
+  hiTeaTime: text("hi_tea_time"),
+  lunchTime: text("lunch_time"),
+  slotDuration: integer("slot_duration").default(30), // minutes, for IBS
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventSchema = createInsertSchema(events).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEvent = z.infer<typeof insertEventSchema>;
+export type Event = typeof events.$inferSelect;
+
+// Event Attendees table
+export const eventAttendees = pgTable("event_attendees", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email"),
+  company: text("company"),
+  designation: text("designation"),
+  city: text("city"),
+  avatar: text("avatar"), // DiceBear avatar URL
+  source: text("source"), // 'website' | 'referral' | 'social' | 'direct'
+  slotTime: text("slot_time"), // for IBS events
+  groupNumber: integer("group_number"), // for IBS grouping (groups of 3-4)
+  ticketId: text("ticket_id"), // Unique ticket ID like SBC-FEB26-001
+  ticketQr: text("ticket_qr"), // Base64 encoded QR code image
+  ticketStatus: text("ticket_status").notNull().default('pending'), // 'pending' | 'issued' | 'sent' | 'collected'
+  badgePrinted: boolean("badge_printed").default(false).notNull(),
+  checkedIn: boolean("checked_in").default(false).notNull(),
+  checkedInAt: timestamp("checked_in_at"),
+  notes: text("notes"),
+  listLocked: boolean("list_locked").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventAttendeeSchema = createInsertSchema(eventAttendees).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventAttendee = z.infer<typeof insertEventAttendeeSchema>;
+export type EventAttendee = typeof eventAttendees.$inferSelect;
+
+// Event Hotels table
+export const eventHotels = pgTable("event_hotels", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  hotelName: text("hotel_name").notNull(),
+  hotelAddress: text("hotel_address"),
+  hotelPhone: text("hotel_phone"),
+  bookingUrl: text("booking_url"), // URL to booking page
+  distanceFromVenue: text("distance_from_venue"), // e.g. "8-10km (20-30 minutes)"
+  guestName: text("guest_name").notNull(),
+  guestPhone: text("guest_phone"),
+  guestType: text("guest_type").notNull().default('team'), // 'team' | 'speaker' | 'vip' | 'attendee'
+  checkIn: timestamp("check_in").notNull(),
+  checkOut: timestamp("check_out").notNull(),
+  roomType: text("room_type").notNull().default('single'), // 'single' | 'double' | 'suite'
+  roomCount: integer("room_count").default(1),
+  confirmationNumber: text("confirmation_number"),
+  status: text("status").notNull().default('pending'), // 'pending' | 'confirmed' | 'checked_in' | 'checked_out' | 'cancelled'
+  amount: integer("amount"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventHotelSchema = createInsertSchema(eventHotels).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventHotel = z.infer<typeof insertEventHotelSchema>;
+export type EventHotel = typeof eventHotels.$inferSelect;
+
+// Event Flights table
+export const eventFlights = pgTable("event_flights", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  passengerName: text("passenger_name").notNull(),
+  passengerPhone: text("passenger_phone"),
+  passengerType: text("passenger_type").notNull().default('team'), // 'team' | 'speaker' | 'vip'
+  flightNumber: text("flight_number").notNull(),
+  airline: text("airline"),
+  bookingUrl: text("booking_url"), // URL to booking page (e.g. Skyscanner)
+  departureCity: text("departure_city").notNull(),
+  arrivalCity: text("arrival_city").notNull(),
+  departureTime: timestamp("departure_time").notNull(),
+  arrivalTime: timestamp("arrival_time").notNull(),
+  pnr: text("pnr"),
+  seatNumber: text("seat_number"),
+  status: text("status").notNull().default('pending'), // 'pending' | 'booked' | 'confirmed' | 'checked_in' | 'boarded' | 'cancelled'
+  amount: integer("amount"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventFlightSchema = createInsertSchema(eventFlights).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventFlight = z.infer<typeof insertEventFlightSchema>;
+export type EventFlight = typeof eventFlights.$inferSelect;
+
+// Event Creatives table
+export const eventCreatives = pgTable("event_creatives", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // 'banner' | 'standee' | 'backdrop' | 'brochure' | 'invite' | 'social' | 'other'
+  fileUrl: text("file_url"),
+  dimensions: text("dimensions"),
+  quantity: integer("quantity").default(1),
+  vendor: text("vendor"),
+  status: text("status").notNull().default('pending'), // 'pending' | 'designing' | 'approved' | 'printing' | 'ready' | 'delivered'
+  dueDate: timestamp("due_date"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventCreativeSchema = createInsertSchema(eventCreatives).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventCreative = z.infer<typeof insertEventCreativeSchema>;
+export type EventCreative = typeof eventCreatives.$inferSelect;
+
+// Event Packing Items table
+export const eventPackingItems = pgTable("event_packing_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  itemName: text("item_name").notNull(),
+  category: text("category").notNull(), // 'banners' | 'tech' | 'stationery' | 'badges' | 'gifts' | 'documents' | 'other'
+  quantity: integer("quantity").notNull().default(1),
+  assignedTo: text("assigned_to"),
+  status: text("status").notNull().default('pending'), // 'pending' | 'packed' | 'shipped' | 'received' | 'setup'
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventPackingItemSchema = createInsertSchema(eventPackingItems).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventPackingItem = z.infer<typeof insertEventPackingItemSchema>;
+export type EventPackingItem = typeof eventPackingItems.$inferSelect;
+
+// Event Communications table
+export const eventCommunications = pgTable("event_communications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  templateName: text("template_name").notNull(),
+  type: text("type").notNull(), // 'email' | 'sms' | 'whatsapp'
+  subject: text("subject"),
+  body: text("body").notNull(),
+  sentCount: integer("sent_count").default(0),
+  lastSentAt: timestamp("last_sent_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventCommunicationSchema = createInsertSchema(eventCommunications).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventCommunication = z.infer<typeof insertEventCommunicationSchema>;
+export type EventCommunication = typeof eventCommunications.$inferSelect;
+
+// Event Presentations table
+export const eventPresentations = pgTable("event_presentations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  title: text("title").notNull(),
+  speakerName: text("speaker_name").notNull(),
+  speakerDesignation: text("speaker_designation"),
+  duration: integer("duration"), // minutes
+  order: integer("order").default(1),
+  fileUrl: text("file_url"),
+  status: text("status").notNull().default('pending'), // 'pending' | 'ready' | 'presented'
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventPresentationSchema = createInsertSchema(eventPresentations).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventPresentation = z.infer<typeof insertEventPresentationSchema>;
+export type EventPresentation = typeof eventPresentations.$inferSelect;
+
+// Event Team Contacts table - for team, exhibitors, vendors, venue staff
+export const eventTeamContacts = pgTable("event_team_contacts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  role: text("role").notNull(), // 'coordinator' | 'exhibitor' | 'vendor' | 'venue_staff' | 'security' | 'catering' | 'av_tech' | 'other'
+  company: text("company"),
+  phone: text("phone").notNull(),
+  whatsapp: text("whatsapp"),
+  email: text("email"),
+  department: text("department"),
+  notes: text("notes"),
+  isEmergencyContact: boolean("is_emergency_contact").default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventTeamContactSchema = createInsertSchema(eventTeamContacts).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventTeamContact = z.infer<typeof insertEventTeamContactSchema>;
+export type EventTeamContact = typeof eventTeamContacts.$inferSelect;
+
+// Venue Comparisons table - for staging hotel/venue options before final booking
+export const venueComparisons = pgTable("venue_comparisons", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  city: text("city").notNull(), // 'Delhi' | 'Chennai' | 'Hyderabad' | 'Mumbai'
+  category: text("category").notNull(), // '5 Star' | '4 Star' | '3 Star'
+  name: text("name").notNull(),
+  airportDistance: text("airport_distance"),
+  location: text("location"),
+  hallImageUrl: text("hall_image_url"),
+  outerImageUrl: text("outer_image_url"),
+  contactPhone: text("contact_phone"),
+  email: text("email"),
+  pocContactPerson: text("poc_contact_person"),
+  firstContactMade: boolean("first_contact_made").default(false),
+  quotation: text("quotation"),
+  stage: text("stage").notNull().default('pending'), // 'pending' | 'contacted' | 'quoted' | 'negotiating' | 'booked' | 'rejected'
+  notes: text("notes"),
+  eventId: varchar("event_id").references(() => events.id), // linked when booked
+  paymentStatus: text("payment_status"), // 'pending' | 'partial' | 'full'
+  paymentAmount: integer("payment_amount"),
+  bookingDates: text("booking_dates"), // e.g., "Jan 31, Feb 1"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertVenueComparisonSchema = createInsertSchema(venueComparisons).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertVenueComparison = z.infer<typeof insertVenueComparisonSchema>;
+export type VenueComparison = typeof venueComparisons.$inferSelect;
+
+// Event Vendors table - tracks vendors/suppliers for events
+export const eventVendors = pgTable("event_vendors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  eventId: varchar("event_id").notNull().references(() => events.id, { onDelete: 'cascade' }),
+  vendorName: text("vendor_name").notNull(),
+  companyName: text("company_name"), // e.g., "Softech Group India"
+  category: text("category").notNull(), // 'printables' | 'av_equipment' | 'catering' | 'decoration' | 'photography' | 'other'
+  contactPhone: text("contact_phone"),
+  email: text("email"),
+  location: text("location"),
+  rating: text("rating"), // e.g., "4.2", "4.6"
+  totalAmount: integer("total_amount").notNull().default(0),
+  paymentStatus: text("payment_status").notNull().default('pending'), // 'pending' | 'partial' | 'paid'
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventVendorSchema = createInsertSchema(eventVendors).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventVendor = z.infer<typeof insertEventVendorSchema>;
+export type EventVendor = typeof eventVendors.$inferSelect;
+
+// Event Vendor Items table - line items for each vendor
+export const eventVendorItems = pgTable("event_vendor_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  vendorId: varchar("vendor_id").notNull().references(() => eventVendors.id, { onDelete: 'cascade' }),
+  itemName: text("item_name").notNull(),
+  quantity: integer("quantity").notNull().default(1),
+  price: integer("price").notNull().default(0), // in rupees
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertEventVendorItemSchema = createInsertSchema(eventVendorItems).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertEventVendorItem = z.infer<typeof insertEventVendorItemSchema>;
+export type EventVendorItem = typeof eventVendorItems.$inferSelect;
+
+// ========== TEAM CHAT SYSTEM ==========
+
+// Team Channels table - one channel per team
+export const channels = pgTable("channels", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teamId: text("team_id").notNull().unique(), // matches team id from teams-config.ts
+  name: text("name").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertChannelSchema = createInsertSchema(channels).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertChannel = z.infer<typeof insertChannelSchema>;
+export type Channel = typeof channels.$inferSelect;
+
+// Channel Messages table
+export const channelMessages = pgTable("channel_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  channelId: varchar("channel_id").notNull().references(() => channels.id, { onDelete: 'cascade' }),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  attachmentUrl: text("attachment_url"),
+  attachmentType: text("attachment_type"), // 'image' | 'document' | 'video'
+  attachmentName: text("attachment_name"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertChannelMessageSchema = createInsertSchema(channelMessages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertChannelMessage = z.infer<typeof insertChannelMessageSchema>;
+export type ChannelMessage = typeof channelMessages.$inferSelect;
+
+// Team Members table - assigns users to teams
+export const teamMembers = pgTable("team_members", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teamId: text("team_id").notNull(), // matches team id from teams-config.ts
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  role: text("role").notNull().default('member'), // 'lead' | 'member'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertTeamMemberSchema = createInsertSchema(teamMembers).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertTeamMember = z.infer<typeof insertTeamMemberSchema>;
+export type TeamMember = typeof teamMembers.$inferSelect;
+
+// Direct Message Conversations table - links two users for 1:1 chat
+export const directMessageConversations = pgTable("direct_message_conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  user1Id: varchar("user1_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  user2Id: varchar("user2_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  lastMessageAt: timestamp("last_message_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertDirectMessageConversationSchema = createInsertSchema(directMessageConversations).omit({
+  id: true,
+  lastMessageAt: true,
+  createdAt: true,
+});
+
+export type InsertDirectMessageConversation = z.infer<typeof insertDirectMessageConversationSchema>;
+export type DirectMessageConversation = typeof directMessageConversations.$inferSelect;
+
+// Direct Messages table - individual messages in DM conversations
+export const directMessages = pgTable("direct_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  conversationId: varchar("conversation_id").notNull().references(() => directMessageConversations.id, { onDelete: 'cascade' }),
+  senderId: varchar("sender_id").notNull().references(() => users.id),
+  content: text("content").notNull(),
+  attachmentUrl: text("attachment_url"),
+  attachmentType: text("attachment_type"), // 'image' | 'document' | 'video'
+  attachmentName: text("attachment_name"),
+  isRead: boolean("is_read").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertDirectMessageSchema = createInsertSchema(directMessages).omit({
+  id: true,
+  isRead: true,
+  createdAt: true,
+});
+
+export type InsertDirectMessage = z.infer<typeof insertDirectMessageSchema>;
+export type DirectMessage = typeof directMessages.$inferSelect;
+
+// ========== HR PORTAL SYSTEM ==========
+
+// HR Employees table - internal employee records (different from public-facing employees)
+export const hrEmployees = pgTable("hr_employees", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  fatherName: text("father_name"),
+  relation: text("relation"), // 'SON' | 'Daughter'
+  dateOfBirth: timestamp("date_of_birth"),
+  phone: text("phone"),
+  email: text("email"),
+  aadharAddress: text("aadhar_address"),
+  role: text("role").notNull().default('Executive'), // 'Manager' | 'Executive' | 'Intern'
+  employmentType: text("employment_type").default('FTE'), // 'FTE' | 'Internship' | 'Maid' | 'Intern'
+  officeUnit: text("office_unit").notNull().default('Gurugram Office'), // 'Gurugram Office' | 'Rewari Office'
+  department: text("department"), // 'Sales' | 'Marketing' | 'Events' | 'HR' | 'Operations' etc
+  dateOfJoining: timestamp("date_of_joining"),
+  salary: integer("salary"),
+  pfEnabled: boolean("pf_enabled").default(false),
+  esicEnabled: boolean("esic_enabled").default(false),
+  panCard: text("pan_card"),
+  bankName: text("bank_name"),
+  accountNumber: text("account_number"),
+  ifscCode: text("ifsc_code"),
+  bankVerificationStatus: text("bank_verification_status").default('pending'), // 'pending' | 'verified' | 'failed'
+  profilePicture: text("profile_picture"),
+  status: text("status").notNull().default('active'), // 'active' | 'on_leave' | 'terminated' | 'resigned'
+  linkedUserId: varchar("linked_user_id").references(() => users.id), // link to system user for login
+  isSalesTeam: boolean("is_sales_team").default(false).notNull(), // for combined sales team
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertHrEmployeeSchema = createInsertSchema(hrEmployees).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertHrEmployee = z.infer<typeof insertHrEmployeeSchema>;
+export type HrEmployee = typeof hrEmployees.$inferSelect;
+
+// Employee Documents table - documents linked to employees
+export const employeeDocuments = pgTable("employee_documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  employeeId: varchar("employee_id").notNull().references(() => hrEmployees.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  type: text("type").notNull(), // 'id_proof' | 'address_proof' | 'offer_letter' | 'contract' | 'certificate' | 'other'
+  fileUrl: text("file_url"),
+  notes: text("notes"),
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+});
+
+export const insertEmployeeDocumentSchema = createInsertSchema(employeeDocuments).omit({
+  id: true,
+  uploadedAt: true,
+});
+
+export type InsertEmployeeDocument = z.infer<typeof insertEmployeeDocumentSchema>;
+export type EmployeeDocument = typeof employeeDocuments.$inferSelect;
+
+// Assets table - company assets management
+export const assets = pgTable("assets", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  category: text("category").notNull(), // 'laptop' | 'mobile' | 'furniture' | 'office_equipment' | 'vehicle' | 'other'
+  serialNumber: text("serial_number"),
+  brand: text("brand"),
+  model: text("model"),
+  purchaseDate: timestamp("purchase_date"),
+  purchasePrice: integer("purchase_price"),
+  warrantyExpiry: timestamp("warranty_expiry"),
+  status: text("status").notNull().default('available'), // 'available' | 'assigned' | 'repair' | 'retired' | 'lost'
+  currentAssigneeId: varchar("current_assignee_id").references(() => hrEmployees.id),
+  location: text("location"), // 'Gurugram Office' | 'Rewari Office' | 'Remote'
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertAssetSchema = createInsertSchema(assets).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertAsset = z.infer<typeof insertAssetSchema>;
+export type Asset = typeof assets.$inferSelect;
+
+// Asset Assignments table - history of asset assignments
+export const assetAssignments = pgTable("asset_assignments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  assetId: varchar("asset_id").notNull().references(() => assets.id, { onDelete: 'cascade' }),
+  employeeId: varchar("employee_id").notNull().references(() => hrEmployees.id),
+  assignedDate: timestamp("assigned_date").notNull().defaultNow(),
+  returnedDate: timestamp("returned_date"),
+  condition: text("condition").notNull().default('good'), // 'good' | 'fair' | 'poor'
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAssetAssignmentSchema = createInsertSchema(assetAssignments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertAssetAssignment = z.infer<typeof insertAssetAssignmentSchema>;
+export type AssetAssignment = typeof assetAssignments.$inferSelect;
+
+// Asset Maintenance table - repairs and maintenance records
+export const assetMaintenance = pgTable("asset_maintenance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  assetId: varchar("asset_id").notNull().references(() => assets.id, { onDelete: 'cascade' }),
+  type: text("type").notNull(), // 'repair' | 'service' | 'upgrade' | 'replacement'
+  description: text("description").notNull(),
+  vendor: text("vendor"),
+  cost: integer("cost"),
+  scheduledDate: timestamp("scheduled_date"),
+  completedDate: timestamp("completed_date"),
+  status: text("status").notNull().default('pending'), // 'pending' | 'in_progress' | 'completed' | 'cancelled'
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAssetMaintenanceSchema = createInsertSchema(assetMaintenance).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertAssetMaintenance = z.infer<typeof insertAssetMaintenanceSchema>;
+export type AssetMaintenance = typeof assetMaintenance.$inferSelect;
+
+// Attendance table - daily attendance records
+export const attendance = pgTable("attendance", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  employeeId: varchar("employee_id").notNull().references(() => hrEmployees.id, { onDelete: 'cascade' }),
+  date: timestamp("date").notNull(),
+  status: text("status").notNull().default('present'), // 'present' | 'absent' | 'half_day' | 'late' | 'wfh' | 'holiday' | 'weekend'
+  checkInTime: text("check_in_time"),
+  checkOutTime: text("check_out_time"),
+  notes: text("notes"),
+  markedBy: varchar("marked_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAttendanceSchema = createInsertSchema(attendance).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertAttendance = z.infer<typeof insertAttendanceSchema>;
+export type Attendance = typeof attendance.$inferSelect;
+
+// Leave Requests table
+export const leaveRequests = pgTable("leave_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  employeeId: varchar("employee_id").notNull().references(() => hrEmployees.id, { onDelete: 'cascade' }),
+  leaveType: text("leave_type").notNull(), // 'casual' | 'sick' | 'earned' | 'maternity' | 'paternity' | 'unpaid' | 'other'
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  totalDays: integer("total_days").notNull(),
+  reason: text("reason").notNull(),
+  status: text("status").notNull().default('pending'), // 'pending' | 'approved' | 'denied' | 'cancelled'
+  approvedBy: varchar("approved_by").references(() => users.id),
+  approverNotes: text("approver_notes"),
+  appliedAt: timestamp("applied_at").defaultNow().notNull(),
+  processedAt: timestamp("processed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertLeaveRequestSchema = createInsertSchema(leaveRequests).omit({
+  id: true,
+  appliedAt: true,
+  processedAt: true,
+  createdAt: true,
+});
+
+export type InsertLeaveRequest = z.infer<typeof insertLeaveRequestSchema>;
+export type LeaveRequest = typeof leaveRequests.$inferSelect;
+
+// Job Openings / Hiring Requirements table
+export const jobOpenings = pgTable("job_openings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  department: text("department"), // Sales, Operations, HR, Marketing, Finance, etc.
+  minExperience: integer("min_experience").notNull().default(1), // in years
+  maxExperience: integer("max_experience"), // optional upper bound
+  industries: text("industries").array().default([]), // preferred industry background
+  skills: text("skills").array().default([]), // required skills
+  description: text("description"),
+  requirements: text("requirements"), // detailed requirements
+  positions: integer("positions").notNull().default(1), // number of openings
+  priority: text("priority").notNull().default('medium'), // 'low' | 'medium' | 'high' | 'urgent'
+  status: text("status").notNull().default('open'), // 'open' | 'on_hold' | 'filled' | 'cancelled'
+  salary: text("salary"), // salary range or "Negotiable"
+  location: text("location").default('Gurugram'),
+  employmentType: text("employment_type").default('full_time'), // 'full_time' | 'part_time' | 'contract' | 'internship'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertJobOpeningSchema = createInsertSchema(jobOpenings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertJobOpening = z.infer<typeof insertJobOpeningSchema>;
+export type JobOpening = typeof jobOpenings.$inferSelect;
+
+// Job Portals - External recruitment platforms
+export const jobPortals = pgTable("job_portals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(), // Naukri, Internshala, LinkedIn, Indeed, etc.
+  url: text("url").notNull(), // Login URL
+  logo: text("logo"), // Logo URL or path
+  userId: text("user_id"), // Login email/username
+  password: text("password"), // Encrypted in production
+  notes: text("notes"), // Additional notes
+  isActive: boolean("is_active").default(true),
+  lastAccessed: timestamp("last_accessed"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertJobPortalSchema = createInsertSchema(jobPortals).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertJobPortal = z.infer<typeof insertJobPortalSchema>;
+export type JobPortal = typeof jobPortals.$inferSelect;
+
+// Candidates - Job applicants/candidates for recruitment
+export const candidates = pgTable("candidates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email"),
+  source: text("source").notNull(), // Naukri, Internshala, Workindia, LinkedIn, Email, WhatsApp, Referral, etc.
+  sourcePortalId: varchar("source_portal_id").references(() => jobPortals.id), // FK to job portals
+  appliedFor: text("applied_for").notNull(), // Position they applied for
+  jobOpeningId: varchar("job_opening_id").references(() => jobOpenings.id), // FK to job opening
+  profileUrl: text("profile_url"), // Naukri/LinkedIn profile URL
+  cvUrl: text("cv_url"), // CV/Resume URL
+  status: text("status").default("new").notNull(), // new, contacted, interested, interview_scheduled, interviewed, offered, hired, rejected, on_hold
+  currentSalary: text("current_salary"), // Current CTC
+  expectedSalary: text("expected_salary"), // Expected CTC
+  noticePeriod: text("notice_period"), // Days/Immediate
+  experience: text("experience"), // Years of experience
+  location: text("location"), // Current location
+  skills: text("skills"), // Comma-separated skills
+  notes: text("notes"), // General notes
+  rating: integer("rating"), // 1-5 rating
+  interviewDate: timestamp("interview_date"), // Scheduled interview date
+  assignedTo: varchar("assigned_to").references(() => users.id), // HR team member assigned
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertCandidateSchema = createInsertSchema(candidates).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertCandidate = z.infer<typeof insertCandidateSchema>;
+export type Candidate = typeof candidates.$inferSelect;
+
+// Candidate Calls - Call logs for recruitment calls (invitation/screening)
+export const candidateCalls = pgTable("candidate_calls", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  candidateId: varchar("candidate_id").notNull().references(() => candidates.id, { onDelete: 'cascade' }),
+  callType: text("call_type").notNull().default("invitation"), // invitation, screening, follow_up, offer
+  callDate: timestamp("call_date").notNull(),
+  callStatus: text("call_status").notNull(), // connected, not_connected, busy, switched_off, wrong_number
+  callResponse: text("call_response"), // interested, not_interested, maybe, interview_scheduled, rejected
+  callNotes: text("call_notes"),
+  duration: integer("duration"), // Call duration in seconds
+  recordingUrl: text("recording_url"), // Call recording URL if available
+  calledBy: varchar("called_by").references(() => users.id), // Who made the call
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCandidateCallSchema = createInsertSchema(candidateCalls).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertCandidateCall = z.infer<typeof insertCandidateCallSchema>;
+export type CandidateCall = typeof candidateCalls.$inferSelect;
+
+// HR Templates - Message templates for recruitment (WhatsApp, Email, SMS)
+export const hrTemplates = pgTable("hr_templates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  category: text("category").notNull(), // interview_invite, rejection, follow_up, offer_letter, onboarding, etc.
+  type: text("type").notNull(), // whatsapp, email, sms
+  subject: text("subject"), // For emails
+  content: text("content").notNull(), // Template content with placeholders
+  placeholders: text("placeholders").array(), // List of placeholder variables
+  isActive: boolean("is_active").default(true),
+  usageCount: integer("usage_count").default(0),
+  createdBy: varchar("created_by").references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertHrTemplateSchema = createInsertSchema(hrTemplates).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  usageCount: true,
+});
+
+export type InsertHrTemplate = z.infer<typeof insertHrTemplateSchema>;
+export type HrTemplate = typeof hrTemplates.$inferSelect;
+
+// Interviews - Scheduled interviews for candidates
+export const interviews = pgTable("interviews", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  candidateName: text("candidate_name").notNull(),
+  candidatePhone: text("candidate_phone").notNull(),
+  candidateId: varchar("candidate_id").references(() => candidates.id), // Optional link to candidate
+  interviewDate: timestamp("interview_date").notNull(),
+  interviewerId: varchar("interviewer_id").references(() => users.id), // Employee conducting interview
+  status: text("status").default("scheduled").notNull(), // scheduled, completed, cancelled, no_show
+  result: text("result"), // selected, rejected, on_hold, pending
+  remarks: text("remarks"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertInterviewSchema = createInsertSchema(interviews).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertInterview = z.infer<typeof insertInterviewSchema>;
+export type Interview = typeof interviews.$inferSelect;

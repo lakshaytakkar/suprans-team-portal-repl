@@ -1,0 +1,279 @@
+
+Build a modern sales team portal with Next.js 14+, TypeScript, Tailwind CSS, and shadcn/ui components. Use a clean Vercel-inspired dark/light theme. Include a role switcher in the top navigation bar to toggle between "Sales Executive" and "Superadmin" views.
+
+## Tech Stack
+- Next.js 14+ (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui components
+- Zustand for state management
+- Sample data stored in JSON (no database needed)
+
+## Theme
+- Vercel-inspired minimal design
+- Dark mode default with light mode toggle
+- Clean typography, subtle borders, neutral colors
+- Primary accent: Blue (#0066FF)
+
+## Global Layout
+- Collapsible sidebar navigation
+- Top bar with: Role Switcher dropdown, Theme toggle, User avatar menu
+- Main content area with consistent padding
+
+---
+
+## ROLE: SALES EXECUTIVE
+
+### Pages & Features
+
+#### 1. Dashboard (`/dashboard`)
+Stats cards showing:
+- Total Leads (assigned to me)
+- Active Leads (in pipeline)
+- Won This Month (count + value)
+- Follow-ups Due Today
+
+Quick actions:
+- "Add New Lead" button
+- "Today's Follow-ups" list (max 5)
+
+#### 2. My Leads (`/leads`)
+Table view with columns:
+- Lead Name, Company, Phone, Email
+- Service Interested, Value (INR)
+- Stage (badge: New, Contacted, Qualified, Proposal, Negotiation, Won, Lost)
+- Next Follow-up Date
+- Actions (View, Edit, Quick Call Log)
+
+Filters: Stage, Service, Date Range
+Search: Name, Company, Phone
+Bulk actions: Assign Stage, Schedule Follow-up
+
+#### 3. Lead Detail (`/leads/[id]`)
+Left panel:
+- Contact info (name, company, phone, email, address)
+- Lead source, assigned date
+- Current stage with stage change dropdown
+- Deal value input
+- Service interested (multi-select)
+
+Right panel - Tabs:
+- **Activity Timeline**: All interactions chronologically
+- **Notes**: Add/view notes
+- **Tasks**: Related follow-up tasks
+- **Documents**: Uploaded files list
+
+Actions bar:
+- Log Call (modal: duration, outcome, notes)
+- Log Meeting (modal: date, attendees, notes)
+- Send WhatsApp (opens template selector)
+- Send Email (opens template selector)
+- Schedule Follow-up (date picker + reminder)
+- Mark Won (modal: final amount, payment mode)
+- Mark Lost (modal: reason dropdown, competitor if any)
+
+#### 4. Follow-ups (`/follow-ups`)
+Calendar view (week/day toggle) + List view
+Shows scheduled follow-ups with:
+- Lead name, time, type (call/meeting/task)
+- Quick complete checkbox
+- Reschedule option
+
+Overdue section at top (highlighted red)
+
+#### 5. Pipeline (`/pipeline`)
+Kanban board with columns:
+- New | Contacted | Qualified | Proposal | Negotiation | Won | Lost
+
+Cards show:
+- Lead name, company
+- Value, service
+- Days in stage
+- Next follow-up indicator
+
+Drag-drop to change stage (auto-logs activity)
+
+#### 6. My Performance (`/performance`)
+Charts:
+- Leads by stage (pie chart)
+- Conversion funnel (bar chart)
+- Monthly trend (line chart)
+
+Stats:
+- Conversion rate, Avg deal size, Avg time to close
+
+---
+
+## ROLE: SUPERADMIN
+
+### Pages & Features
+
+#### 1. Admin Dashboard (`/admin`)
+Team overview stats:
+- Total Leads (all), New Today, Won This Month
+- Revenue This Month, Pipeline Value
+- Top Performer card
+
+Charts:
+- Team performance comparison (bar)
+- Revenue trend (line)
+- Lead source distribution (pie)
+
+#### 2. All Leads (`/admin/leads`)
+Same as sales executive leads table but:
+- Shows "Assigned To" column
+- Filter by sales executive
+- Bulk reassign action
+- Export to CSV
+
+#### 3. Team Management (`/admin/team`)
+Table of sales executives:
+- Name, Email, Phone
+- Active Leads, Won This Month, Conversion Rate
+- Status (Active/Inactive)
+
+Actions: Add User, Edit, Deactivate
+
+#### 4. Lead Assignment (`/admin/assignments`)
+Unassigned leads queue
+Round-robin auto-assign toggle
+Manual assign with drag-drop or dropdown
+Assignment rules configuration (by service, by region)
+
+#### 5. Reports (`/admin/reports`)
+Pre-built reports:
+- Daily Activity Report
+- Weekly Sales Summary
+- Monthly Performance Report
+- Lead Source Analysis
+- Service-wise Revenue
+
+Export options: PDF, CSV, Email
+
+#### 6. Settings (`/admin/settings`)
+- Lead stages configuration (add/edit/reorder)
+- Services list management
+- Lead sources management
+- Email/WhatsApp templates
+- Notification preferences
+
+---
+
+## Sample Data
+
+```json
+{
+  "users": [
+    { "id": "u1", "name": "Rahul Sharma", "email": "rahul@suprans.in", "role": "sales_executive", "phone": "+91 98765 43210" },
+    { "id": "u2", "name": "Priya Patel", "email": "priya@suprans.in", "role": "sales_executive", "phone": "+91 98765 43211" },
+    { "id": "u3", "name": "Admin User", "email": "admin@suprans.in", "role": "superadmin", "phone": "+91 98765 00000" }
+  ],
+  "leads": [
+    { "id": "l1", "name": "Amit Kumar", "company": "TechStart Pvt Ltd", "phone": "+91 99887 76655", "email": "amit@techstart.com", "service": "LLC Formation", "value": 150000, "stage": "qualified", "assignedTo": "u1", "source": "Website", "nextFollowUp": "2024-01-22T10:00:00", "createdAt": "2024-01-15" },
+    { "id": "l2", "name": "Sneha Reddy", "company": "Fashion Hub", "phone": "+91 88776 65544", "email": "sneha@fashionhub.in", "service": "GST Registration", "value": 25000, "stage": "new", "assignedTo": "u1", "source": "Referral", "nextFollowUp": "2024-01-21T14:00:00", "createdAt": "2024-01-20" },
+    { "id": "l3", "name": "Vikram Singh", "company": "Singh Exports", "phone": "+91 77665 54433", "email": "vikram@singhexports.com", "service": "Import Export License", "value": 200000, "stage": "proposal", "assignedTo": "u2", "source": "Google Ads", "nextFollowUp": "2024-01-23T11:00:00", "createdAt": "2024-01-10" },
+    { "id": "l4", "name": "Meera Joshi", "company": "Joshi & Associates", "phone": "+91 66554 43322", "email": "meera@joshilaw.com", "service": "Trademark", "value": 75000, "stage": "won", "assignedTo": "u1", "source": "LinkedIn", "wonAmount": 75000, "wonDate": "2024-01-18", "createdAt": "2024-01-05" },
+    { "id": "l5", "name": "Rajesh Gupta", "company": "Gupta Trading Co", "phone": "+91 55443 32211", "email": "rajesh@guptatrading.com", "service": "Company Registration", "value": 50000, "stage": "contacted", "assignedTo": "u2", "source": "Website", "nextFollowUp": "2024-01-24T15:00:00", "createdAt": "2024-01-19" },
+    { "id": "l6", "name": "Anita Desai", "company": "Desai Textiles", "phone": "+91 44332 21100", "email": "anita@desaitextiles.com", "service": "GST Registration", "value": 30000, "stage": "lost", "assignedTo": "u1", "lostReason": "Went with competitor", "createdAt": "2024-01-08" },
+    { "id": "l7", "name": "Karan Malhotra", "company": "KM Industries", "phone": "+91 33221 10099", "email": "karan@kmindustries.com", "service": "Accounting Services", "value": 120000, "stage": "negotiation", "assignedTo": "u2", "source": "Referral", "nextFollowUp": "2024-01-22T16:00:00", "createdAt": "2024-01-12" },
+    { "id": "l8", "name": "Pooja Verma", "company": "Verma Foods", "phone": "+91 22110 09988", "email": "pooja@vermafoods.com", "service": "FSSAI License", "value": 45000, "stage": "new", "assignedTo": null, "source": "Website", "createdAt": "2024-01-21" }
+  ],
+  "activities": [
+    { "id": "a1", "leadId": "l1", "userId": "u1", "type": "call", "notes": "Discussed LLC requirements, interested in Delaware formation", "duration": 15, "outcome": "interested", "createdAt": "2024-01-16T10:30:00" },
+    { "id": "a2", "leadId": "l1", "userId": "u1", "type": "email", "notes": "Sent pricing proposal for LLC formation", "createdAt": "2024-01-17T14:00:00" },
+    { "id": "a3", "leadId": "l3", "userId": "u2", "type": "meeting", "notes": "In-person meeting at their office, discussed IE code process", "duration": 45, "createdAt": "2024-01-15T11:00:00" },
+    { "id": "a4", "leadId": "l4", "userId": "u1", "type": "stage_change", "notes": "Marked as Won - Payment received", "fromStage": "negotiation", "toStage": "won", "createdAt": "2024-01-18T16:00:00" }
+  ],
+  "services": [
+    { "id": "s1", "name": "LLC Formation", "category": "Company Formation" },
+    { "id": "s2", "name": "Company Registration", "category": "Company Formation" },
+    { "id": "s3", "name": "Trademark", "category": "IP Services" },
+    { "id": "s4", "name": "GST Registration", "category": "Tax & Compliance" },
+    { "id": "s5", "name": "Import Export License", "category": "Licenses" },
+    { "id": "s6", "name": "FSSAI License", "category": "Licenses" },
+    { "id": "s7", "name": "Accounting Services", "category": "Ongoing Services" }
+  ],
+  "stages": [
+    { "id": "new", "label": "New", "color": "blue", "order": 1 },
+    { "id": "contacted", "label": "Contacted", "color": "yellow", "order": 2 },
+    { "id": "qualified", "label": "Qualified", "color": "purple", "order": 3 },
+    { "id": "proposal", "label": "Proposal Sent", "color": "pink", "order": 4 },
+    { "id": "negotiation", "label": "Negotiation", "color": "orange", "order": 5 },
+    { "id": "won", "label": "Won", "color": "green", "order": 6, "isWon": true },
+    { "id": "lost", "label": "Lost", "color": "gray", "order": 7, "isLost": true }
+  ],
+  "sources": ["Website", "Google Ads", "Facebook Ads", "Referral", "LinkedIn", "Cold Call", "Walk-in", "Partner"]
+}
+```
+
+---
+
+## Key User Flows
+
+### Sales Executive - Daily Flow
+1. Login → Dashboard shows today's follow-ups
+2. Click follow-up → Opens lead detail
+3. Make call → Log call with outcome
+4. Update stage if needed
+5. Schedule next follow-up
+6. Repeat for all due follow-ups
+
+### Sales Executive - New Lead Flow
+1. Receive notification of new lead assignment
+2. Open lead → Review details
+3. Make first contact call
+4. Log call → Update stage to "Contacted"
+5. Schedule follow-up
+6. Continue nurturing until Won/Lost
+
+### Superadmin - Morning Review Flow
+1. Login → Admin Dashboard
+2. Check overnight leads in unassigned queue
+3. Assign leads to sales team
+4. Review team's yesterday performance
+5. Check any escalated deals
+
+### Lead Won Flow
+1. Sales exec clicks "Mark Won" on lead
+2. Modal: Enter final amount, payment mode, notes
+3. Confirmation → Stage changes to Won
+4. Activity logged automatically
+5. Shows in performance metrics
+
+---
+
+## UI Components Needed
+- DataTable with sorting, filtering, pagination
+- Kanban board with drag-drop
+- Calendar component (week/day view)
+- Modal dialogs for forms
+- Toast notifications
+- Badge component for stages
+- Avatar component
+- Stats cards
+- Charts (use Recharts)
+- Command palette for quick actions (Cmd+K)
+
+## Navigation Structure
+
+**Sales Executive Sidebar:**
+- Dashboard
+- My Leads
+- Follow-ups
+- Pipeline
+- My Performance
+
+**Superadmin Sidebar:**
+- Dashboard
+- All Leads
+- Team
+- Assignments
+- Reports
+- Settings
+
+**Top Bar (both roles):**
+- Role Switcher dropdown (for demo switching)
+- Search (Cmd+K)
+- Notifications bell
+- Theme toggle
+- User menu (Profile, Logout)
