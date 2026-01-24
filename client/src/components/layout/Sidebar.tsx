@@ -53,12 +53,7 @@ const functionalTeams = teams.filter(t =>
 
 function TeamMemberAvatars({ teamId }: { teamId: string }) {
   const { data: members = [] } = useQuery<TeamMemberWithUser[]>({
-    queryKey: ['/api/team-members', teamId],
-    queryFn: async () => {
-      const res = await fetch(`/api/team-members?teamId=${teamId}`);
-      if (!res.ok) return [];
-      return res.json();
-    },
+    queryKey: [`/api/team-members?teamId=${teamId}`],
     staleTime: 60000,
   });
 
@@ -68,33 +63,39 @@ function TeamMemberAvatars({ teamId }: { teamId: string }) {
   if (members.length === 0) return null;
 
   return (
-    <div className="flex -space-x-2 flex-shrink-0">
-      {displayMembers.map((member) => (
+    <div className="flex -space-x-2 flex-shrink-0" data-testid={`team-member-avatars-${teamId}`}>
+      {displayMembers.map((member, index) => (
         <Tooltip key={member.id}>
           <TooltipTrigger asChild>
-            <Avatar className="h-6 w-6 border-2 border-background cursor-pointer">
+            <Avatar 
+              className="h-6 w-6 border-2 border-background cursor-pointer"
+              data-testid={`avatar-member-${teamId}-${index}`}
+            >
               <AvatarImage src={member.user?.avatar} alt={member.user?.name} />
               <AvatarFallback className="text-[10px] bg-muted">
                 {member.user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </TooltipTrigger>
-          <TooltipContent side="top" className="text-xs">
-            <p className="font-medium">{member.user?.name}</p>
-            <p className="text-muted-foreground capitalize">{member.role}</p>
+          <TooltipContent side="top" className="text-xs" data-testid={`tooltip-member-${teamId}-${index}`}>
+            <p className="font-medium" data-testid={`text-member-name-${member.id}`}>{member.user?.name}</p>
+            <p className="text-muted-foreground capitalize" data-testid={`text-member-role-${member.id}`}>{member.role}</p>
           </TooltipContent>
         </Tooltip>
       ))}
       {remainingCount > 0 && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Avatar className="h-6 w-6 border-2 border-background cursor-pointer">
+            <Avatar 
+              className="h-6 w-6 border-2 border-background cursor-pointer"
+              data-testid={`avatar-member-${teamId}-overflow`}
+            >
               <AvatarFallback className="text-[10px] bg-primary text-primary-foreground">
                 +{remainingCount}
               </AvatarFallback>
             </Avatar>
           </TooltipTrigger>
-          <TooltipContent side="top" className="text-xs">
+          <TooltipContent side="top" className="text-xs" data-testid={`tooltip-member-${teamId}-overflow`}>
             <p>{remainingCount} more member{remainingCount > 1 ? 's' : ''}</p>
           </TooltipContent>
         </Tooltip>
@@ -110,9 +111,9 @@ export function Sidebar({ className }: SidebarProps) {
 
   const currentTeam = getTeamById(currentTeamId) || getDefaultTeam();
   
-  // Check if user is admin for the current team (superadmin or team admin)
+  // Check if user is manager for the current team (superadmin or team manager)
   const isTeamAdmin = role === 'superadmin' || 
-    (currentTeam.members?.find(m => m.email === currentUser?.email)?.role === 'admin');
+    (currentTeam.members?.find(m => m.email === currentUser?.email)?.role === 'manager');
   
   // Use adminGroups if available and user is admin, otherwise use regular groups
   const navGroups = (isTeamAdmin && currentTeam.adminGroups) ? currentTeam.adminGroups : currentTeam.groups;
