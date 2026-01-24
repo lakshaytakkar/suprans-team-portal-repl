@@ -1169,6 +1169,136 @@ export const teams: Team[] = [
       { email: "payal@suprans.in", role: "member" },
       { email: "parthiv@suprans.in", role: "member" },
     ]
+  },
+  {
+    id: "faire-order-fulfilment",
+    name: "Faire Order Fulfilment",
+    subtitle: "Wholesale Order Management",
+    icon: Package,
+    color: "#FF6B35",
+    groups: [
+      {
+        label: "Pinned",
+        items: [
+          { href: "/team/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+          { href: "/team/chat", icon: MessageSquare, label: "Chat" },
+          { href: "/team/members", icon: Users, label: "Team" },
+        ]
+      },
+      {
+        label: "My Work",
+        items: [
+          { href: "/team/faire/orders", icon: ClipboardList, label: "My Orders" },
+          { href: "/team/faire/shipments", icon: Truck, label: "My Shipments" },
+          { href: "/team/tasks", icon: CheckSquare, label: "My Tasks" },
+        ]
+      },
+      {
+        label: "Performance",
+        items: [
+          { href: "/team/performance", icon: BarChart3, label: "My Performance" },
+        ]
+      }
+    ],
+    adminGroups: [
+      {
+        label: "Pinned",
+        items: [
+          { href: "/team/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+          { href: "/team/chat", icon: MessageSquare, label: "Chat" },
+          { href: "/team/members", icon: Users, label: "Team" },
+        ]
+      },
+      {
+        label: "Order Management",
+        items: [
+          { href: "/team/faire/orders", icon: ClipboardList, label: "All Orders" },
+          { href: "/team/faire/shipments", icon: Truck, label: "Shipments" },
+          { href: "/team/faire/stores", icon: Building2, label: "Stores" },
+        ]
+      },
+      {
+        label: "Reports",
+        items: [
+          { href: "/team/admin/reports", icon: BarChart3, label: "Order Reports" },
+          { href: "/team/performance", icon: TrendingUp, label: "Team Performance" },
+        ]
+      },
+      {
+        label: "Suppliers",
+        items: [
+          { href: "/team/faire/suppliers", icon: Factory, label: "Suppliers" },
+        ]
+      }
+    ],
+    members: [
+      { email: "admin@suprans.in", role: "admin" },
+    ]
+  },
+  {
+    id: "faire-products",
+    name: "Faire - Products",
+    subtitle: "Product Development & Inventory",
+    icon: Package,
+    color: "#4ECDC4",
+    groups: [
+      {
+        label: "Pinned",
+        items: [
+          { href: "/team/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+          { href: "/team/chat", icon: MessageSquare, label: "Chat" },
+          { href: "/team/members", icon: Users, label: "Team" },
+        ]
+      },
+      {
+        label: "My Work",
+        items: [
+          { href: "/team/faire/products", icon: Package, label: "My Products" },
+          { href: "/team/faire/inventory", icon: Database, label: "Inventory" },
+          { href: "/team/tasks", icon: CheckSquare, label: "My Tasks" },
+        ]
+      },
+      {
+        label: "Performance",
+        items: [
+          { href: "/team/performance", icon: BarChart3, label: "My Performance" },
+        ]
+      }
+    ],
+    adminGroups: [
+      {
+        label: "Pinned",
+        items: [
+          { href: "/team/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+          { href: "/team/chat", icon: MessageSquare, label: "Chat" },
+          { href: "/team/members", icon: Users, label: "Team" },
+        ]
+      },
+      {
+        label: "Product Management",
+        items: [
+          { href: "/team/faire/products", icon: Package, label: "All Products" },
+          { href: "/team/faire/variants", icon: Database, label: "Variants" },
+          { href: "/team/faire/inventory", icon: ClipboardList, label: "Inventory" },
+        ]
+      },
+      {
+        label: "Reports",
+        items: [
+          { href: "/team/admin/reports", icon: BarChart3, label: "Product Reports" },
+          { href: "/team/performance", icon: TrendingUp, label: "Team Performance" },
+        ]
+      },
+      {
+        label: "Suppliers",
+        items: [
+          { href: "/team/faire/suppliers", icon: Factory, label: "Suppliers" },
+        ]
+      }
+    ],
+    members: [
+      { email: "admin@suprans.in", role: "admin" },
+    ]
   }
 ];
 

@@ -47,6 +47,10 @@ import CandidatesPage from "@/pages/hr/candidates";
 import CandidateDetailPage from "@/pages/hr/candidate-detail";
 import HrTemplatesPage from "@/pages/hr/hr-templates";
 import InterviewsPage from "@/pages/hr/interviews";
+import FaireOrdersPage from "@/pages/faire/orders";
+import FaireProductsPage from "@/pages/faire/products";
+import FaireStoresPage from "@/pages/faire/stores";
+import FaireSuppliersPage from "@/pages/faire/suppliers";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import { useEffect, useState } from "react";
@@ -158,6 +162,15 @@ function TeamPortalRouter() {
         <Route path="/team/admin/templates" component={ManageTemplates} />
         <Route path="/team/admin/services" component={ManageServices} />
         <Route path="/team/admin/training" component={ManageTraining} />
+
+        {/* Faire Wholesale Management */}
+        <Route path="/team/faire/orders" component={FaireOrdersPage} />
+        <Route path="/team/faire/products" component={FaireProductsPage} />
+        <Route path="/team/faire/stores" component={FaireStoresPage} />
+        <Route path="/team/faire/suppliers" component={FaireSuppliersPage} />
+        <Route path="/team/faire/inventory" component={FaireProductsPage} />
+        <Route path="/team/faire/shipments" component={FaireOrdersPage} />
+        <Route path="/team/faire/variants" component={FaireProductsPage} />
 
         <Route component={NotFound} />
       </Switch>

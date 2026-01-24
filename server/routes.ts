@@ -14,6 +14,8 @@ import {
   insertAssetSchema, insertAssetAssignmentSchema, insertAssetMaintenanceSchema,
   insertAttendanceSchema, insertLeaveRequestSchema, insertJobOpeningSchema, insertJobPortalSchema,
   insertCandidateSchema, insertCandidateCallSchema, insertHrTemplateSchema, insertInterviewSchema,
+  insertFaireStoreSchema, insertFaireSupplierSchema, insertFaireProductSchema, insertFaireOrderSchema, insertFaireShipmentSchema,
+  insertLLCClientSchema, insertLLCClientDocumentSchema, insertLLCClientTimelineSchema,
   type User
 } from "@shared/schema";
 import { fromError } from "zod-validation-error";
@@ -3704,6 +3706,345 @@ Team Suprans`;
         return res.status(404).json({ message: "Interview not found" });
       }
       res.json({ message: "Interview deleted" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // ============================================================================
+  // FAIRE WHOLESALE API ROUTES
+  // ============================================================================
+
+  // Faire Stores
+  app.get("/api/faire/stores", requireAuth, async (req, res, next) => {
+    try {
+      const stores = await storage.getFaireStores();
+      res.json(stores);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/faire/stores/:id", requireAuth, async (req, res, next) => {
+    try {
+      const store = await storage.getFaireStore(req.params.id);
+      if (!store) {
+        return res.status(404).json({ message: "Store not found" });
+      }
+      res.json(store);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/faire/stores", requireAuth, async (req, res, next) => {
+    try {
+      const parsed = insertFaireStoreSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: fromError(parsed.error).message });
+      }
+      const store = await storage.createFaireStore(parsed.data);
+      res.status(201).json(store);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/faire/stores/:id", requireAuth, async (req, res, next) => {
+    try {
+      const store = await storage.updateFaireStore(req.params.id, req.body);
+      if (!store) {
+        return res.status(404).json({ message: "Store not found" });
+      }
+      res.json(store);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/faire/stores/:id", requireAuth, async (req, res, next) => {
+    try {
+      const deleted = await storage.deleteFaireStore(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Store not found" });
+      }
+      res.json({ message: "Store deleted" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Faire Suppliers
+  app.get("/api/faire/suppliers", requireAuth, async (req, res, next) => {
+    try {
+      const suppliers = await storage.getFaireSuppliers();
+      res.json(suppliers);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/faire/suppliers/:id", requireAuth, async (req, res, next) => {
+    try {
+      const supplier = await storage.getFaireSupplier(req.params.id);
+      if (!supplier) {
+        return res.status(404).json({ message: "Supplier not found" });
+      }
+      res.json(supplier);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/faire/suppliers", requireAuth, async (req, res, next) => {
+    try {
+      const parsed = insertFaireSupplierSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: fromError(parsed.error).message });
+      }
+      const supplier = await storage.createFaireSupplier(parsed.data);
+      res.status(201).json(supplier);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/faire/suppliers/:id", requireAuth, async (req, res, next) => {
+    try {
+      const supplier = await storage.updateFaireSupplier(req.params.id, req.body);
+      if (!supplier) {
+        return res.status(404).json({ message: "Supplier not found" });
+      }
+      res.json(supplier);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/faire/suppliers/:id", requireAuth, async (req, res, next) => {
+    try {
+      const deleted = await storage.deleteFaireSupplier(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Supplier not found" });
+      }
+      res.json({ message: "Supplier deleted" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Faire Products
+  app.get("/api/faire/products", requireAuth, async (req, res, next) => {
+    try {
+      const products = await storage.getFaireProducts();
+      res.json(products);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/faire/products/:id", requireAuth, async (req, res, next) => {
+    try {
+      const product = await storage.getFaireProduct(req.params.id);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/faire/products", requireAuth, async (req, res, next) => {
+    try {
+      const parsed = insertFaireProductSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: fromError(parsed.error).message });
+      }
+      const product = await storage.createFaireProduct(parsed.data);
+      res.status(201).json(product);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/faire/products/:id", requireAuth, async (req, res, next) => {
+    try {
+      const product = await storage.updateFaireProduct(req.params.id, req.body);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res.json(product);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/faire/products/:id", requireAuth, async (req, res, next) => {
+    try {
+      const deleted = await storage.deleteFaireProduct(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      res.json({ message: "Product deleted" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Faire Orders
+  app.get("/api/faire/orders", requireAuth, async (req, res, next) => {
+    try {
+      const orders = await storage.getFaireOrders();
+      res.json(orders);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/faire/orders/:id", requireAuth, async (req, res, next) => {
+    try {
+      const order = await storage.getFaireOrder(req.params.id);
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      res.json(order);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/faire/orders/:id", requireAuth, async (req, res, next) => {
+    try {
+      const order = await storage.updateFaireOrder(req.params.id, req.body);
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      res.json(order);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Faire Shipments
+  app.get("/api/faire/shipments", requireAuth, async (req, res, next) => {
+    try {
+      const shipments = await storage.getFaireShipments();
+      res.json(shipments);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/faire/shipments", requireAuth, async (req, res, next) => {
+    try {
+      const shipment = await storage.createFaireShipment(req.body);
+      res.status(201).json(shipment);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // ============================================================================
+  // LLC CLIENTS API ROUTES
+  // ============================================================================
+
+  // LLC Banks
+  app.get("/api/llc/banks", requireAuth, async (req, res, next) => {
+    try {
+      const banks = await storage.getLLCBanks();
+      res.json(banks);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // LLC Clients
+  app.get("/api/llc/clients", requireAuth, async (req, res, next) => {
+    try {
+      const clients = await storage.getLLCClients();
+      res.json(clients);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/llc/clients/:id", requireAuth, async (req, res, next) => {
+    try {
+      const client = await storage.getLLCClient(req.params.id);
+      if (!client) {
+        return res.status(404).json({ message: "Client not found" });
+      }
+      res.json(client);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/llc/clients", requireAuth, async (req, res, next) => {
+    try {
+      const parsed = insertLLCClientSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: fromError(parsed.error).message });
+      }
+      const client = await storage.createLLCClient(parsed.data);
+      res.status(201).json(client);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.patch("/api/llc/clients/:id", requireAuth, async (req, res, next) => {
+    try {
+      const client = await storage.updateLLCClient(req.params.id, req.body);
+      if (!client) {
+        return res.status(404).json({ message: "Client not found" });
+      }
+      res.json(client);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/llc/clients/:id", requireAuth, async (req, res, next) => {
+    try {
+      const deleted = await storage.deleteLLCClient(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Client not found" });
+      }
+      res.json({ message: "Client deleted" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // LLC Client Documents
+  app.get("/api/llc/clients/:clientId/documents", requireAuth, async (req, res, next) => {
+    try {
+      const documents = await storage.getLLCClientDocuments(req.params.clientId);
+      res.json(documents);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/llc/clients/:clientId/documents", requireAuth, async (req, res, next) => {
+    try {
+      const document = await storage.createLLCClientDocument({
+        ...req.body,
+        clientId: req.params.clientId,
+      });
+      res.status(201).json(document);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // LLC Client Timeline
+  app.get("/api/llc/clients/:clientId/timeline", requireAuth, async (req, res, next) => {
+    try {
+      const timeline = await storage.getLLCClientTimeline(req.params.clientId);
+      res.json(timeline);
     } catch (error) {
       next(error);
     }

@@ -9,6 +9,8 @@ import {
   hrEmployees, employeeDocuments, assets, assetAssignments, assetMaintenance,
   attendance, leaveRequests, jobOpenings, jobPortals,
   candidates, candidateCalls, hrTemplates, interviews,
+  faireStores, faireSuppliers, faireProducts, faireProductVariants, faireOrders, faireOrderItems, faireShipments,
+  llcBanks, llcClients, llcClientDocuments, llcClientTimeline,
   type User, type InsertUser,
   type Lead, type InsertLead,
   type Activity, type InsertActivity,
@@ -47,7 +49,18 @@ import {
   type Candidate, type InsertCandidate,
   type CandidateCall, type InsertCandidateCall,
   type HrTemplate, type InsertHrTemplate,
-  type Interview, type InsertInterview
+  type Interview, type InsertInterview,
+  type FaireStore, type InsertFaireStore,
+  type FaireSupplier, type InsertFaireSupplier,
+  type FaireProduct, type InsertFaireProduct,
+  type FaireProductVariant, type InsertFaireProductVariant,
+  type FaireOrder, type InsertFaireOrder,
+  type FaireOrderItem, type InsertFaireOrderItem,
+  type FaireShipment, type InsertFaireShipment,
+  type LLCBank, type InsertLLCBank,
+  type LLCClient, type InsertLLCClient,
+  type LLCClientDocument, type InsertLLCClientDocument,
+  type LLCClientTimeline, type InsertLLCClientTimeline
 } from "@shared/schema";
 
 export interface IStorage {
@@ -1557,6 +1570,183 @@ export class Storage implements IStorage {
     if (interviewList.length === 0) return [];
     const result = await db.insert(interviews).values(interviewList).returning();
     return result;
+  }
+
+  // ============================================================================
+  // FAIRE WHOLESALE METHODS
+  // ============================================================================
+
+  // Faire Stores
+  async getFaireStores(): Promise<FaireStore[]> {
+    return db.select().from(faireStores).orderBy(desc(faireStores.createdAt));
+  }
+
+  async getFaireStore(id: string): Promise<FaireStore | undefined> {
+    const result = await db.select().from(faireStores).where(eq(faireStores.id, id));
+    return result[0];
+  }
+
+  async createFaireStore(store: InsertFaireStore): Promise<FaireStore> {
+    const result = await db.insert(faireStores).values(store).returning();
+    return result[0];
+  }
+
+  async updateFaireStore(id: string, updates: Partial<InsertFaireStore>): Promise<FaireStore | undefined> {
+    const result = await db.update(faireStores)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(faireStores.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteFaireStore(id: string): Promise<boolean> {
+    const result = await db.delete(faireStores).where(eq(faireStores.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Faire Suppliers
+  async getFaireSuppliers(): Promise<FaireSupplier[]> {
+    return db.select().from(faireSuppliers).orderBy(desc(faireSuppliers.createdAt));
+  }
+
+  async getFaireSupplier(id: string): Promise<FaireSupplier | undefined> {
+    const result = await db.select().from(faireSuppliers).where(eq(faireSuppliers.id, id));
+    return result[0];
+  }
+
+  async createFaireSupplier(supplier: InsertFaireSupplier): Promise<FaireSupplier> {
+    const result = await db.insert(faireSuppliers).values(supplier).returning();
+    return result[0];
+  }
+
+  async updateFaireSupplier(id: string, updates: Partial<InsertFaireSupplier>): Promise<FaireSupplier | undefined> {
+    const result = await db.update(faireSuppliers)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(faireSuppliers.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteFaireSupplier(id: string): Promise<boolean> {
+    const result = await db.delete(faireSuppliers).where(eq(faireSuppliers.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Faire Products
+  async getFaireProducts(): Promise<FaireProduct[]> {
+    return db.select().from(faireProducts).orderBy(desc(faireProducts.createdAt));
+  }
+
+  async getFaireProduct(id: string): Promise<FaireProduct | undefined> {
+    const result = await db.select().from(faireProducts).where(eq(faireProducts.id, id));
+    return result[0];
+  }
+
+  async createFaireProduct(product: InsertFaireProduct): Promise<FaireProduct> {
+    const result = await db.insert(faireProducts).values(product).returning();
+    return result[0];
+  }
+
+  async updateFaireProduct(id: string, updates: Partial<InsertFaireProduct>): Promise<FaireProduct | undefined> {
+    const result = await db.update(faireProducts)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(faireProducts.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteFaireProduct(id: string): Promise<boolean> {
+    const result = await db.delete(faireProducts).where(eq(faireProducts.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Faire Orders
+  async getFaireOrders(): Promise<FaireOrder[]> {
+    return db.select().from(faireOrders).orderBy(desc(faireOrders.createdAt));
+  }
+
+  async getFaireOrder(id: string): Promise<FaireOrder | undefined> {
+    const result = await db.select().from(faireOrders).where(eq(faireOrders.id, id));
+    return result[0];
+  }
+
+  async updateFaireOrder(id: string, updates: Partial<InsertFaireOrder>): Promise<FaireOrder | undefined> {
+    const result = await db.update(faireOrders)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(faireOrders.id, id))
+      .returning();
+    return result[0];
+  }
+
+  // Faire Shipments
+  async getFaireShipments(): Promise<FaireShipment[]> {
+    return db.select().from(faireShipments).orderBy(desc(faireShipments.createdAt));
+  }
+
+  async createFaireShipment(shipment: InsertFaireShipment): Promise<FaireShipment> {
+    const result = await db.insert(faireShipments).values(shipment).returning();
+    return result[0];
+  }
+
+  // ============================================================================
+  // LLC CLIENTS METHODS
+  // ============================================================================
+
+  // LLC Banks
+  async getLLCBanks(): Promise<LLCBank[]> {
+    return db.select().from(llcBanks).orderBy(asc(llcBanks.displayOrder));
+  }
+
+  // LLC Clients
+  async getLLCClients(): Promise<LLCClient[]> {
+    return db.select().from(llcClients).orderBy(desc(llcClients.createdAt));
+  }
+
+  async getLLCClient(id: string): Promise<LLCClient | undefined> {
+    const result = await db.select().from(llcClients).where(eq(llcClients.id, id));
+    return result[0];
+  }
+
+  async createLLCClient(client: InsertLLCClient): Promise<LLCClient> {
+    const result = await db.insert(llcClients).values(client).returning();
+    return result[0];
+  }
+
+  async updateLLCClient(id: string, updates: Partial<InsertLLCClient>): Promise<LLCClient | undefined> {
+    const result = await db.update(llcClients)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(llcClients.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteLLCClient(id: string): Promise<boolean> {
+    const result = await db.delete(llcClients).where(eq(llcClients.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // LLC Client Documents
+  async getLLCClientDocuments(clientId: string): Promise<LLCClientDocument[]> {
+    return db.select().from(llcClientDocuments)
+      .where(eq(llcClientDocuments.clientId, clientId))
+      .orderBy(desc(llcClientDocuments.createdAt));
+  }
+
+  async createLLCClientDocument(document: InsertLLCClientDocument): Promise<LLCClientDocument> {
+    const result = await db.insert(llcClientDocuments).values(document).returning();
+    return result[0];
+  }
+
+  // LLC Client Timeline
+  async getLLCClientTimeline(clientId: string): Promise<LLCClientTimeline[]> {
+    return db.select().from(llcClientTimeline)
+      .where(eq(llcClientTimeline.clientId, clientId))
+      .orderBy(desc(llcClientTimeline.createdAt));
+  }
+
+  async createLLCClientTimelineEntry(entry: InsertLLCClientTimeline): Promise<LLCClientTimeline> {
+    const result = await db.insert(llcClientTimeline).values(entry).returning();
+    return result[0];
   }
 }
 
