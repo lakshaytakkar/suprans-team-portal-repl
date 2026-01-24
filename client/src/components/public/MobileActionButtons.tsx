@@ -75,8 +75,8 @@ export default function MobileActionButtons() {
     submitCallback.mutate(callbackForm);
   };
 
-  const getDicebearAvatar = (seed: string) => {
-    return `https://api.dicebear.com/7.x/micah/svg?seed=${encodeURIComponent(seed)}`;
+  const getAvatarUrl = (name: string) => {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=F34147&color=fff&size=128&bold=true`;
   };
 
   const formatPhoneForCall = (phone: string) => {
@@ -216,7 +216,7 @@ export default function MobileActionButtons() {
                   data-testid={`sales-member-tile-${member.id}`}
                 >
                   <Avatar className="h-12 w-12 border-2 border-white shadow-md">
-                    <AvatarImage src={getDicebearAvatar(member.name)} alt={member.name} />
+                    <AvatarImage src={getAvatarUrl(member.name)} alt={member.name} />
                     <AvatarFallback className="bg-[#F34147] text-white font-semibold">
                       {member.name.charAt(0)}
                     </AvatarFallback>
