@@ -34,6 +34,7 @@ const eventImageMap: Record<string, string> = {
   'Bangalore': bangaloreWorkshopImage,
   'Hyderabad': hyderabadSummitImage,
   'Pune': puneMeetupImage,
+  'Chennai': delhiSeminarImage, // Use Delhi seminar image as fallback
 };
 
 function getEventImage(city: string): string {
@@ -45,6 +46,10 @@ const thumbnailMap: Record<string, string> = {
   'usa-dropshipping-mentorship': serviceDropshipping,
   'brand-development': serviceBrandDevelopment,
   'book-appointment': serviceConsultation,
+  // Map by service ID as well (since slugs may be null)
+  'srv-dropshipping': serviceDropshipping,
+  'srv-brand-development': serviceBrandDevelopment,
+  'srv-consultation': serviceConsultation,
 };
 
 const stats = [
@@ -352,7 +357,8 @@ export default function PublicHome() {
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
                 {sortedServices.map((service) => {
-                  const thumbnail = service.slug ? thumbnailMap[service.slug] : null;
+                  // Check by slug first, then by ID
+                  const thumbnail = (service.slug && thumbnailMap[service.slug]) || thumbnailMap[service.id] || null;
                   return (
                     <Link
                       key={service.id}
