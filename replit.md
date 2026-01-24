@@ -10,9 +10,19 @@ A comprehensive team portal and CRM system for Suprans Business Consulting. The 
 - **Public Website**: Company information, services, travel packages, and contact forms
 
 ## User Credentials
-- **Superadmin**: admin@suprans.in / suprans (primary admin, member of all teams)
-- **Admin**: admin@suprans.com / admin123
-- **Sales Executive**: sales@suprans.com / sales123
+All users have password: **suprans**
+
+- **Superadmin**: admin@suprans.in / suprans (primary admin, member of all 18 teams)
+- **Admin**: admin@suprans.com / suprans
+- **Sales Executive**: sales@suprans.com / suprans
+
+### Team Members (33 total users, all with password "suprans")
+- **Events Team**: bharti@suprans.in, love@suprans.in, sanjay@suprans.in, lakshay@suprans.in
+- **HR Team**: tina@suprans.in, neetu@suprans.in
+- **Media Team**: amit@suprans.in, aditya@suprans.in
+- **Sales Team**: himanshu@suprans.in, abhinandan@suprans.in, simran@suprans.in, sumit@suprans.in, punit@suprans.in, sunny@suprans.in, akshay@suprans.in, garima@suprans.in, sahil.solanki@suprans.in, yash@suprans.in, payal@suprans.in, parthiv@suprans.in, rudraksh@suprans.in
+- **LLC Team**: priya@suprans.in (sales), shivam@suprans.in (operations)
+- **Faire Team**: rahul@suprans.in (orders), vikram@suprans.in (products)
 
 ## Tech Stack
 - **Frontend**: React, Vite, TypeScript, TailwindCSS, Shadcn/ui
