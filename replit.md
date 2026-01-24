@@ -10,6 +10,7 @@ A comprehensive team portal and CRM system for Suprans Business Consulting. The 
 - **Public Website**: Company information, services, travel packages, and contact forms
 
 ## User Credentials
+- **Superadmin**: admin@suprans.in / suprans (primary admin, member of all teams)
 - **Admin**: admin@suprans.com / admin123
 - **Sales Executive**: sales@suprans.com / sales123
 
