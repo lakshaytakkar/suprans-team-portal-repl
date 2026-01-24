@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, timestamp, jsonb, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, timestamp, jsonb, boolean, numeric } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -1042,3 +1042,481 @@ export const insertInterviewSchema = createInsertSchema(interviews).omit({
 
 export type InsertInterview = z.infer<typeof insertInterviewSchema>;
 export type Interview = typeof interviews.$inferSelect;
+
+// ============================================================================
+// ASSET TYPES TABLE
+// ============================================================================
+
+export const assetTypes = pgTable("asset_types", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  icon: text("icon"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAssetTypeSchema = createInsertSchema(assetTypes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertAssetType = z.infer<typeof insertAssetTypeSchema>;
+export type AssetType = typeof assetTypes.$inferSelect;
+
+// ============================================================================
+// FAIRE WHOLESALE TABLES
+// ============================================================================
+
+// Faire Stores (Faire brand accounts)
+export const faireStores = pgTable("faire_stores", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  faireBrandId: text("faire_brand_id"),
+  name: text("name").notNull(),
+  code: text("code").notNull(),
+  description: text("description"),
+  apiToken: text("api_token"),
+  apiTokenEncrypted: boolean("api_token_encrypted").default(false).notNull(),
+  webhookSecret: text("webhook_secret"),
+  isActive: boolean("is_active").default(true).notNull(),
+  autoSyncEnabled: boolean("auto_sync_enabled").default(false).notNull(),
+  syncIntervalMinutes: integer("sync_interval_minutes").default(60).notNull(),
+  lastSyncAt: timestamp("last_sync_at"),
+  contactEmail: text("contact_email"),
+  contactPhone: text("contact_phone"),
+  timezone: text("timezone").default("America/New_York").notNull(),
+  currency: text("currency").default("USD").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdBy: varchar("created_by"),
+  updatedBy: varchar("updated_by"),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertFaireStoreSchema = createInsertSchema(faireStores).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaireStore = z.infer<typeof insertFaireStoreSchema>;
+export type FaireStore = typeof faireStores.$inferSelect;
+
+// Faire Suppliers
+export const faireSuppliers = pgTable("faire_suppliers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  storeId: varchar("store_id").notNull().references(() => faireStores.id),
+  name: text("name").notNull(),
+  code: text("code").notNull(),
+  status: text("status").notNull().default("active"), // active, inactive, pending, suspended
+  contactName: text("contact_name"),
+  email: text("email"),
+  phone: text("phone"),
+  website: text("website"),
+  addressLine1: text("address_line_1"),
+  addressLine2: text("address_line_2"),
+  city: text("city"),
+  state: text("state"),
+  postalCode: text("postal_code"),
+  country: text("country").default("USA").notNull(),
+  paymentTerms: text("payment_terms"),
+  leadTimeDays: integer("lead_time_days"),
+  minimumOrderAmount: numeric("minimum_order_amount"),
+  notes: text("notes"),
+  credentials: jsonb("credentials").$type<Record<string, string>>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdBy: varchar("created_by"),
+  updatedBy: varchar("updated_by"),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertFaireSupplierSchema = createInsertSchema(faireSuppliers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaireSupplier = z.infer<typeof insertFaireSupplierSchema>;
+export type FaireSupplier = typeof faireSuppliers.$inferSelect;
+
+// Faire Products
+export const faireProducts = pgTable("faire_products", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  faireProductId: text("faire_product_id"),
+  faireBrandId: text("faire_brand_id"),
+  storeId: varchar("store_id").notNull().references(() => faireStores.id),
+  supplierId: varchar("supplier_id").references(() => faireSuppliers.id),
+  name: text("name").notNull(),
+  shortDescription: text("short_description"),
+  description: text("description"),
+  sku: text("sku"),
+  saleState: text("sale_state").notNull().default("FOR_SALE"), // FOR_SALE, SALES_PAUSED, DISCONTINUED
+  lifecycleState: text("lifecycle_state").notNull().default("DRAFT"), // DRAFT, PUBLISHED, ARCHIVED
+  unitMultiplier: integer("unit_multiplier").default(1).notNull(),
+  minimumOrderQuantity: integer("minimum_order_quantity").default(1).notNull(),
+  taxonomyType: jsonb("taxonomy_type"),
+  madeInCountry: text("made_in_country"),
+  preorderable: boolean("preorderable").default(false).notNull(),
+  preorderDetails: jsonb("preorder_details"),
+  images: text("images").array().default([]),
+  metadata: jsonb("metadata"),
+  lastSyncedAt: timestamp("last_synced_at"),
+  syncHash: text("sync_hash"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdBy: varchar("created_by"),
+  updatedBy: varchar("updated_by"),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertFaireProductSchema = createInsertSchema(faireProducts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaireProduct = z.infer<typeof insertFaireProductSchema>;
+export type FaireProduct = typeof faireProducts.$inferSelect;
+
+// Faire Product Variants
+export const faireProductVariants = pgTable("faire_product_variants", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  faireVariantId: text("faire_variant_id"),
+  productId: varchar("product_id").notNull().references(() => faireProducts.id, { onDelete: 'cascade' }),
+  storeId: varchar("store_id").notNull().references(() => faireStores.id),
+  name: text("name").notNull(),
+  sku: text("sku"),
+  gtin: text("gtin"),
+  saleState: text("sale_state").notNull().default("FOR_SALE"),
+  lifecycleState: text("lifecycle_state").notNull().default("DRAFT"),
+  prices: jsonb("prices"),
+  availableQuantity: integer("available_quantity").default(0).notNull(),
+  reservedQuantity: integer("reserved_quantity").default(0).notNull(),
+  backorderedUntil: timestamp("backordered_until"),
+  options: jsonb("options"),
+  measurements: jsonb("measurements"),
+  lastSyncedAt: timestamp("last_synced_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertFaireProductVariantSchema = createInsertSchema(faireProductVariants).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaireProductVariant = z.infer<typeof insertFaireProductVariantSchema>;
+export type FaireProductVariant = typeof faireProductVariants.$inferSelect;
+
+// Faire Orders
+export const faireOrders = pgTable("faire_orders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  faireOrderId: text("faire_order_id").notNull(),
+  displayId: text("display_id"),
+  storeId: varchar("store_id").notNull().references(() => faireStores.id),
+  state: text("state").notNull().default("NEW"), // NEW, PROCESSING, PRE_TRANSIT, IN_TRANSIT, DELIVERED, BACKORDERED, CANCELED
+  retailerId: text("retailer_id"),
+  retailerName: text("retailer_name"),
+  address: jsonb("address"),
+  isFreeShipping: boolean("is_free_shipping").default(false).notNull(),
+  freeShippingReason: text("free_shipping_reason"),
+  faireCoveredShippingCostCents: integer("faire_covered_shipping_cost_cents"),
+  shipAfter: timestamp("ship_after"),
+  subtotalCents: integer("subtotal_cents"),
+  shippingCents: integer("shipping_cents"),
+  taxCents: integer("tax_cents"),
+  totalCents: integer("total_cents"),
+  payoutCosts: jsonb("payout_costs"),
+  estimatedPayoutAt: timestamp("estimated_payout_at"),
+  purchaseOrderNumber: text("purchase_order_number"),
+  notes: text("notes"),
+  source: text("source"),
+  paymentInitiatedAt: timestamp("payment_initiated_at"),
+  salesRepName: text("sales_rep_name"),
+  brandDiscounts: jsonb("brand_discounts"),
+  hasPendingCancellationRequest: boolean("has_pending_cancellation_request").default(false).notNull(),
+  originalOrderId: text("original_order_id"),
+  lastSyncedAt: timestamp("last_synced_at"),
+  syncHash: text("sync_hash"),
+  faireCreatedAt: timestamp("faire_created_at"),
+  faireUpdatedAt: timestamp("faire_updated_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdBy: varchar("created_by"),
+  updatedBy: varchar("updated_by"),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertFaireOrderSchema = createInsertSchema(faireOrders).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaireOrder = z.infer<typeof insertFaireOrderSchema>;
+export type FaireOrder = typeof faireOrders.$inferSelect;
+
+// Faire Order Items
+export const faireOrderItems = pgTable("faire_order_items", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  faireOrderItemId: text("faire_order_item_id"),
+  orderId: varchar("order_id").notNull().references(() => faireOrders.id, { onDelete: 'cascade' }),
+  storeId: varchar("store_id").notNull().references(() => faireStores.id),
+  productId: varchar("product_id").references(() => faireProducts.id),
+  variantId: varchar("variant_id").references(() => faireProductVariants.id),
+  faireProductId: text("faire_product_id"),
+  faireVariantId: text("faire_variant_id"),
+  productName: text("product_name").notNull(),
+  variantName: text("variant_name"),
+  sku: text("sku"),
+  quantity: integer("quantity").notNull(),
+  state: text("state").notNull().default("NEW"), // NEW, CONFIRMED, BACKORDERED, SHIPPED, DELIVERED, CANCELED
+  priceCents: integer("price_cents").notNull(),
+  currency: text("currency").default("USD").notNull(),
+  includesTester: boolean("includes_tester").default(false).notNull(),
+  testerPriceCents: integer("tester_price_cents"),
+  discounts: jsonb("discounts"),
+  faireCreatedAt: timestamp("faire_created_at"),
+  faireUpdatedAt: timestamp("faire_updated_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertFaireOrderItemSchema = createInsertSchema(faireOrderItems).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaireOrderItem = z.infer<typeof insertFaireOrderItemSchema>;
+export type FaireOrderItem = typeof faireOrderItems.$inferSelect;
+
+// Faire Shipments
+export const faireShipments = pgTable("faire_shipments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  faireShipmentId: text("faire_shipment_id"),
+  orderId: varchar("order_id").notNull().references(() => faireOrders.id, { onDelete: 'cascade' }),
+  storeId: varchar("store_id").notNull().references(() => faireStores.id),
+  carrier: text("carrier"),
+  trackingCode: text("tracking_code"),
+  trackingUrl: text("tracking_url"),
+  shippingType: text("shipping_type"),
+  makerCostCents: integer("maker_cost_cents"),
+  itemIds: text("item_ids").array().default([]),
+  faireCreatedAt: timestamp("faire_created_at"),
+  faireUpdatedAt: timestamp("faire_updated_at"),
+  shippedAt: timestamp("shipped_at"),
+  deliveredAt: timestamp("delivered_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertFaireShipmentSchema = createInsertSchema(faireShipments).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaireShipment = z.infer<typeof insertFaireShipmentSchema>;
+export type FaireShipment = typeof faireShipments.$inferSelect;
+
+// ============================================================================
+// LLC CLIENTS TABLES
+// ============================================================================
+
+// LLC Banks
+export const llcBanks = pgTable("llc_banks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  code: text("code").notNull(),
+  description: text("description"),
+  website: text("website"),
+  isActive: boolean("is_active").default(true).notNull(),
+  displayOrder: integer("display_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertLLCBankSchema = createInsertSchema(llcBanks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertLLCBank = z.infer<typeof insertLLCBankSchema>;
+export type LLCBank = typeof llcBanks.$inferSelect;
+
+// LLC Clients
+export const llcClients = pgTable("llc_clients", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientCode: text("client_code").notNull(),
+  serialNumber: integer("serial_number"),
+  
+  // Client Info
+  clientName: text("client_name").notNull(),
+  email: text("email"),
+  phone: text("phone"),
+  country: text("country"),
+  
+  // LLC Info
+  llcName: text("llc_name"),
+  status: text("status").notNull().default("llc_booked"), // llc_booked, onboarded, under_ein, under_boi, under_banking, under_payment_gateway, delivered
+  health: text("health"), // healthy, neutral, at_risk, critical
+  
+  // Service
+  plan: text("plan").notNull().default("llc"), // elite, llc
+  websiteIncluded: boolean("website_included").default(false).notNull(),
+  
+  // Dates
+  paymentDate: timestamp("payment_date"),
+  onboardingDate: timestamp("onboarding_date"),
+  onboardingCallDate: timestamp("onboarding_call_date"),
+  documentSubmissionDate: timestamp("document_submission_date"),
+  deliveryDate: timestamp("delivery_date"),
+  
+  // Financial
+  amountReceived: numeric("amount_received").default("0").notNull(),
+  remainingPayment: numeric("remaining_payment").default("0").notNull(),
+  currency: text("currency").default("INR").notNull(),
+  
+  // Banking
+  bankId: varchar("bank_id").references(() => llcBanks.id),
+  bankApproved: text("bank_approved"),
+  bankStatus: text("bank_status").notNull().default("not_started"), // not_started, documents_pending, application_submitted, under_review, approved, rejected
+  bankApplicationDate: timestamp("bank_application_date"),
+  bankApprovalDate: timestamp("bank_approval_date"),
+  
+  // Assignment
+  assignedToId: varchar("assigned_to_id").references(() => users.id),
+  
+  // External
+  externalProjectUrl: text("external_project_url"),
+  
+  // Notes
+  notes: text("notes"),
+  additionalNotes: text("additional_notes"),
+  
+  // Audit
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdBy: varchar("created_by"),
+  updatedBy: varchar("updated_by"),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertLLCClientSchema = createInsertSchema(llcClients).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertLLCClient = z.infer<typeof insertLLCClientSchema>;
+export type LLCClient = typeof llcClients.$inferSelect;
+
+// LLC Document Types
+export const llcDocumentTypes = pgTable("llc_document_types", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  code: text("code").notNull(),
+  category: text("category").notNull(), // client_submitted, llc_documents, bank_documents, website_documents
+  description: text("description"),
+  isRequired: boolean("is_required").default(false).notNull(),
+  forEliteOnly: boolean("for_elite_only").default(false).notNull(),
+  displayOrder: integer("display_order").default(0).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertLLCDocumentTypeSchema = createInsertSchema(llcDocumentTypes).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertLLCDocumentType = z.infer<typeof insertLLCDocumentTypeSchema>;
+export type LLCDocumentType = typeof llcDocumentTypes.$inferSelect;
+
+// LLC Client Documents
+export const llcClientDocuments = pgTable("llc_client_documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull().references(() => llcClients.id, { onDelete: 'cascade' }),
+  documentTypeId: varchar("document_type_id").references(() => llcDocumentTypes.id),
+  
+  // Document Info
+  name: text("name").notNull(),
+  fileName: text("file_name"),
+  filePath: text("file_path"),
+  fileSize: integer("file_size").default(0).notNull(),
+  mimeType: text("mime_type"),
+  
+  // Status
+  category: text("category").notNull(), // client_submitted, llc_documents, bank_documents, website_documents
+  status: text("status").notNull().default("pending"), // pending, submitted, verified, rejected, issued, delivered
+  
+  // Dates
+  submittedDate: timestamp("submitted_date"),
+  verifiedDate: timestamp("verified_date"),
+  issuedDate: timestamp("issued_date"),
+  expiryDate: timestamp("expiry_date"),
+  
+  // Tracking
+  submittedBy: varchar("submitted_by"),
+  verifiedBy: varchar("verified_by"),
+  issuedBy: varchar("issued_by"),
+  
+  // Notes
+  notes: text("notes"),
+  rejectionReason: text("rejection_reason"),
+  
+  // Audit
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  createdBy: varchar("created_by"),
+  updatedBy: varchar("updated_by"),
+  deletedAt: timestamp("deleted_at"),
+});
+
+export const insertLLCClientDocumentSchema = createInsertSchema(llcClientDocuments).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertLLCClientDocument = z.infer<typeof insertLLCClientDocumentSchema>;
+export type LLCClientDocument = typeof llcClientDocuments.$inferSelect;
+
+// LLC Client Timeline
+export const llcClientTimeline = pgTable("llc_client_timeline", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  clientId: varchar("client_id").notNull().references(() => llcClients.id, { onDelete: 'cascade' }),
+  documentId: varchar("document_id").references(() => llcClientDocuments.id),
+  
+  // Event
+  eventType: text("event_type").notNull(), // status_change, document_uploaded, document_issued, note_added, payment_received, call_scheduled, call_completed, bank_update, milestone
+  title: text("title").notNull(),
+  description: text("description"),
+  
+  // Status Change
+  oldStatus: text("old_status"),
+  newStatus: text("new_status"),
+  
+  // Metadata
+  metadata: jsonb("metadata"),
+  
+  // Who
+  performedBy: varchar("performed_by"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertLLCClientTimelineSchema = createInsertSchema(llcClientTimeline).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertLLCClientTimeline = z.infer<typeof insertLLCClientTimelineSchema>;
+export type LLCClientTimeline = typeof llcClientTimeline.$inferSelect;
