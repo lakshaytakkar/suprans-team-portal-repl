@@ -9,7 +9,7 @@ import type { Service, Event } from "@shared/schema";
 import { format } from "date-fns";
 
 import founderImage from "@/assets/images/founder-portrait.png";
-import heroImage from "@/assets/images/mr-suprans-hero.png";
+import heroImage from "@/assets/images/mr-suprans-hero-optimized.jpg";
 import cantonFairImage from "@/assets/images/canton-fair.png";
 import chinaFactoryImage from "@/assets/images/china-factory.png";
 import businessMeetingImage from "@/assets/images/business-meeting.png";
@@ -200,6 +200,9 @@ export default function PublicHome() {
                 src={heroImage}
                 alt="Mr. Suprans - Your China Business Guide"
                 className="w-full max-w-xs md:max-w-lg mx-auto rounded-3xl shadow-2xl object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
             </div>
 
