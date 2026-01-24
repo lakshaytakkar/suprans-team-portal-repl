@@ -22,6 +22,7 @@ const businessTeams = teams.filter(t =>
   t.id.startsWith('china-import-') || 
   t.id.startsWith('dropshipping-') || 
   t.id.startsWith('llc-') ||
+  t.id.startsWith('faire-') ||
   t.id === 'events'
 );
 
