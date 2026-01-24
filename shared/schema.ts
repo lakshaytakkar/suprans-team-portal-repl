@@ -648,7 +648,7 @@ export const teamMembers = pgTable("team_members", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   teamId: text("team_id").notNull(), // matches team id from teams-config.ts
   userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
-  role: text("role").notNull().default('member'), // 'lead' | 'member'
+  role: text("role").notNull().default('executive'), // 'manager' | 'executive'
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
