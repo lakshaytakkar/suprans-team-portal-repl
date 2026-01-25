@@ -201,7 +201,7 @@ export default function PublicHome() {
                 alt="Mr. Suprans - Your China Business Guide"
                 className="w-full max-w-xs md:max-w-lg mx-auto rounded-3xl shadow-2xl object-cover"
                 loading="eager"
-                fetchPriority="high"
+                fetchpriority="high"
                 decoding="async"
               />
             </div>
