@@ -1323,9 +1323,11 @@ export async function registerRoutes(
               <table role="presentation" style="width: 100%;">
                 <tr>
                   <td align="center">
-                    <img src="https://suprans.in/logo.png" alt="Suprans" style="width: 120px; height: auto; margin-bottom: 10px;">
-                    <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 1px;">SUPRANS</h1>
-                    <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0; font-size: 13px;">Your Gateway to Global Business</p>
+                    <div style="width: 50px; height: 50px; background-color: rgba(255,255,255,0.2); border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                      <span style="font-size: 28px; color: #ffffff;">⚡</span>
+                    </div>
+                    <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 2px;">SUPRANS</h1>
+                    <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px; font-weight: 500;">Your Gateway to Global Business</p>
                   </td>
                 </tr>
               </table>
@@ -1411,13 +1413,14 @@ export async function registerRoutes(
           <!-- Hotel Image -->
           <tr>
             <td style="padding: 0 20px 20px;">
-              <table role="presentation" style="width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                 <tr>
                   <td>
-                    <img src="${hotelImageUrl}" alt="Hotel Radisson Blu Plaza" style="width: 100%; height: auto; display: block; border-radius: 12px;">
-                    <div style="background-color: #1a1a2e; padding: 12px 15px; border-radius: 0 0 12px 12px; margin-top: -5px;">
-                      <p style="margin: 0; color: #ffffff; font-size: 14px; font-weight: 600;">Hotel Radisson Blu Plaza Delhi Airport</p>
-                      <p style="margin: 3px 0 0; color: rgba(255,255,255,0.7); font-size: 12px;">5 Star Luxury Hotel</p>
+                    <img src="${hotelImageUrl}" alt="Radisson Blu Plaza Delhi Airport" style="width: 100%; height: auto; display: block;">
+                    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 18px 20px;">
+                      <p style="margin: 0; color: #F34147; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">Event Venue</p>
+                      <p style="margin: 6px 0 0; color: #ffffff; font-size: 18px; font-weight: 700;">Radisson Blu Plaza</p>
+                      <p style="margin: 4px 0 0; color: rgba(255,255,255,0.8); font-size: 14px;">Delhi Airport | 5 Star Luxury Hotel</p>
                     </div>
                   </td>
                 </tr>
