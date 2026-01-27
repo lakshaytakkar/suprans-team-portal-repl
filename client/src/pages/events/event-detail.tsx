@@ -513,11 +513,14 @@ function AttendeesTab({ eventId, event, attendees, searchQuery, setSearchQuery, 
 
   const generateWhatsAppMessage = (attendee: EventAttendee) => {
     const ticketId = attendee.ticketId || "PENDING";
+    const ticketCount = attendee.ticketCount || 1;
+    const ticketText = ticketCount > 1 ? `*Number of Tickets:* ${ticketCount} (${ticketCount} persons allowed)` : `*Number of Tickets:* 1`;
     return `Hello ${attendee.name}!
 
 Your ticket for *${event.name}* is confirmed.
 
 *Ticket ID:* ${ticketId}
+${ticketText}
 *Date:* ${eventDate}
 
 *Venue:* ${venue}
@@ -535,7 +538,7 @@ Google Maps: ${mapsLink}
 - 1 person per ticket (non-transferable)
 - First Come First Served (FCFS) seating
 - Hi-Tea and Lunch included
-- Please carry a valid ID proof
+- Please carry a valid ID proof for each person
 - Arrive 30 mins before event start for smooth check-in
 
 We look forward to seeing you!
@@ -550,6 +553,8 @@ Team Suprans Business Consulting`;
 
   const generateEmailBody = (attendee: EventAttendee) => {
     const ticketId = attendee.ticketId || "PENDING";
+    const ticketCount = attendee.ticketCount || 1;
+    const ticketText = ticketCount > 1 ? `Number of Tickets: ${ticketCount} (${ticketCount} persons allowed)` : `Number of Tickets: 1`;
     return `Dear ${attendee.name},
 
 Greetings from Suprans Business Consulting!
@@ -559,6 +564,7 @@ Your registration for ${event.name} is confirmed.
 TICKET DETAILS
 --------------
 Ticket ID: ${ticketId}
+${ticketText}
 Name: ${attendee.name}
 Event Date: ${eventDate}
 
@@ -578,10 +584,10 @@ EVENT SCHEDULE
 
 IMPORTANT INSTRUCTIONS
 ----------------------
-- This ticket is valid for 1 person only (non-transferable)
+- 1 person per ticket (non-transferable)
 - Seating is on First Come First Served (FCFS) basis
 - Complimentary Hi-Tea and Lunch included
-- Please carry a valid government-issued ID proof
+- Please carry a valid government-issued ID proof for each person
 - We recommend arriving 30 minutes before the event starts for a smooth check-in experience
 - Business formal attire recommended
 

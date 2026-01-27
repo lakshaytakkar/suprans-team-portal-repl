@@ -1278,6 +1278,7 @@ export async function registerRoutes(
   function generateEventEmailHtml(params: {
     attendeeName: string;
     ticketId: string;
+    ticketCount?: number;
     eventName: string;
     eventDate: string;
     venue: string;
@@ -1290,6 +1291,7 @@ export async function registerRoutes(
     // Escape all user-provided data to prevent HTML injection
     const attendeeName = escapeHtml(params.attendeeName);
     const ticketId = escapeHtml(params.ticketId);
+    const ticketCount = params.ticketCount || 1;
     const eventName = escapeHtml(params.eventName);
     const eventDate = escapeHtml(params.eventDate);
     const venue = escapeHtml(params.venue);
@@ -1360,7 +1362,10 @@ export async function registerRoutes(
                 <tr>
                   <td style="padding: 25px; text-align: center;">
                     <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 0 0 5px; text-transform: uppercase; letter-spacing: 2px;">Your Event Pass</p>
-                    <h2 style="color: #ffffff; font-size: 24px; margin: 0 0 20px; font-weight: 700;">${ticketId}</h2>
+                    <h2 style="color: #ffffff; font-size: 24px; margin: 0 0 10px; font-weight: 700;">${ticketId}</h2>
+                    <p style="color: #ffffff; font-size: 16px; margin: 0 0 15px; font-weight: 600; background: ${ticketCount > 1 ? 'linear-gradient(135deg, #F34147 0%, #d63031 100%)' : 'rgba(255,255,255,0.15)'}; padding: 8px 16px; border-radius: 20px; display: inline-block;">
+                      ${ticketCount > 1 ? `${ticketCount} Tickets (${ticketCount} persons)` : '1 Ticket (1 person)'}
+                    </p>
                     ${qrCode ? `
                     <div style="background-color: #ffffff; padding: 12px; border-radius: 8px; display: inline-block; margin-bottom: 12px;">
                       <img src="${qrCode}" alt="QR Code" style="width: 120px; height: 120px; display: block;">
@@ -1570,6 +1575,7 @@ export async function registerRoutes(
           const personalizedHtml = generateEventEmailHtml({
             attendeeName: attendee.name,
             ticketId,
+            ticketCount: attendee.ticketCount || 1,
             eventName,
             eventDate,
             venue,
@@ -1775,6 +1781,7 @@ Team Suprans`;
       const personalizedHtml = generateEventEmailHtml({
         attendeeName: "[Sample Attendee]",
         ticketId: "SBC-TEST-001",
+        ticketCount: 3, // Sample with 3 tickets to show multi-ticket display
         eventName,
         eventDate,
         venue,
