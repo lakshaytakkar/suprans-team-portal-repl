@@ -745,10 +745,8 @@ export const teams: Team[] = [
     ],
     members: [
       { email: "admin@suprans.in", role: "admin" },
-      { email: "bharti@suprans.in", role: "member" },
-      { email: "love@suprans.in", role: "member" },
-      { email: "sanjay@suprans.in", role: "member" },
-      { email: "lakshay@suprans.in", role: "member" },
+      { email: "gaurav@suprans.in", role: "admin" },
+      { email: "akansha@suprans.in", role: "member" },
     ]
   },
   {
