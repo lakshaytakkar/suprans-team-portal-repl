@@ -1042,9 +1042,25 @@ export async function registerRoutes(
 
   app.post("/api/events/:eventId/attendees", requireAuth, async (req, res, next) => {
     try {
+      // Auto-generate unique ticket ID if not provided
+      let ticketId = req.body.ticketId;
+      if (!ticketId) {
+        const event = await storage.getEvent(req.params.eventId);
+        const eventDate = event ? new Date(event.date) : new Date();
+        // Use fixed format for month/year
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const monthYear = months[eventDate.getMonth()] + String(eventDate.getFullYear()).slice(-2);
+        
+        // Generate unique ticket ID using timestamp + random suffix to avoid collisions
+        const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
+        const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+        ticketId = `SBC-${monthYear}-${timestamp}${random}`;
+      }
+      
       const parsed = insertEventAttendeeSchema.parse({
         ...req.body,
         eventId: req.params.eventId,
+        ticketId,
       });
       const attendee = await storage.createEventAttendee(parsed);
       res.status(201).json(attendee);
@@ -1443,13 +1459,13 @@ export async function registerRoutes(
                     <table role="presentation" style="width: 100%;">
                       <tr>
                         <td style="padding: 10px 15px; background-color: #fff; border-radius: 8px; margin-bottom: 8px; display: block;">
-                          <span style="color: #F34147; font-weight: 700; font-size: 14px;">9:00 AM - 10:30 AM</span>
+                          <span style="color: #F34147; font-weight: 700; font-size: 14px;">8:30 AM - 10:00 AM</span>
                           <span style="color: #333; font-size: 14px; margin-left: 10px;">Registration & Breakfast</span>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding: 10px 15px; background-color: #fff; border-radius: 8px; margin-bottom: 8px; display: block; margin-top: 8px;">
-                          <span style="color: #F34147; font-weight: 700; font-size: 14px;">10:30 AM</span>
+                          <span style="color: #F34147; font-weight: 700; font-size: 14px;">10:00 AM</span>
                           <span style="color: #333; font-size: 14px; margin-left: 10px;">Event Begins</span>
                         </td>
                       </tr>
@@ -1461,7 +1477,7 @@ export async function registerRoutes(
                       </tr>
                       <tr>
                         <td style="padding: 10px 15px; background-color: #fff; border-radius: 8px; display: block; margin-top: 8px;">
-                          <span style="color: #F34147; font-weight: 700; font-size: 14px;">5:00 PM - 6:00 PM</span>
+                          <span style="color: #F34147; font-weight: 700; font-size: 14px;">3:00 - 3:30 PM</span>
                           <span style="color: #333; font-size: 14px; margin-left: 10px;">Event Closes</span>
                         </td>
                       </tr>
@@ -1472,15 +1488,19 @@ export async function registerRoutes(
             </td>
           </tr>
           
-          <!-- Important Note -->
+          <!-- Important Instructions -->
           <tr>
             <td style="padding: 0 20px 20px;">
               <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #fff8e6; border-radius: 12px; border: 1px solid #ffd93d;">
                 <tr>
                   <td style="padding: 20px;">
-                    <p style="margin: 0; color: #8a6d3b; font-size: 14px; line-height: 1.6;">
-                      <strong style="color: #856404;">Important:</strong> Please save this email and present the QR code at the registration desk for quick check-in.
-                    </p>
+                    <h4 style="margin: 0 0 12px; color: #856404; font-size: 14px; font-weight: 700;">Important Instructions:</h4>
+                    <ul style="margin: 0; padding-left: 18px; color: #8a6d3b; font-size: 13px; line-height: 1.8;">
+                      <li>1 person per ticket</li>
+                      <li>First Come First Served (FCFS) seating</li>
+                      <li>Hi-Tea and Lunch included</li>
+                      <li>Arrive 30 mins before event start for smooth check-in</li>
+                    </ul>
                   </td>
                 </tr>
               </table>
@@ -1490,8 +1510,11 @@ export async function registerRoutes(
           <!-- Footer -->
           <tr>
             <td style="background-color: #1a1a2e; padding: 25px 20px; text-align: center;">
-              <p style="color: #ffffff; font-size: 16px; font-weight: 600; margin: 0 0 5px;">We look forward to welcoming you!</p>
-              <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin: 0 0 20px;">Warm Regards, Team Suprans</p>
+              <p style="color: #ffffff; font-size: 16px; font-weight: 600; margin: 0 0 5px;">We look forward to seeing you!</p>
+              <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin: 0 0 8px;">Best Regards,</p>
+              <p style="color: #ffffff; font-size: 15px; font-weight: 600; margin: 0 0 5px;">Gaurav</p>
+              <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin: 0 0 5px;">Team Suprans</p>
+              <p style="color: rgba(255,255,255,0.7); font-size: 13px; margin: 0 0 15px;">+91 8851492209 | cs@suprans.in</p>
               <table role="presentation" style="margin: 0 auto;">
                 <tr>
                   <td style="padding: 0 10px;">
@@ -1713,26 +1736,39 @@ Team Suprans`;
       // Build personalized messages
       const recipients = attendeesWithPhone.map(attendee => {
         const ticketId = attendee.ticketId || "PENDING";
+        const ticketCount = attendee.ticketCount || 1;
         const message = `Hello ${attendee.name}!
 
 Your ticket for *${eventName}* is confirmed.
 
 *Ticket ID:* ${ticketId}
+*Number of Tickets:* ${ticketCount}
 *Date:* ${eventDate}
 
-*Venue:* ${venue}
+*Venue:* Radisson Blu Plaza
 ${venueAddress}
 Phone: +91 11 4250 0500
+Google Maps: https://maps.app.goo.gl/bvxYw1wNXas1G4TF9
 
 *Event Schedule:*
-- 9:00 AM - 10:30 AM: Registration & Breakfast
-- 10:30 AM: Event Begins
-- 1:30 PM: Lunch
-- 5:00 PM - 6:00 PM: Event Closes
+• 8:30 AM - 10:00 AM: Registration & Breakfast
+• 10:00 AM: Event Begins
+• 1:30 PM: Lunch
+• 3:00-3:30 PM: Event Closes
 
-Please show this message at the registration desk.
+*Important Instructions:*
+• 1 person per ticket
+• First Come First Served (FCFS) seating
+• Hi-Tea and Lunch included
+• Arrive 30 mins before event start for smooth check-in
 
-Team Suprans`;
+We look forward to seeing you!
+
+Best Regards,
+Gaurav
+Team Suprans
++91 8851492209
+cs@suprans.in`;
 
         return { phone: attendee.phone!, message };
       });
@@ -1898,21 +1934,33 @@ Hello [Attendee Name]!
 Your ticket for *${eventName}* is confirmed.
 
 *Ticket ID:* [TICKET-ID]
+*Number of Tickets:* 1
 *Date:* ${eventDate}
 
-*Venue:* ${venue}
+*Venue:* Radisson Blu Plaza
 ${venueAddress}
 Phone: +91 11 4250 0500
+Google Maps: https://maps.app.goo.gl/bvxYw1wNXas1G4TF9
 
 *Event Schedule:*
-- 9:00 AM - 10:30 AM: Registration & Breakfast
-- 10:30 AM: Event Begins
-- 1:30 PM: Lunch
-- 5:00 PM - 6:00 PM: Event Closes
+• 8:30 AM - 10:00 AM: Registration & Breakfast
+• 10:00 AM: Event Begins
+• 1:30 PM: Lunch
+• 3:00-3:30 PM: Event Closes
 
-Please show this message at the registration desk.
+*Important Instructions:*
+• 1 person per ticket
+• First Come First Served (FCFS) seating
+• Hi-Tea and Lunch included
+• Arrive 30 mins before event start for smooth check-in
 
-Team Suprans`;
+We look forward to seeing you!
+
+Best Regards,
+Gaurav
+Team Suprans
++91 8851492209
+cs@suprans.in`;
 
       await sendWhatsApp({ to: testPhone, message });
 
@@ -1947,40 +1995,55 @@ Greetings from Team Suprans!
 Your registration for ${eventName} is confirmed.
 
 Ticket ID: [TICKET-ID]
+Number of Tickets: [TICKET-COUNT]
 Date: ${eventDate}
-Venue: ${venue}
+Venue: Radisson Blu Plaza
 Address: ${venueAddress}
 
 Event Schedule:
-- 9:00 AM - Registration & Breakfast
-- 10:30 AM - Event Begins
+- 8:30 AM - Registration & Breakfast
+- 10:00 AM - Event Begins
 - 1:30 PM - Lunch
-- 5:00 PM - Event Closes
+- 3:00-3:30 PM - Event Closes
 
-Please show this message at the registration desk.
+Important: 1 person per ticket. FCFS seating. Arrive 30 mins early.
 
-Team Suprans`;
+Best Regards,
+Gaurav, Team Suprans
++91 8851492209`;
 
       const whatsappTemplate = `Hello [Attendee Name]!
 
 Your ticket for *${eventName}* is confirmed.
 
 *Ticket ID:* [TICKET-ID]
+*Number of Tickets:* [TICKET-COUNT]
 *Date:* ${eventDate}
 
-*Venue:* ${venue}
+*Venue:* Radisson Blu Plaza
 ${venueAddress}
 Phone: ${venuePhone}
+Google Maps: ${mapsLink}
 
 *Event Schedule:*
-- 9:00 AM - 10:30 AM: Registration & Breakfast
-- 10:30 AM: Event Begins
-- 1:30 PM: Lunch
-- 5:00 PM - 6:00 PM: Event Closes
+• 8:30 AM - 10:00 AM: Registration & Breakfast
+• 10:00 AM: Event Begins
+• 1:30 PM: Lunch
+• 3:00-3:30 PM: Event Closes
 
-Please show this message at the registration desk.
+*Important Instructions:*
+• 1 person per ticket
+• First Come First Served (FCFS) seating
+• Hi-Tea and Lunch included
+• Arrive 30 mins before event start for smooth check-in
 
-Team Suprans`;
+We look forward to seeing you!
+
+Best Regards,
+Gaurav
+Team Suprans
++91 8851492209
+cs@suprans.in`;
 
       const emailSubject = `Your Ticket for ${eventName} - ${eventDate}`;
       const emailPreview = `
@@ -1992,27 +2055,35 @@ Your registration for ${eventName} is confirmed.
 
 TICKET DETAILS:
 - Ticket ID: [TICKET-ID]
+- Number of Tickets: [TICKET-COUNT]
 - Name: [Attendee Name]
 - Event Date: ${eventDate}
 
 VENUE DETAILS:
-- ${venue}
+- Radisson Blu Plaza
 - ${venueAddress}
 - Phone: ${venuePhone}
 - Google Maps: ${mapsLink}
 
 EVENT SCHEDULE:
-- 9:00 AM - 10:30 AM: Registration & Breakfast
-- 10:30 AM: Event Begins
+- 8:30 AM - 10:00 AM: Registration & Breakfast
+- 10:00 AM: Event Begins
 - 1:30 PM: Lunch
-- 5:00 PM - 6:00 PM: Event Closes
+- 3:00-3:30 PM: Event Closes
 
-Please save this email for reference and show it at the registration desk.
+IMPORTANT INSTRUCTIONS:
+- 1 person per ticket
+- First Come First Served (FCFS) seating
+- Hi-Tea and Lunch included
+- Arrive 30 mins before event start for smooth check-in
 
-We look forward to welcoming you!
+We look forward to seeing you!
 
-Warm Regards,
-Team Suprans`;
+Best Regards,
+Gaurav
+Team Suprans
++91 8851492209
+cs@suprans.in`;
 
       res.json({
         sms: smsTemplate,

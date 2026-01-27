@@ -514,37 +514,38 @@ function AttendeesTab({ eventId, event, attendees, searchQuery, setSearchQuery, 
   const generateWhatsAppMessage = (attendee: EventAttendee) => {
     const ticketId = attendee.ticketId || "PENDING";
     const ticketCount = attendee.ticketCount || 1;
-    const ticketText = ticketCount > 1 ? `*Number of Tickets:* ${ticketCount} (${ticketCount} persons allowed)` : `*Number of Tickets:* 1`;
     return `Hello ${attendee.name}!
 
 Your ticket for *${event.name}* is confirmed.
 
 *Ticket ID:* ${ticketId}
-${ticketText}
+*Number of Tickets:* ${ticketCount}
 *Date:* ${eventDate}
 
-*Venue:* ${venue}
+*Venue:* Radisson Blu Plaza
 ${venueAddress}
 Phone: ${venuePhone}
 Google Maps: ${mapsLink}
 
 *Event Schedule:*
-- 8:30 AM - 10:30 AM: Registration & Breakfast
-- 10:30 AM: Event Begins
-- 1:30 PM: Lunch
-- 5:00 PM - 6:00 PM: Event Closes
+• 8:30 AM - 10:00 AM: Registration & Breakfast
+• 10:00 AM: Event Begins
+• 1:30 PM: Lunch
+• 3:00-3:30 PM: Event Closes
 
 *Important Instructions:*
-- 1 person per ticket (non-transferable)
-- First Come First Served (FCFS) seating
-- Hi-Tea and Lunch included
-- Please carry a valid ID proof for each person
-- Arrive 30 mins before event start for smooth check-in
+• 1 person per ticket
+• First Come First Served (FCFS) seating
+• Hi-Tea and Lunch included
+• Arrive 30 mins before event start for smooth check-in
 
 We look forward to seeing you!
 
 Best Regards,
-Team Suprans Business Consulting`;
+Gaurav
+Team Suprans
++91 8851492209
+cs@suprans.in`;
   };
 
   const generateEmailSubject = (attendee: EventAttendee) => {
@@ -600,10 +601,39 @@ Team Suprans Business Consulting
 www.suprans.com`;
   };
 
-  const openWhatsApp = (attendee: EventAttendee) => {
+  const openWhatsApp = async (attendee: EventAttendee) => {
     const phone = attendee.phone.replace(/\D/g, '');
     const phoneWithCountry = phone.startsWith('91') ? phone : `91${phone}`;
     const message = encodeURIComponent(generateWhatsAppMessage(attendee));
+    
+    // If attendee has a QR code, download it for manual attachment to WhatsApp
+    if (attendee.ticketQr) {
+      try {
+        // Download the QR code image
+        const link = document.createElement('a');
+        link.href = attendee.ticketQr;
+        link.download = `${attendee.ticketId || 'ticket'}-qr.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        toast({
+          title: "QR Ticket Downloaded",
+          description: "Please attach the downloaded QR image in your WhatsApp chat",
+          duration: 5000,
+        });
+      } catch (e) {
+        console.error('Failed to download QR:', e);
+      }
+    } else {
+      toast({
+        title: "No QR Code",
+        description: "Generate ticket first to include QR code",
+        variant: "destructive",
+      });
+    }
+    
+    // Open WhatsApp with the message
     window.open(`https://wa.me/${phoneWithCountry}?text=${message}`, '_blank');
   };
 
@@ -618,10 +648,16 @@ www.suprans.com`;
   };
 
   const filteredAttendees = attendees.filter(
-    (a) =>
-      a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.phone.includes(searchQuery) ||
-      (a.company?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+    (a) => {
+      const query = searchQuery.toLowerCase();
+      return (
+        a.name.toLowerCase().includes(query) ||
+        (a.phone || "").includes(searchQuery) ||
+        (a.email?.toLowerCase() || "").includes(query) ||
+        (a.ticketId?.toLowerCase() || "").includes(query) ||
+        (a.company?.toLowerCase() || "").includes(query)
+      );
+    }
   );
 
   return (
@@ -632,10 +668,10 @@ www.suprans.com`;
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search attendees..."
+              placeholder="Search by name, phone, email, ticket ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-64"
+              className="pl-10 w-80"
               data-testid="input-search-attendees"
             />
           </div>
