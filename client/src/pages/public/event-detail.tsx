@@ -45,14 +45,15 @@ function getEventImage(city: string): string {
 
 function formatEventDate(date: Date | string, endDate?: Date | string | null): string {
   const startDate = new Date(date);
+  const timeStr = format(startDate, "h:mm a");
   if (endDate) {
     const end = new Date(endDate);
     if (startDate.toDateString() === end.toDateString()) {
-      return format(startDate, "EEEE, MMMM d, yyyy");
+      return `${format(startDate, "EEEE, MMMM d, yyyy")} | ${timeStr}`;
     }
-    return `${format(startDate, "MMMM d")} - ${format(end, "d, yyyy")}`;
+    return `${format(startDate, "MMMM d")} - ${format(end, "d, yyyy")} | ${timeStr}`;
   }
-  return format(startDate, "EEEE, MMMM d, yyyy");
+  return `${format(startDate, "EEEE, MMMM d, yyyy")} | ${timeStr}`;
 }
 
 const eventHighlights = [
@@ -290,7 +291,7 @@ export default function PublicEventDetailPage() {
         </div>
       </div>
 
-      <section className="py-12 bg-background">
+      <section className="py-12 pb-28 md:pb-12 bg-background">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
@@ -446,6 +447,27 @@ export default function PublicEventDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* Mobile Fixed Bottom Register Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 md:hidden z-50 shadow-lg">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1">
+            <p className="font-semibold text-lg">
+              {isSoldOut ? 'Sold Out' : hasTicketPrice ? `₹${event.ticketPrice?.toLocaleString('en-IN')}` : 'Free Entry'}
+            </p>
+            <p className="text-xs text-muted-foreground">{format(new Date(event.date), "MMM d, yyyy")} | {format(new Date(event.date), "h:mm a")}</p>
+          </div>
+          <Button 
+            variant={isSoldOut ? 'secondary' : 'default'}
+            size="lg" 
+            disabled={isSoldOut}
+            onClick={() => setBookingDialogOpen(true)}
+            data-testid="button-register-event-mobile"
+          >
+            {isSoldOut ? 'Sold Out' : 'Register Now'}
+          </Button>
+        </div>
+      </div>
 
       <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
         <DialogContent className="sm:max-w-md">
