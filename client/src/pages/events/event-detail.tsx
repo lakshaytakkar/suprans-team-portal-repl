@@ -516,6 +516,14 @@ function AttendeesTab({ eventId, event, attendees, searchQuery, setSearchQuery, 
   const generateWhatsAppMessage = (attendee: EventAttendee) => {
     const ticketId = attendee.ticketId || "PENDING";
     const ticketCount = attendee.ticketCount || 1;
+    const slotInfo = attendee.slotTime || "To be assigned";
+    const isIBS = event.type === "ibs";
+    
+    // For IBS events, show batch-specific schedule
+    const ibsSchedule = isIBS && attendee.slotTime ? `
+*Your Batch:* ${slotInfo}
+Please arrive 15 minutes before your batch timing.` : "";
+
     return `Hello ${attendee.name}!
 
 Your ticket for *${event.name}* is confirmed.
@@ -523,23 +531,30 @@ Your ticket for *${event.name}* is confirmed.
 *Ticket ID:* ${ticketId}
 *Number of Tickets:* ${ticketCount}
 *Date:* ${eventDate}
+${ibsSchedule}
 
 *Venue:* Radisson Blu Plaza
 ${venueAddress}
 Phone: ${venuePhone}
 Google Maps: ${mapsLink}
-
+${isIBS ? `
+*Batch Schedule:*
+• M1: 9:00 AM - 11:00 AM
+• M2: 11:00 AM - 1:00 PM
+• Lunch Break: 1:00 PM - 2:30 PM
+• E1: 2:30 PM - 4:30 PM
+• E2: 4:30 PM - 6:30 PM` : `
 *Event Schedule:*
 • 8:30 AM - 10:00 AM: Registration & Breakfast
 • 10:00 AM: Event Begins
 • 1:30 PM: Lunch
-• 3:00-3:30 PM: Event Closes
+• 3:00-3:30 PM: Event Closes`}
 
 *Important Instructions:*
 • 1 person per ticket
 • First Come First Served (FCFS) seating
 • Hi-Tea and Lunch included
-• Arrive 30 mins before event start for smooth check-in
+• Arrive 15 mins before your batch time for smooth check-in
 
 We look forward to seeing you!
 
@@ -558,6 +573,29 @@ cs@suprans.in`;
     const ticketId = attendee.ticketId || "PENDING";
     const ticketCount = attendee.ticketCount || 1;
     const ticketText = ticketCount > 1 ? `Number of Tickets: ${ticketCount} (${ticketCount} persons allowed)` : `Number of Tickets: 1`;
+    const slotInfo = attendee.slotTime || "To be assigned";
+    const isIBS = event.type === "ibs";
+    
+    const batchSection = isIBS ? `
+YOUR BATCH
+----------
+${slotInfo}
+Please arrive 15 minutes before your batch timing.
+
+BATCH SCHEDULE
+--------------
+- M1: 9:00 AM - 11:00 AM
+- M2: 11:00 AM - 1:00 PM
+- Lunch Break: 1:00 PM - 2:30 PM
+- E1: 2:30 PM - 4:30 PM
+- E2: 4:30 PM - 6:30 PM` : `
+EVENT SCHEDULE
+--------------
+- 8:30 AM - 10:30 AM: Registration & Breakfast
+- 10:30 AM: Event Begins
+- 1:30 PM: Lunch
+- 5:00 PM - 6:00 PM: Event Closes`;
+
     return `Dear ${attendee.name},
 
 Greetings from Suprans Business Consulting!
@@ -577,13 +615,7 @@ ${venue}
 ${venueAddress}
 Phone: ${venuePhone}
 Google Maps: ${mapsLink}
-
-EVENT SCHEDULE
---------------
-- 8:30 AM - 10:30 AM: Registration & Breakfast
-- 10:30 AM: Event Begins
-- 1:30 PM: Lunch
-- 5:00 PM - 6:00 PM: Event Closes
+${batchSection}
 
 IMPORTANT INSTRUCTIONS
 ----------------------
@@ -591,7 +623,7 @@ IMPORTANT INSTRUCTIONS
 - Seating is on First Come First Served (FCFS) basis
 - Complimentary Hi-Tea and Lunch included
 - Please carry a valid government-issued ID proof for each person
-- We recommend arriving 30 minutes before the event starts for a smooth check-in experience
+- We recommend arriving 15 minutes before your batch time for a smooth check-in experience
 - Business formal attire recommended
 
 Please save this email for reference and show it at the registration desk.
@@ -954,8 +986,16 @@ Team Suprans Business Consulting`}
                   </div>
                   {eventType === "ibs" && (
                     <div>
-                      <Label>Slot Time</Label>
-                      <Input value={formData.slotTime} onChange={(e) => setFormData({ ...formData, slotTime: e.target.value })} placeholder="e.g., 10:00 AM" />
+                      <Label>Batch</Label>
+                      <Select value={formData.slotTime} onValueChange={(v) => setFormData({ ...formData, slotTime: v })}>
+                        <SelectTrigger><SelectValue placeholder="Select batch" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="M1 (9:00 AM - 11:00 AM)">M1 (9:00 AM - 11:00 AM)</SelectItem>
+                          <SelectItem value="M2 (11:00 AM - 1:00 PM)">M2 (11:00 AM - 1:00 PM)</SelectItem>
+                          <SelectItem value="E1 (2:30 PM - 4:30 PM)">E1 (2:30 PM - 4:30 PM)</SelectItem>
+                          <SelectItem value="E2 (4:30 PM - 6:30 PM)">E2 (4:30 PM - 6:30 PM)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   )}
                   <div>
@@ -988,7 +1028,7 @@ Team Suprans Business Consulting`}
               <TableHead className="w-12 text-center">Qty</TableHead>
               <TableHead>Contact</TableHead>
               <TableHead>Company</TableHead>
-              {eventType === "ibs" && <TableHead>Slot</TableHead>}
+              {eventType === "ibs" && <TableHead>Batch</TableHead>}
               <TableHead>Ticket</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Checked In</TableHead>
