@@ -1425,26 +1425,6 @@ export async function registerRoutes(
             </td>
           </tr>
           
-          <!-- Batch Schedule -->
-          <tr>
-            <td style="padding: 0 20px 20px;">
-              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #fafafa; border-radius: 12px; border: 1px solid #eee;">
-                <tr>
-                  <td style="padding: 20px;">
-                    <h3 style="color: #F34147; font-size: 14px; margin: 0 0 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Batch Schedule</h3>
-                    <table role="presentation" style="width: 100%;">
-                      <tr><td style="padding: 6px 0; color: #333; font-size: 14px;"><strong style="color: #F34147;">M1:</strong> 9:00 AM - 11:00 AM</td></tr>
-                      <tr><td style="padding: 6px 0; color: #333; font-size: 14px;"><strong style="color: #F34147;">M2:</strong> 11:00 AM - 1:00 PM</td></tr>
-                      <tr><td style="padding: 6px 0; color: #666; font-size: 14px;"><em>Lunch Break: 1:00 PM - 2:30 PM</em></td></tr>
-                      <tr><td style="padding: 6px 0; color: #333; font-size: 14px;"><strong style="color: #F34147;">E1:</strong> 2:30 PM - 4:30 PM</td></tr>
-                      <tr><td style="padding: 6px 0; color: #333; font-size: 14px;"><strong style="color: #F34147;">E2:</strong> 4:30 PM - 6:30 PM</td></tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          
           <!-- Important Instructions -->
           <tr>
             <td style="padding: 0 20px 20px;">
@@ -1775,7 +1755,7 @@ export async function registerRoutes(
 
           // IBS events have simpler text version
           const textContent = event.type === 'ibs' 
-            ? `Hello ${attendee.name}!\n\nYour ticket for ${eventName} is confirmed.\n\nNumber of Tickets: ${attendee.ticketCount || 1}\nDate: ${eventDate}\n\nYour Batch: ${attendee.slotTime || 'To be assigned'}\nPlease arrive 15 minutes before your batch timing.\n\nVenue: Radisson Blu Plaza\n${venueAddress}\nPhone: ${venuePhone}\n\nBatch Schedule:\n- M1: 9:00 AM - 11:00 AM\n- M2: 11:00 AM - 1:00 PM\n- Lunch Break: 1:00 PM - 2:30 PM\n- E1: 2:30 PM - 4:30 PM\n- E2: 4:30 PM - 6:30 PM\n\nImportant Instructions:\n- 1 person per ticket\n- Arrive 15 mins before your batch time for smooth check-in\n\nWe look forward to seeing you!\n\nBest Regards,\nGaurav\n+91 8851492209\nTeam Suprans\ncs@suprans.in`
+            ? `Hello ${attendee.name}!\n\nYour ticket for ${eventName} is confirmed.\n\nNumber of Tickets: ${attendee.ticketCount || 1}\nDate: ${eventDate}\n\nYour Batch: ${attendee.slotTime || 'To be assigned'}\nPlease arrive 15 minutes before your batch timing.\n\nVenue: Radisson Blu Plaza\n${venueAddress}\nPhone: ${venuePhone}\n\nImportant Instructions:\n- 1 person per ticket\n- Arrive 15 mins before your batch time for smooth check-in\n\nWe look forward to seeing you!\n\nBest Regards,\nGaurav\n+91 8851492209\nTeam Suprans\ncs@suprans.in`
             : `Your ticket for ${eventName} is confirmed. Ticket ID: ${ticketId}. Event Date: ${eventDate}. Venue: ${venue}, ${venueAddress}`;
 
           try {

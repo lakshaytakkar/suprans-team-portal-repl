@@ -532,19 +532,15 @@ Your ticket for *${event.name}* is confirmed.
 
 *Number of Tickets:* ${ticketCount}
 *Date:* ${eventDate}
-${ibsSchedule}
+
+*Your Batch:* ${slotInfo}
+Please arrive 15 minutes before your batch timing.
 
 *Venue:* Radisson Blu Plaza
 ${venueAddress}
 Phone: ${venuePhone}
 Google Maps: ${mapsLink}
 
-*Batch Schedule:*
-• M1: 9:00 AM - 11:00 AM
-• M2: 11:00 AM - 1:00 PM
-• Lunch Break: 1:00 PM - 2:30 PM
-• E1: 2:30 PM - 4:30 PM
-• E2: 4:30 PM - 6:30 PM
 
 *Important Instructions:*
 • 1 person per ticket
@@ -620,12 +616,6 @@ ${venueAddress}
 Phone: ${venuePhone}
 Google Maps: ${mapsLink}
 
-Batch Schedule:
-- M1: 9:00 AM - 11:00 AM
-- M2: 11:00 AM - 1:00 PM
-- Lunch Break: 1:00 PM - 2:30 PM
-- E1: 2:30 PM - 4:30 PM
-- E2: 4:30 PM - 6:30 PM
 
 Important Instructions:
 - 1 person per ticket
