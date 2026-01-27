@@ -363,6 +363,7 @@ function AttendeesTab({ eventId, event, attendees, searchQuery, setSearchQuery, 
   const [isSendingTest, setIsSendingTest] = useState(false);
   const [testEmail, setTestEmail] = useState("");
   const [testPhone, setTestPhone] = useState("");
+  const [expandedAttendee, setExpandedAttendee] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
