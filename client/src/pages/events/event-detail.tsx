@@ -206,8 +206,9 @@ export default function EventDetailPage() {
                 <Users className="h-4 w-4 text-blue-600" />
               </div>
               <div>
-                <p className="text-xl font-bold">{attendees.length}</p>
-                <p className="text-xs text-gray-500">Registered</p>
+                <p className="text-xl font-bold">{attendees.reduce((sum, a) => sum + (a.ticketCount || 1), 0)}</p>
+                <p className="text-xs text-gray-500">Total Tickets</p>
+                <p className="text-xs text-gray-400">{attendees.length} attendees</p>
               </div>
             </div>
           </CardContent>
@@ -940,6 +941,7 @@ Team Suprans Business Consulting`}
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead className="w-12 text-center">Qty</TableHead>
               <TableHead>Contact</TableHead>
               <TableHead>Company</TableHead>
               {eventType === "ibs" && <TableHead>Slot</TableHead>}
@@ -957,6 +959,13 @@ Team Suprans Business Consulting`}
                     <p className="font-medium">{attendee.name}</p>
                     {attendee.designation && <p className="text-xs text-gray-500">{attendee.designation}</p>}
                   </div>
+                </TableCell>
+                <TableCell className="text-center">
+                  {(attendee.ticketCount || 1) > 1 ? (
+                    <Badge className="bg-amber-100 text-amber-700 font-bold">{attendee.ticketCount || 1}</Badge>
+                  ) : (
+                    <span className="text-gray-400">1</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <div className="text-sm">

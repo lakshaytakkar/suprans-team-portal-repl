@@ -336,6 +336,7 @@ export const eventAttendees = pgTable("event_attendees", {
   ticketId: text("ticket_id"), // Unique ticket ID like SBC-FEB26-001
   ticketQr: text("ticket_qr"), // Base64 encoded QR code image
   ticketStatus: text("ticket_status").notNull().default('pending'), // 'pending' | 'issued' | 'sent' | 'collected'
+  ticketCount: integer("ticket_count").default(1).notNull(), // Number of tickets for this attendee
   badgePrinted: boolean("badge_printed").default(false).notNull(),
   checkedIn: boolean("checked_in").default(false).notNull(),
   checkedInAt: timestamp("checked_in_at"),
