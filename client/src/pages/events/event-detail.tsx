@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { useRoute, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,6 +72,7 @@ import {
   Building,
   Truck,
   Shield,
+  ChevronDown,
   UtensilsCrossed,
   Headphones,
   Store,
@@ -92,6 +93,7 @@ export default function EventDetailPage() {
   const eventId = params?.id;
   const [activeTab, setActiveTab] = useState("attendees");
   const [searchQuery, setSearchQuery] = useState("");
+  const [expandedAttendee, setExpandedAttendee] = useState<string | null>(null);
 
   const { data: event, isLoading: eventLoading } = useQuery<Event>({
     queryKey: ["/api/events", eventId],
@@ -995,11 +997,19 @@ Team Suprans Business Consulting`}
           </TableHeader>
           <TableBody>
             {filteredAttendees.map((attendee) => (
-              <TableRow key={attendee.id} data-testid={`row-attendee-${attendee.id}`}>
+              <Fragment key={attendee.id}>
+              <TableRow 
+                data-testid={`row-attendee-${attendee.id}`}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => setExpandedAttendee(expandedAttendee === attendee.id ? null : attendee.id)}
+              >
                 <TableCell>
-                  <div>
-                    <p className="font-medium">{attendee.name}</p>
-                    {attendee.designation && <p className="text-xs text-gray-500">{attendee.designation}</p>}
+                  <div className="flex items-center gap-2">
+                    <ChevronDown className={cn("h-4 w-4 transition-transform", expandedAttendee === attendee.id && "rotate-180")} />
+                    <div>
+                      <p className="font-medium">{attendee.name}</p>
+                      {attendee.designation && <p className="text-xs text-gray-500">{attendee.designation}</p>}
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
@@ -1098,6 +1108,58 @@ Team Suprans Business Consulting`}
                   </div>
                 </TableCell>
               </TableRow>
+              {/* Expanded Details Row */}
+              {expandedAttendee === attendee.id && (
+                <TableRow className="bg-muted/30">
+                  <TableCell colSpan={eventType === "ibs" ? 9 : 8} className="p-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      {attendee.plan && (
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Interest / Plan</p>
+                          <p className="font-medium text-primary">{attendee.plan}</p>
+                        </div>
+                      )}
+                      {attendee.budget && (
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Budget</p>
+                          <p className="font-medium">{attendee.budget}</p>
+                        </div>
+                      )}
+                      {attendee.clientStatus && (
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Client Type</p>
+                          <Badge variant="outline">{attendee.clientStatus}</Badge>
+                        </div>
+                      )}
+                      {attendee.city && (
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">City</p>
+                          <p>{attendee.city}</p>
+                        </div>
+                      )}
+                      {attendee.calledBy && (
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Called By</p>
+                          <p>{attendee.calledBy}</p>
+                        </div>
+                      )}
+                      {attendee.callStatus && (
+                        <div>
+                          <p className="text-xs text-muted-foreground font-medium">Call Status</p>
+                          <Badge variant={attendee.callStatus === "Call done" ? "default" : "secondary"}>{attendee.callStatus}</Badge>
+                        </div>
+                      )}
+                      {attendee.notes && (
+                        <div className="col-span-2">
+                          <p className="text-xs text-muted-foreground font-medium">Notes</p>
+                          <p className="text-muted-foreground">{attendee.notes}</p>
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+              </Fragment>
             ))}
           </TableBody>
         </Table>

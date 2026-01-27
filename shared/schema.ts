@@ -342,6 +342,12 @@ export const eventAttendees = pgTable("event_attendees", {
   checkedInAt: timestamp("checked_in_at"),
   notes: text("notes"),
   listLocked: boolean("list_locked").default(false).notNull(),
+  // Extended attendee info fields
+  plan: text("plan"), // Interest/plan like 'Brand Development', 'Import Business', etc.
+  budget: text("budget"), // Budget like '10 lac', '1 cr', etc.
+  clientStatus: text("client_status"), // 'Business' | 'Job' | 'Other'
+  calledBy: text("called_by"), // Name of caller like 'Gaurav', 'Love'
+  callStatus: text("call_status"), // 'Call done', 'Not ans', etc.
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
