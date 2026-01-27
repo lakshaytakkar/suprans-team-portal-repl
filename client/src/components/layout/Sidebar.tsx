@@ -33,23 +33,44 @@ interface SidebarProps {
   className?: string;
 }
 
-const businessTeams = teams.filter(t => 
-  t.id.startsWith('travel-') || 
-  t.id.startsWith('china-import-') || 
-  t.id.startsWith('dropshipping-') || 
-  t.id.startsWith('llc-') ||
-  t.id.startsWith('faire-') ||
-  t.id === 'events'
-);
+// Helper to check if a team is a business team
+const isBusinessTeam = (teamId: string) => 
+  teamId.startsWith('travel-') || 
+  teamId.startsWith('china-import-') || 
+  teamId.startsWith('dropshipping-') || 
+  teamId.startsWith('llc-') ||
+  teamId.startsWith('faire-') ||
+  teamId === 'events';
 
-const functionalTeams = teams.filter(t => 
-  t.id === 'hr-recruitment' || 
-  t.id === 'finance' || 
-  t.id === 'marketing' || 
-  t.id === 'admin-it' ||
-  t.id === 'sales' ||
-  t.id === 'media'
-);
+// Helper to check if a team is a functional team
+const isFunctionalTeam = (teamId: string) => 
+  teamId === 'hr-recruitment' || 
+  teamId === 'finance' || 
+  teamId === 'marketing' || 
+  teamId === 'admin-it' ||
+  teamId === 'sales' ||
+  teamId === 'media';
+
+// Filter teams based on user membership
+const getUserTeams = (userEmail: string | undefined, userRole: string) => {
+  // Superadmin sees all teams
+  if (userRole === 'superadmin') {
+    return {
+      businessTeams: teams.filter(t => isBusinessTeam(t.id)),
+      functionalTeams: teams.filter(t => isFunctionalTeam(t.id))
+    };
+  }
+  
+  // Other users only see teams they're members of
+  const memberTeams = teams.filter(t => 
+    t.members?.some(m => m.email === userEmail)
+  );
+  
+  return {
+    businessTeams: memberTeams.filter(t => isBusinessTeam(t.id)),
+    functionalTeams: memberTeams.filter(t => isFunctionalTeam(t.id))
+  };
+};
 
 function TeamMemberAvatars({ teamId }: { teamId: string }) {
   const { data: members = [] } = useQuery<TeamMemberWithUser[]>({
@@ -111,6 +132,9 @@ export function Sidebar({ className }: SidebarProps) {
 
   const currentTeam = getTeamById(currentTeamId) || getDefaultTeam();
   
+  // Get teams filtered by user membership
+  const { businessTeams, functionalTeams } = getUserTeams(currentUser?.email, role);
+  
   // Check if user is manager for the current team (superadmin or team manager)
   const isTeamAdmin = role === 'superadmin' || 
     (currentTeam.members?.find(m => m.email === currentUser?.email)?.role === 'manager');
@@ -144,56 +168,67 @@ export function Sidebar({ className }: SidebarProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-[380px]" sideOffset={4}>
           <ScrollArea className="h-[450px]">
-            <DropdownMenuLabel className="text-xs text-muted-foreground">Business Teams</DropdownMenuLabel>
-            {businessTeams.map((team) => (
-              <DropdownMenuItem 
-                key={team.id}
-                onClick={() => setCurrentTeamId(team.id)}
-                className="flex items-center gap-3 py-2.5 cursor-pointer"
-                data-testid={`menuitem-team-${team.id}`}
-              >
-                <div 
-                  className="flex h-8 w-8 items-center justify-center rounded-lg flex-shrink-0"
-                  style={{ backgroundColor: team.color + '20' }}
-                >
-                  <team.icon className="h-4 w-4" style={{ color: team.color }} />
-                </div>
-                <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-sm font-medium truncate">{team.name}</span>
-                  <span className="text-xs text-muted-foreground truncate">{team.subtitle}</span>
-                </div>
-                <TeamMemberAvatars teamId={team.id} />
-                {currentTeamId === team.id && (
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                )}
-              </DropdownMenuItem>
-            ))}
+            {businessTeams.length > 0 && (
+              <>
+                <DropdownMenuLabel className="text-xs text-muted-foreground">Business Teams</DropdownMenuLabel>
+                {businessTeams.map((team) => (
+                  <DropdownMenuItem 
+                    key={team.id}
+                    onClick={() => setCurrentTeamId(team.id)}
+                    className="flex items-center gap-3 py-2.5 cursor-pointer"
+                    data-testid={`menuitem-team-${team.id}`}
+                  >
+                    <div 
+                      className="flex h-8 w-8 items-center justify-center rounded-lg flex-shrink-0"
+                      style={{ backgroundColor: team.color + '20' }}
+                    >
+                      <team.icon className="h-4 w-4" style={{ color: team.color }} />
+                    </div>
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <span className="text-sm font-medium truncate">{team.name}</span>
+                      <span className="text-xs text-muted-foreground truncate">{team.subtitle}</span>
+                    </div>
+                    <TeamMemberAvatars teamId={team.id} />
+                    {currentTeamId === team.id && (
+                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </>
+            )}
             
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-xs text-muted-foreground">Functional Teams</DropdownMenuLabel>
-            {functionalTeams.map((team) => (
-              <DropdownMenuItem 
-                key={team.id}
-                onClick={() => setCurrentTeamId(team.id)}
-                className="flex items-center gap-3 py-2.5 cursor-pointer"
-                data-testid={`menuitem-team-${team.id}`}
-              >
-                <div 
-                  className="flex h-8 w-8 items-center justify-center rounded-lg flex-shrink-0"
-                  style={{ backgroundColor: team.color + '20' }}
-                >
-                  <team.icon className="h-4 w-4" style={{ color: team.color }} />
-                </div>
-                <div className="flex flex-col flex-1 min-w-0">
-                  <span className="text-sm font-medium truncate">{team.name}</span>
-                  <span className="text-xs text-muted-foreground truncate">{team.subtitle}</span>
-                </div>
-                <TeamMemberAvatars teamId={team.id} />
-                {currentTeamId === team.id && (
-                  <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                )}
-              </DropdownMenuItem>
-            ))}
+            {businessTeams.length > 0 && functionalTeams.length > 0 && (
+              <DropdownMenuSeparator />
+            )}
+            
+            {functionalTeams.length > 0 && (
+              <>
+                <DropdownMenuLabel className="text-xs text-muted-foreground">Functional Teams</DropdownMenuLabel>
+                {functionalTeams.map((team) => (
+                  <DropdownMenuItem 
+                    key={team.id}
+                    onClick={() => setCurrentTeamId(team.id)}
+                    className="flex items-center gap-3 py-2.5 cursor-pointer"
+                    data-testid={`menuitem-team-${team.id}`}
+                  >
+                    <div 
+                      className="flex h-8 w-8 items-center justify-center rounded-lg flex-shrink-0"
+                      style={{ backgroundColor: team.color + '20' }}
+                    >
+                      <team.icon className="h-4 w-4" style={{ color: team.color }} />
+                    </div>
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <span className="text-sm font-medium truncate">{team.name}</span>
+                      <span className="text-xs text-muted-foreground truncate">{team.subtitle}</span>
+                    </div>
+                    <TeamMemberAvatars teamId={team.id} />
+                    {currentTeamId === team.id && (
+                      <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </>
+            )}
           </ScrollArea>
         </DropdownMenuContent>
       </DropdownMenu>
