@@ -123,10 +123,18 @@ export default function PublicEventsPage() {
                           <MapPin className="w-4 h-4" />
                           <span>{event.city}</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="w-4 h-4" />
-                          <span>{event.capacity} seats</span>
-                        </div>
+                        {event.capacity < 1000 && (
+                          <div className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            <span>{event.capacity} seats</span>
+                          </div>
+                        )}
+                        {event.type === 'ibs' && event.capacity >= 1000 && (
+                          <div className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            <span>Private 1-on-1</span>
+                          </div>
+                        )}
                       </div>
                       <p className="text-muted-foreground text-sm line-clamp-2 mb-4">
                         {event.description}

@@ -169,9 +169,13 @@ export default function PublicEventDetailPage() {
 
       if (verifyResponse.ok) {
         setBookingDialogOpen(false);
+        const isPrivateEvent = event?.type === 'ibs' && (event?.capacity ?? 0) >= 1000;
         toast({
           title: "Registration Successful!",
-          description: "Your event registration has been confirmed. Check your email for details.",
+          description: isPrivateEvent 
+            ? "Your booking is confirmed! Meeting slot and ticket details will be shared shortly via email/WhatsApp."
+            : "Your event registration has been confirmed. Check your email for details.",
+          duration: 8000,
         });
         setFormData({ fullName: "", email: "", phone: "" });
       } else {
@@ -273,12 +277,14 @@ export default function PublicEventDetailPage() {
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5" />
-                <span>{event.venue || event.city}, {event.city}</span>
+                <span>{event.venue === 'TBD' ? 'Venue TBA' : (event.venue || event.city)}, {event.city}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                <span>{event.capacity} seats</span>
-              </div>
+              {event.capacity < 1000 && (
+                <div className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  <span>{event.capacity} seats</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -391,10 +397,18 @@ export default function PublicEventDetailPage() {
                       <span className="text-muted-foreground">City</span>
                       <span className="font-medium">{event.city}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Capacity</span>
-                      <span className="font-medium">{event.capacity} seats</span>
-                    </div>
+                    {event.capacity < 1000 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Capacity</span>
+                        <span className="font-medium">{event.capacity} seats</span>
+                      </div>
+                    )}
+                    {event.type === 'ibs' && event.capacity >= 1000 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Type</span>
+                        <span className="font-medium">Private 1-on-1</span>
+                      </div>
+                    )}
                   </div>
                   <Separator />
                   <Button 
