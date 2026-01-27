@@ -515,21 +515,21 @@ function AttendeesTab({ eventId, event, attendees, searchQuery, setSearchQuery, 
   const mapsLink = "https://maps.app.goo.gl/bvxYw1wNXas1G4TF9";
 
   const generateWhatsAppMessage = (attendee: EventAttendee) => {
-    const ticketId = attendee.ticketId || "PENDING";
     const ticketCount = attendee.ticketCount || 1;
     const slotInfo = attendee.slotTime || "To be assigned";
     const isIBS = event.type === "ibs";
     
     // For IBS events, show batch-specific schedule
     const ibsSchedule = isIBS && attendee.slotTime ? `
+
 *Your Batch:* ${slotInfo}
 Please arrive 15 minutes before your batch timing.` : "";
 
-    return `Hello ${attendee.name}!
+    if (isIBS) {
+      return `Hello ${attendee.name}!
 
 Your ticket for *${event.name}* is confirmed.
 
-*Ticket ID:* ${ticketId}
 *Number of Tickets:* ${ticketCount}
 *Date:* ${eventDate}
 ${ibsSchedule}
@@ -538,24 +538,53 @@ ${ibsSchedule}
 ${venueAddress}
 Phone: ${venuePhone}
 Google Maps: ${mapsLink}
-${isIBS ? `
+
 *Batch Schedule:*
 • M1: 9:00 AM - 11:00 AM
 • M2: 11:00 AM - 1:00 PM
 • Lunch Break: 1:00 PM - 2:30 PM
 • E1: 2:30 PM - 4:30 PM
-• E2: 4:30 PM - 6:30 PM` : `
+• E2: 4:30 PM - 6:30 PM
+
+*Important Instructions:*
+• 1 person per ticket
+• Arrive 15 mins before your batch time for smooth check-in
+
+We look forward to seeing you!
+
+Best Regards,
+Gaurav 
++91 8851492209
+Team Suprans
+cs@suprans.in`;
+    }
+
+    // Non-IBS events (workshops, etc.)
+    const ticketId = attendee.ticketId || "PENDING";
+    return `Hello ${attendee.name}!
+
+Your ticket for *${event.name}* is confirmed.
+
+*Ticket ID:* ${ticketId}
+*Number of Tickets:* ${ticketCount}
+*Date:* ${eventDate}
+
+*Venue:* Radisson Blu Plaza
+${venueAddress}
+Phone: ${venuePhone}
+Google Maps: ${mapsLink}
+
 *Event Schedule:*
 • 8:30 AM - 10:00 AM: Registration & Breakfast
 • 10:00 AM: Event Begins
 • 1:30 PM: Lunch
-• 3:00-3:30 PM: Event Closes`}
+• 3:00-3:30 PM: Event Closes
 
 *Important Instructions:*
 • 1 person per ticket
 • First Come First Served (FCFS) seating
 • Hi-Tea and Lunch included
-• Arrive 15 mins before your batch time for smooth check-in
+• Arrive 30 mins before event start for smooth check-in
 
 We look forward to seeing you!
 
