@@ -17,6 +17,22 @@ type SalesTeamMember = {
   phone: string;
 };
 
+// Static sales team list
+const staticSalesTeam: SalesTeamMember[] = [
+  { id: "1", name: "Himanshu Pandey", phone: "9253110463" },
+  { id: "2", name: "Abhinandan", phone: "9306500349" },
+  { id: "3", name: "Simran", phone: "7988514291" },
+  { id: "4", name: "Sumit", phone: "7042257697" },
+  { id: "5", name: "Ishaan", phone: "9817376457" },
+  { id: "6", name: "Sunny", phone: "9306464590" },
+  { id: "7", name: "Akshay", phone: "9958167107" },
+  { id: "8", name: "Yash Kumar", phone: "9266370813" },
+  { id: "9", name: "Sahil Solanki", phone: "9350818272" },
+  { id: "10", name: "Parthiv Kataria", phone: "9350502364" },
+  { id: "11", name: "Payal Rani", phone: "7988702534" },
+  { id: "12", name: "Garima", phone: "9350830133" },
+];
+
 export default function MobileActionButtons() {
   const [isCallbackOpen, setIsCallbackOpen] = useState(false);
   const [isSalesTeamOpen, setIsSalesTeamOpen] = useState(false);
@@ -29,14 +45,8 @@ export default function MobileActionButtons() {
   });
   const { toast } = useToast();
 
-  const { data: salesTeam = [] } = useQuery<SalesTeamMember[]>({
-    queryKey: ["/api/public/sales-team"],
-    queryFn: async () => {
-      const res = await fetch("/api/public/sales-team");
-      if (!res.ok) throw new Error("Failed to fetch sales team");
-      return res.json();
-    },
-  });
+  // Use static sales team list instead of fetching from API
+  const salesTeam = staticSalesTeam;
 
   const { data: services = [] } = useQuery<Service[]>({
     queryKey: ["/api/public/services"],
