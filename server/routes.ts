@@ -1303,6 +1303,8 @@ export async function registerRoutes(
     mapsLink: string;
     qrCode?: string;
     isTest?: boolean;
+    eventType?: string;
+    slotTime?: string;
   }) {
     // Escape all user-provided data to prevent HTML injection
     const attendeeName = escapeHtml(params.attendeeName);
@@ -1317,9 +1319,169 @@ export async function registerRoutes(
     const mapsLink = "https://www.google.com/maps/place/Radisson+Blu+Plaza+Delhi+Airport/@28.5495277,77.1003028,17z";
     const qrCode = params.qrCode; // Base64 data URL, safe
     const isTest = params.isTest;
+    const eventType = params.eventType || '';
+    const slotTime = params.slotTime ? escapeHtml(params.slotTime) : 'To be assigned';
     
     // Hotel thumbnail
     const hotelImageUrl = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/29/07/53/40/radisson-blu-plaza-delhi.jpg?w=1200&h=-1&s=1";
+
+    // IBS Event Template - simpler, matches WhatsApp format
+    if (eventType === 'ibs') {
+      return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your IBS Ticket - Suprans</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse;">
+    <tr>
+      <td align="center" style="padding: 20px 10px;">
+        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+          
+          <!-- Header with Logo -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #F34147 0%, #d63031 100%); padding: 30px 20px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 2px;">SUPRANS</h1>
+              <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0; font-size: 14px; font-weight: 500;">Your Gateway to Global Business</p>
+            </td>
+          </tr>
+          
+          ${isTest ? `
+          <tr>
+            <td style="background-color: #fff3cd; padding: 12px 20px; text-align: center; border-bottom: 1px solid #ffc107;">
+              <p style="margin: 0; color: #856404; font-size: 14px; font-weight: 600;">[TEST EMAIL] This is a preview of the actual email</p>
+            </td>
+          </tr>
+          ` : ''}
+          
+          <!-- Greeting -->
+          <tr>
+            <td style="padding: 25px 20px 15px;">
+              <p style="color: #333; font-size: 18px; margin: 0 0 15px;">Hello <strong>${attendeeName}</strong>!</p>
+              <p style="color: #333; font-size: 16px; margin: 0; line-height: 1.6;">
+                Your ticket for <strong style="color: #F34147;">${eventName}</strong> is confirmed.
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Ticket Details -->
+          <tr>
+            <td style="padding: 0 20px 20px;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #fafafa; border-radius: 12px; border: 1px solid #eee;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <table role="presentation" style="width: 100%;">
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <p style="margin: 0; color: #666; font-size: 13px;">Number of Tickets</p>
+                          <p style="margin: 3px 0 0; color: #333; font-size: 16px; font-weight: 600;">${ticketCount}</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0;">
+                          <p style="margin: 0; color: #666; font-size: 13px;">Date</p>
+                          <p style="margin: 3px 0 0; color: #333; font-size: 16px; font-weight: 600;">${eventDate}</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Your Batch -->
+          <tr>
+            <td style="padding: 0 20px 20px;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px;">
+                <tr>
+                  <td style="padding: 25px; text-align: center;">
+                    <p style="color: rgba(255,255,255,0.7); font-size: 12px; margin: 0 0 5px; text-transform: uppercase; letter-spacing: 2px;">Your Batch</p>
+                    <h2 style="color: #F34147; font-size: 22px; margin: 0 0 10px; font-weight: 700;">${slotTime}</h2>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin: 0;">Please arrive 15 minutes before your batch timing.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Venue Details -->
+          <tr>
+            <td style="padding: 0 20px 20px;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #fafafa; border-radius: 12px; border: 1px solid #eee;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <h3 style="color: #F34147; font-size: 14px; margin: 0 0 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Venue</h3>
+                    <p style="margin: 0 0 5px; color: #333; font-size: 16px; font-weight: 600;">Radisson Blu Plaza</p>
+                    <p style="margin: 0 0 10px; color: #666; font-size: 14px;">${venueAddress}</p>
+                    <p style="margin: 0 0 10px; color: #333; font-size: 14px;">Phone: ${venuePhone}</p>
+                    <a href="${mapsLink}" style="color: #F34147; font-size: 14px; text-decoration: none;">View on Google Maps</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Batch Schedule -->
+          <tr>
+            <td style="padding: 0 20px 20px;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #fafafa; border-radius: 12px; border: 1px solid #eee;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <h3 style="color: #F34147; font-size: 14px; margin: 0 0 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Batch Schedule</h3>
+                    <table role="presentation" style="width: 100%;">
+                      <tr><td style="padding: 6px 0; color: #333; font-size: 14px;"><strong style="color: #F34147;">M1:</strong> 9:00 AM - 11:00 AM</td></tr>
+                      <tr><td style="padding: 6px 0; color: #333; font-size: 14px;"><strong style="color: #F34147;">M2:</strong> 11:00 AM - 1:00 PM</td></tr>
+                      <tr><td style="padding: 6px 0; color: #666; font-size: 14px;"><em>Lunch Break: 1:00 PM - 2:30 PM</em></td></tr>
+                      <tr><td style="padding: 6px 0; color: #333; font-size: 14px;"><strong style="color: #F34147;">E1:</strong> 2:30 PM - 4:30 PM</td></tr>
+                      <tr><td style="padding: 6px 0; color: #333; font-size: 14px;"><strong style="color: #F34147;">E2:</strong> 4:30 PM - 6:30 PM</td></tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Important Instructions -->
+          <tr>
+            <td style="padding: 0 20px 20px;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #fff8e6; border-radius: 12px; border: 1px solid #ffd93d;">
+                <tr>
+                  <td style="padding: 20px;">
+                    <h4 style="margin: 0 0 12px; color: #856404; font-size: 14px; font-weight: 700;">Important Instructions:</h4>
+                    <ul style="margin: 0; padding-left: 18px; color: #8a6d3b; font-size: 13px; line-height: 1.8;">
+                      <li>1 person per ticket</li>
+                      <li>Arrive 15 mins before your batch time for smooth check-in</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #1a1a2e; padding: 25px 20px; text-align: center;">
+              <p style="color: #ffffff; font-size: 16px; font-weight: 600; margin: 0 0 15px;">We look forward to seeing you!</p>
+              <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 0 0 5px;">Best Regards,</p>
+              <p style="color: #ffffff; font-size: 16px; font-weight: 600; margin: 0 0 5px;">Gaurav</p>
+              <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin: 0 0 5px;">+91 8851492209</p>
+              <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin: 0 0 5px;">Team Suprans</p>
+              <p style="color: rgba(255,255,255,0.7); font-size: 13px; margin: 0;">cs@suprans.in</p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+      `;
+    }
     
     return `
 <!DOCTYPE html>
@@ -1606,8 +1768,15 @@ export async function registerRoutes(
             venuePhone,
             mapsLink,
             qrCode: qrCode || undefined,
-            isTest: false
+            isTest: false,
+            eventType: event.type || '',
+            slotTime: attendee.slotTime || undefined
           });
+
+          // IBS events have simpler text version
+          const textContent = event.type === 'ibs' 
+            ? `Hello ${attendee.name}!\n\nYour ticket for ${eventName} is confirmed.\n\nNumber of Tickets: ${attendee.ticketCount || 1}\nDate: ${eventDate}\n\nYour Batch: ${attendee.slotTime || 'To be assigned'}\nPlease arrive 15 minutes before your batch timing.\n\nVenue: Radisson Blu Plaza\n${venueAddress}\nPhone: ${venuePhone}\n\nBatch Schedule:\n- M1: 9:00 AM - 11:00 AM\n- M2: 11:00 AM - 1:00 PM\n- Lunch Break: 1:00 PM - 2:30 PM\n- E1: 2:30 PM - 4:30 PM\n- E2: 4:30 PM - 6:30 PM\n\nImportant Instructions:\n- 1 person per ticket\n- Arrive 15 mins before your batch time for smooth check-in\n\nWe look forward to seeing you!\n\nBest Regards,\nGaurav\n+91 8851492209\nTeam Suprans\ncs@suprans.in`
+            : `Your ticket for ${eventName} is confirmed. Ticket ID: ${ticketId}. Event Date: ${eventDate}. Venue: ${venue}, ${venueAddress}`;
 
           try {
             await client.emails.send({
@@ -1615,7 +1784,7 @@ export async function registerRoutes(
               to: attendee.email!,
               subject: `Your Ticket for ${eventName} - ${eventDate}`,
               html: personalizedHtml,
-              text: `Your ticket for ${eventName} is confirmed. Ticket ID: ${ticketId}. Event Date: ${eventDate}. Venue: ${venue}, ${venueAddress}`
+              text: textContent
             });
             sent++;
           } catch (error: any) {
