@@ -13,11 +13,12 @@ import mumbaiCantonImage from "@/assets/images/events/mumbai-canton-preview.png"
 import bangaloreWorkshopImage from "@/assets/images/events/bangalore-workshop.png";
 import hyderabadSummitImage from "@/assets/images/events/hyderabad-summit.png";
 import puneMeetupImage from "@/assets/images/events/pune-meetup.png";
+import chennaiIbsImage from "@/assets/images/events/chennai-ibs.png";
 
 const eventImageMap: Record<string, string> = {
   'Delhi': delhiSeminarImage,
   'Mumbai': mumbaiCantonImage,
-  'Chennai': delhiSeminarImage, // Use Delhi image as fallback for Chennai
+  'Chennai': chennaiIbsImage,
   'Bangalore': bangaloreWorkshopImage,
   'Hyderabad': hyderabadSummitImage,
   'Pune': puneMeetupImage,
