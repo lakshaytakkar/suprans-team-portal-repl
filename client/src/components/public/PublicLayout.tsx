@@ -561,6 +561,25 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               </ul>
             </div>
 
+            {/* Useful Links */}
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">
+                Useful Links
+              </h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <a 
+                    href="https://suprans1.odoo.com/slides/slide/part-01-usa-dropshipping-overview-49?fullscreen=1" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-600 hover:text-[#F34147]"
+                  >
+                    Free Dropshipping Learning
+                  </a>
+                </li>
+              </ul>
+            </div>
+
             {/* Services */}
             <div>
               <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">
