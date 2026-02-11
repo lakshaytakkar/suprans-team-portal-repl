@@ -53,6 +53,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
   const [location] = useLocation();
   const { toast } = useToast();
 
+  const { data: siteContent } = useQuery<Record<string, Record<string, any>>>({
+    queryKey: ["/api/public/website-content"],
+  });
+
   const { data: services = [] } = useQuery<Service[]>({
     queryKey: ["/api/public/services"],
     queryFn: async () => {
@@ -124,7 +128,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
     <div className="min-h-screen flex flex-col">
       {/* Top Banner */}
       <div className="bg-[#F34147] text-white text-xs sm:text-sm py-2 text-center px-4">
-        Canton Fair 137th Phase 1 starting April 15th, 2025. Register Now!
+        {siteContent?.site_banner?.text || "Canton Fair 137th Phase 1 starting April 15th, 2025. Register Now!"}
       </div>
 
       {/* Navbar */}
@@ -473,15 +477,15 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 <div className="flex items-start gap-3">
                   <Mail className="text-[#F34147] mt-1 flex-shrink-0 h-4 w-4" />
                   <div className="text-sm text-gray-600">
-                    <div>ds@suprans.in</div>
-                    <div>info@suprans.in</div>
+                    <div>{siteContent?.footer_contact?.email || "info@suprans.in"}</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Phone className="text-[#F34147] mt-1 flex-shrink-0 h-4 w-4" />
                   <div className="text-sm text-gray-600">
-                    <div>+91 9350830133</div>
-                    <div>+91 9350818272</div>
+                    {(siteContent?.footer_contact?.phones || ["+91 9350830133", "+91 9350818272"]).map((phone: string, index: number) => (
+                      <div key={index}>{phone}</div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -491,38 +495,27 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                   Follow Us
                 </h4>
                 <div className="flex gap-3">
-                  <a
-                    href="https://www.facebook.com/supranschina/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-[#F34147] hover:bg-[#F34147] hover:text-white transition-all"
-                  >
-                    <Facebook className="h-4 w-4" />
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/sanjay-suprans"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-[#F34147] hover:bg-[#F34147] hover:text-white transition-all"
-                  >
-                    <Linkedin className="h-4 w-4" />
-                  </a>
-                  <a
-                    href="https://www.instagram.com/suprans.china/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-[#F34147] hover:bg-[#F34147] hover:text-white transition-all"
-                  >
-                    <Instagram className="h-4 w-4" />
-                  </a>
-                  <a
-                    href="https://www.youtube.com/@Suprans"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-[#F34147] hover:bg-[#F34147] hover:text-white transition-all"
-                  >
-                    <Youtube className="h-4 w-4" />
-                  </a>
+                  {(siteContent?.footer_social?.items || [
+                    { platform: "facebook", url: "https://www.facebook.com/supranschina/" },
+                    { platform: "linkedin", url: "https://www.linkedin.com/in/sanjay-suprans" },
+                    { platform: "instagram", url: "https://www.instagram.com/suprans.china/" },
+                    { platform: "youtube", url: "https://www.youtube.com/@Suprans" },
+                  ]).map((link: any, index: number) => {
+                    const socialPlatformIcons: Record<string, any> = { facebook: Facebook, linkedin: Linkedin, instagram: Instagram, youtube: Youtube };
+                    const IconComp = socialPlatformIcons[link.platform] || Globe;
+                    return (
+                      <a
+                        key={index}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-[#F34147] hover:bg-[#F34147] hover:text-white transition-all"
+                        data-testid={`link-footer-social-${link.platform}`}
+                      >
+                        <IconComp className="h-4 w-4" />
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -567,16 +560,21 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 Useful Links
               </h4>
               <ul className="space-y-2 text-sm">
-                <li>
-                  <a 
-                    href="https://suprans1.odoo.com/slides/slide/part-01-usa-dropshipping-overview-49?fullscreen=1" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-[#F34147]"
-                  >
-                    Free Dropshipping Learning
-                  </a>
-                </li>
+                {(siteContent?.footer_useful_links?.items || [
+                  { label: "Free Dropshipping Learning", url: "https://suprans1.odoo.com/slides/slide/part-01-usa-dropshipping-overview-49?fullscreen=1" },
+                ]).map((link: any, index: number) => (
+                  <li key={index}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-gray-600 hover:text-[#F34147]"
+                      data-testid={`link-footer-useful-${index}`}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
 

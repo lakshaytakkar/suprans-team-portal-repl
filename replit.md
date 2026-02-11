@@ -113,7 +113,13 @@ shared/
 - January 2026: Imported from GitHub repository (replit-agent branch)
 - January 24, 2026: Added Faire Wholesale management (stores, suppliers, products, orders)
 - January 24, 2026: Added LLC Clients module (banks, clients, documents, timeline)
-- Database tables expanded to 45+ tables
+- February 2026: Added Website Content Management System (CMS)
+  - Dynamic website content stored in `website_content` table (section/key/JSON value)
+  - Admin page at `/team/admin/website` (Website Manager) for editing all public website content
+  - Sections: Homepage hero/stats/FAQs/videos, About page, Contact info, Footer links, Site banner
+  - Public pages fetch content dynamically with static fallbacks
+  - API: GET /api/public/website-content, PATCH /api/website-content (superadmin only)
+- Database tables expanded to 46+ tables
 - API routes with Zod validation and CRUD operations
 
 ## Development

@@ -21,6 +21,7 @@ import Settings from "@/pages/admin/settings";
 import ManageTemplates from "@/pages/admin/manage-templates";
 import ManageServices from "@/pages/admin/manage-services";
 import ManageTraining from "@/pages/admin/manage-training";
+import WebsiteManager from "@/pages/admin/website-manager";
 import Profile from "@/pages/profile";
 import Chat from "@/pages/chat";
 import Templates from "@/pages/resources/templates";
@@ -162,6 +163,7 @@ function TeamPortalRouter() {
         <Route path="/team/admin/templates" component={ManageTemplates} />
         <Route path="/team/admin/services" component={ManageServices} />
         <Route path="/team/admin/training" component={ManageTraining} />
+        <Route path="/team/admin/website" component={WebsiteManager} />
 
         {/* Faire Wholesale Management */}
         <Route path="/team/faire/orders" component={FaireOrdersPage} />

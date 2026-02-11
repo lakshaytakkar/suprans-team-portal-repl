@@ -27,6 +27,21 @@ export default function PublicContact() {
     },
   });
 
+  const { data: siteContent } = useQuery({
+    queryKey: ["/api/public/website-content"],
+    queryFn: async () => {
+      const res = await fetch("/api/public/website-content");
+      if (!res.ok) throw new Error("Failed to fetch website content");
+      return res.json();
+    },
+  });
+
+  const phones: string[] = siteContent?.contact_info?.phones || ["+91 9350830133", "+91 9350818272", "+91 7988702534"];
+  const emails: string[] = siteContent?.contact_info?.emails || ["ds@suprans.in", "info@suprans.in", "travel@suprans.in"];
+  const whatsapp = siteContent?.contact_info?.whatsapp || { number: "919350818272", display: "Chat with us on WhatsApp" };
+  const office = siteContent?.contact_info?.office || "New Delhi, India";
+  const hours = siteContent?.contact_info?.hours || { weekday: "Monday - Saturday: 10:00 AM - 7:00 PM IST", weekend: "Sunday: Closed" };
+
   const createLead = useMutation({
     mutationFn: async (data: typeof formData) => {
       const res = await fetch("/api/public/leads", {
@@ -90,9 +105,9 @@ export default function PublicContact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Phone</h3>
-                    <p className="text-gray-600">+91 9350830133</p>
-                    <p className="text-gray-600">+91 9350818272</p>
-                    <p className="text-gray-600">+91 7988702534</p>
+                    {phones.map((phone, index) => (
+                      <p key={index} className="text-gray-600">{phone}</p>
+                    ))}
                   </div>
                 </div>
 
@@ -102,9 +117,9 @@ export default function PublicContact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
-                    <p className="text-gray-600">ds@suprans.in</p>
-                    <p className="text-gray-600">info@suprans.in</p>
-                    <p className="text-gray-600">travel@suprans.in</p>
+                    {emails.map((email, index) => (
+                      <p key={index} className="text-gray-600">{email}</p>
+                    ))}
                   </div>
                 </div>
 
@@ -115,12 +130,12 @@ export default function PublicContact() {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">WhatsApp</h3>
                     <a 
-                      href="https://wa.me/919350818272" 
+                      href={`https://wa.me/${whatsapp.number}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-[#F34147] hover:underline"
                     >
-                      Chat with us on WhatsApp
+                      {whatsapp.display}
                     </a>
                   </div>
                 </div>
@@ -131,7 +146,7 @@ export default function PublicContact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Office</h3>
-                    <p className="text-gray-600">New Delhi, India</p>
+                    <p className="text-gray-600">{office}</p>
                   </div>
                 </div>
 
@@ -141,21 +156,21 @@ export default function PublicContact() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-1">Business Hours</h3>
-                    <p className="text-gray-600">Monday - Saturday: 10:00 AM - 7:00 PM IST</p>
-                    <p className="text-gray-600">Sunday: Closed</p>
+                    <p className="text-gray-600">{hours.weekday}</p>
+                    <p className="text-gray-600">{hours.weekend}</p>
                   </div>
                 </div>
               </div>
 
               {/* Quick Actions */}
               <div className="mt-8 flex flex-wrap gap-4">
-                <a href="tel:+919350830133">
+                <a href={`tel:${phones[0]?.replace(/\D/g, "")}`}>
                   <Button className="bg-[#F34147] hover:bg-[#D93036] text-white">
                     <Phone className="w-4 h-4 mr-2" />
                     Call Now
                   </Button>
                 </a>
-                <a href="https://wa.me/919350818272" target="_blank" rel="noopener noreferrer">
+                <a href={`https://wa.me/${whatsapp.number}`} target="_blank" rel="noopener noreferrer">
                   <Button variant="outline" className="border-green-500 text-green-600 hover:bg-green-50">
                     <MessageCircle className="w-4 h-4 mr-2" />
                     WhatsApp
@@ -257,7 +272,7 @@ export default function PublicContact() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             <MapPin className="w-12 h-12 mx-auto text-gray-400 mb-2" />
-            <p className="text-gray-500">New Delhi, India</p>
+            <p className="text-gray-500">{office}</p>
           </div>
         </div>
       </section>

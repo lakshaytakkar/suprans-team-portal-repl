@@ -110,9 +110,32 @@ export default function PublicHome() {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
+  const { data: siteContent } = useQuery<Record<string, Record<string, any>>>({
+    queryKey: ["/api/public/website-content"],
+  });
+
+  const dynamicStats = siteContent?.home_stats?.items || stats;
+  const dynamicProcess = siteContent?.home_process?.items || processSteps;
+  const dynamicFaqs = siteContent?.home_faqs?.items || faqs;
+  const dynamicVideos = siteContent?.home_videos?.items || videoTestimonials;
+
+  const heroTags = siteContent?.home_hero?.tags || ["USA Dropshipping Expert", "E2E Imports from China", "India's #1 Business Channel"];
+  const heroTrustBadge = siteContent?.home_hero?.trust_badge || "Trusted by 1000+ Indian Entrepreneurs";
+  const heroHeadline = siteContent?.home_hero?.headline || "Explore Business in China";
+  const heroHeadlineSubtitle = siteContent?.home_hero?.headline_subtitle || "w/ Mr. Suprans";
+  const heroDescription = siteContent?.home_hero?.description || "Join India's most trusted business mentor for guided Canton Fair tours, factory visits, and supplier connections.";
+  const heroDescriptionStrong = "15+ years of experience helping entrepreneurs build profitable import businesses.";
+  const heroDescriptionMobile = siteContent?.home_hero?.description_mobile || "Canton Fair tours, factory visits & supplier connections with 15+ years expertise.";
+  const heroCtaPrimary = siteContent?.home_hero?.cta_primary || { text: "Explore China Packages", link: "/travel" };
+  const heroCtaSecondary = siteContent?.home_hero?.cta_secondary || { text: "Get a Callback", link: "/contact" };
+
   useEffect(() => {
     setIsVisible(true);
-    const finalValues: Record<string, number> = { "1000+": 1000, "15+": 15, "50+": 50, "98%": 98 };
+    const finalValues: Record<string, number> = {};
+    dynamicStats.forEach((s: any) => {
+      const num = parseInt(String(s.value).replace(/[^0-9]/g, ''), 10);
+      if (!isNaN(num)) finalValues[s.value] = num;
+    });
     const duration = 2000;
     const startTime = Date.now();
     
@@ -132,7 +155,7 @@ export default function PublicHome() {
       }
     };
     animate();
-  }, []);
+  }, [dynamicStats]);
 
   const { data: services = [], isLoading: servicesLoading } = useQuery<Service[]>({
     queryKey: ["/api/public/services"],
@@ -210,15 +233,11 @@ export default function PublicHome() {
             <div className={`order-2 lg:order-1 text-center lg:text-left transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               {/* Expertise Tags */}
               <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-4 md:mb-6">
-                <span className="bg-[#F34147] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
-                  USA Dropshipping Expert
-                </span>
-                <span className="bg-[#F34147] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
-                  E2E Imports from China
-                </span>
-                <span className="bg-[#F34147] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
-                  India's #1 Business Channel
-                </span>
+                {heroTags.map((tag: string, idx: number) => (
+                  <span key={idx} className="bg-[#F34147] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                    {tag}
+                  </span>
+                ))}
               </div>
 
               {/* Trust Badge - Hidden on mobile */}
@@ -229,47 +248,45 @@ export default function PublicHome() {
                   ))}
                 </div>
                 <span className="text-[#F34147] font-semibold text-sm">
-                  Trusted by 1000+ Indian Entrepreneurs
+                  {heroTrustBadge}
                 </span>
               </div>
 
               {/* Headline - Simplified on mobile */}
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4 md:mb-6">
-                <span className="md:hidden">Business in <span className="text-[#F34147]">China</span></span>
+                <span className="md:hidden">{heroHeadline.replace('Explore ', '')} <span className="text-[#F34147]"></span></span>
                 <span className="hidden md:inline">
-                  Explore Business in{" "}
-                  <span className="text-[#F34147]">China</span>
+                  {heroHeadline.split('China')[0]}<span className="text-[#F34147]">China</span>{heroHeadline.split('China').slice(1).join('China')}
                 </span>
-                <span className="block text-xl md:text-4xl mt-1 md:mt-2 text-gray-600">w/ Mr. Suprans</span>
+                <span className="block text-xl md:text-4xl mt-1 md:mt-2 text-gray-600">{heroHeadlineSubtitle}</span>
               </h1>
 
               {/* Description - Shortened on mobile */}
               <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-6 md:mb-8">
-                <span className="md:hidden">Canton Fair tours, factory visits & supplier connections with 15+ years expertise.</span>
+                <span className="md:hidden">{heroDescriptionMobile}</span>
                 <span className="hidden md:inline">
-                  Join India's most trusted business mentor for guided Canton Fair tours,
-                  factory visits, and supplier connections.{" "}
+                  {heroDescription}{" "}
                   <strong className="text-gray-900">
-                    15+ years of experience helping entrepreneurs build profitable import businesses.
+                    {heroDescriptionStrong}
                   </strong>
                 </span>
               </p>
 
               {/* CTA Buttons - Hidden on mobile (pinned at bottom) */}
               <div className="hidden md:flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link href="/travel">
+                <Link href={heroCtaPrimary.link}>
                   <Button className="bg-[#F34147] hover:bg-[#D93036] text-white px-8 py-6 text-lg font-bold shadow-lg" data-testid="button-explore-packages">
-                    Explore China Packages
+                    {heroCtaPrimary.text}
                     <Plane className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
-                <Link href="/contact">
+                <Link href={heroCtaSecondary.link}>
                   <Button
                     variant="outline"
                     className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-6 text-lg font-bold"
                     data-testid="button-get-callback"
                   >
-                    Get a Callback
+                    {heroCtaSecondary.text}
                   </Button>
                 </Link>
               </div>
@@ -298,17 +315,21 @@ export default function PublicHome() {
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-[#F34147]/10 rounded-2xl flex items-center justify-center">
-                  <stat.icon className="w-8 h-8 text-[#F34147]" />
+            {dynamicStats.map((stat: any, index: number) => {
+              const iconMap: Record<string, any> = { Users, Award, Globe, Star };
+              const IconComponent = stat.icon ? (typeof stat.icon === 'string' ? iconMap[stat.icon] || Star : stat.icon) : Star;
+              return (
+                <div key={index} className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-[#F34147]/10 rounded-2xl flex items-center justify-center">
+                    <IconComponent className="w-8 h-8 text-[#F34147]" />
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
+                    {animatedStats[stat.value] || 0}{stat.value.includes('+') ? '+' : stat.value.includes('%') ? '%' : ''}
+                  </div>
+                  <div className="text-gray-500 text-sm">{stat.label}</div>
                 </div>
-                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
-                  {animatedStats[stat.value] || 0}{stat.value.includes('+') ? '+' : stat.value.includes('%') ? '%' : ''}
-                </div>
-                <div className="text-gray-500 text-sm">{stat.label}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -593,14 +614,14 @@ export default function PublicHome() {
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
-            {processSteps.map((step, index) => (
+            {dynamicProcess.map((step: any, index: number) => (
               <div key={index} className="text-center relative">
                 <div className="w-16 h-16 mx-auto mb-4 bg-[#F34147] text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-lg">
                   {step.step}
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
                 <p className="text-gray-600 text-sm">{step.description}</p>
-                {index < processSteps.length - 1 && (
+                {index < dynamicProcess.length - 1 && (
                   <ChevronRight className="hidden md:block absolute top-6 -right-4 w-8 h-8 text-gray-300" />
                 )}
               </div>
@@ -623,7 +644,7 @@ export default function PublicHome() {
 
           {/* Video Testimonials */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {videoTestimonials.map((video, index) => (
+            {dynamicVideos.map((video: any, index: number) => (
               <div
                 key={video.id}
                 className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
@@ -654,7 +675,7 @@ export default function PublicHome() {
           </div>
 
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
+            {dynamicFaqs.map((faq: any, index: number) => (
               <div
                 key={index}
                 className="border border-gray-200 rounded-2xl overflow-hidden"

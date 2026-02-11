@@ -1075,6 +1075,7 @@ export const teams: Team[] = [
           { href: "/team/admin/templates", icon: Mail, label: "Templates" },
           { href: "/team/admin/services", icon: BookOpen, label: "Knowledge Base" },
           { href: "/team/admin/training", icon: GraduationCap, label: "Training" },
+          { href: "/team/admin/website", icon: Globe, label: "Website Manager" },
         ]
       }
     ],

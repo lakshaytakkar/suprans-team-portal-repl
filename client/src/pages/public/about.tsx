@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Award, Users, Globe, Target, CheckCircle, ArrowRight, MapPin, Building2, Rocket, TrendingUp, Star, Mic, Handshake, GraduationCap } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import PublicLayout from "@/components/public/PublicLayout";
 import mrSupransHero from "@/assets/images/mr-suprans-hero.png";
@@ -10,6 +11,35 @@ import bangaloreOffice from "@/assets/images/offices/bangalore-office.png";
 import yiwuOffice from "@/assets/images/offices/yiwu-office.png";
 import guangzhouOffice from "@/assets/images/offices/guangzhou-office.png";
 import newjerseyOffice from "@/assets/images/offices/newjersey-office.png";
+
+// Icon maps for dynamic content
+const valuesIconMap: Record<string, React.ComponentType<any>> = {
+  Target,
+  Users,
+  CheckCircle,
+  Globe,
+};
+
+const achievementsIconMap: Record<string, React.ComponentType<any>> = {
+  Rocket,
+  TrendingUp,
+  Mic,
+  Building2,
+  Star,
+  Handshake,
+  GraduationCap,
+  Award,
+};
+
+// Office image map
+const officeImageMap: Record<string, string> = {
+  "Gurgaon": gurgaonOffice,
+  "Mumbai": mumbaiOffice,
+  "Bangalore": bangaloreOffice,
+  "Yiwu": yiwuOffice,
+  "Guangzhou": guangzhouOffice,
+  "Edison": newjerseyOffice,
+};
 
 const offices = [
   {
@@ -90,18 +120,36 @@ const founderAchievements = [
   { icon: Award, label: "India's #1 USA Dropshipping Mentor" },
 ];
 
+interface SiteContent {
+  about_hero?: { title: string; description: string };
+  about_mission?: { paragraph1: string; paragraph2: string };
+  about_stats?: { items: Array<{ value: string; label: string }> };
+  about_values?: { items: Array<{ icon: string; title: string; description: string }> };
+  about_achievements?: { items: Array<{ icon: string; label: string }> };
+  about_offices?: { items: Array<{ city: string; country: string; countryCode: string; address: string }> };
+}
+
 export default function PublicAbout() {
+  const { data: siteContent } = useQuery<SiteContent>({
+    queryKey: ["/api/public/website-content"],
+  });
+
   return (
     <PublicLayout>
       {/* Hero */}
       <section className="relative bg-gradient-to-br from-gray-50 to-white py-20 lg:py-28 overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            About <span className="text-[#F34147]">Suprans</span>
+            {siteContent?.about_hero?.title ? (
+              <>
+                {siteContent.about_hero.title.split(" ").slice(0, -1).join(" ")} <span className="text-[#F34147]">{siteContent.about_hero.title.split(" ").pop()}</span>
+              </>
+            ) : (
+              <>About <span className="text-[#F34147]">Suprans</span></>
+            )}
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-            India's #1 global business development platform, helping entrepreneurs 
-            build profitable, legally structured, and scalable international businesses.
+            {siteContent?.about_hero?.description || "India's #1 global business development platform, helping entrepreneurs build profitable, legally structured, and scalable international businesses."}
           </p>
         </div>
       </section>
@@ -115,13 +163,10 @@ export default function PublicAbout() {
                 Our <span className="text-[#F34147]">Mission</span>
               </h2>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                Founded by Mr. Suprans, we believe every entrepreneur deserves access to global markets. 
-                Our mission is to democratize international trade by providing expert guidance, 
-                done-for-you services, and complete support to help businesses expand globally.
+                {siteContent?.about_mission?.paragraph1 || "Founded by Mr. Suprans, we believe every entrepreneur deserves access to global markets. Our mission is to democratize international trade by providing expert guidance, done-for-you services, and complete support to help businesses expand globally."}
               </p>
               <p className="text-gray-600 mb-6 leading-relaxed">
-                Whether you're looking to attend the Canton Fair, start USA dropshipping with private suppliers,
-                build your own private label brand, or need strategic business consulting - we've got you covered.
+                {siteContent?.about_mission?.paragraph2 || "Whether you're looking to attend the Canton Fair, start USA dropshipping with private suppliers, build your own private label brand, or need strategic business consulting - we've got you covered."}
               </p>
               <Link href="/services">
                 <Button data-testid="button-explore-services" className="btn-shine-red text-white">
@@ -131,22 +176,12 @@ export default function PublicAbout() {
             </div>
             <div className="bg-gradient-to-br from-red-50 to-yellow-50 rounded-2xl p-8 border border-red-100">
               <div className="grid grid-cols-2 gap-6">
-                <div className="text-center p-4">
-                  <div className="text-4xl font-bold text-[#F34147] mb-2">1000+</div>
-                  <div className="text-gray-600 text-sm">Entrepreneurs Guided</div>
-                </div>
-                <div className="text-center p-4">
-                  <div className="text-4xl font-bold text-[#F34147] mb-2">15+</div>
-                  <div className="text-gray-600 text-sm">Years Experience</div>
-                </div>
-                <div className="text-center p-4">
-                  <div className="text-4xl font-bold text-[#F34147] mb-2">50+</div>
-                  <div className="text-gray-600 text-sm">Countries Served</div>
-                </div>
-                <div className="text-center p-4">
-                  <div className="text-4xl font-bold text-[#F34147] mb-2">98%</div>
-                  <div className="text-gray-600 text-sm">Client Satisfaction</div>
-                </div>
+                {(siteContent?.about_stats?.items || [{ value: "1000+", label: "Entrepreneurs Guided" }, { value: "15+", label: "Years Experience" }, { value: "50+", label: "Countries Served" }, { value: "98%", label: "Client Satisfaction" }]).map((stat: any, index: number) => (
+                  <div key={index} className="text-center p-4">
+                    <div className="text-4xl font-bold text-[#F34147] mb-2">{stat.value}</div>
+                    <div className="text-gray-600 text-sm">{stat.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -207,16 +242,19 @@ export default function PublicAbout() {
 
           {/* Achievement Cards */}
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {founderAchievements.map((achievement, index) => (
-              <div key={index} data-testid={`card-achievement-${index}`} className="bg-white border border-gray-200 rounded-xl p-4 hover-elevate transition-colors">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-[#F34147]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <achievement.icon className="w-5 h-5 text-[#F34147]" />
+            {(siteContent?.about_achievements?.items || founderAchievements).map((achievement: any, index: number) => {
+              const IconComponent = achievementsIconMap[achievement.icon] || Rocket;
+              return (
+                <div key={index} data-testid={`card-achievement-${index}`} className="bg-white border border-gray-200 rounded-xl p-4 hover-elevate transition-colors">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 bg-[#F34147]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <IconComponent className="w-5 h-5 text-[#F34147]" />
+                    </div>
+                    <span data-testid={`text-achievement-${index}`} className="text-gray-700 text-sm font-medium">{achievement.label}</span>
                   </div>
-                  <span data-testid={`text-achievement-${index}`} className="text-gray-700 text-sm font-medium">{achievement.label}</span>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="mt-12 text-center">
@@ -245,15 +283,18 @@ export default function PublicAbout() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <div key={index} className="bg-white p-6 rounded-2xl border border-gray-200 text-center">
-                <div className="w-14 h-14 mx-auto mb-4 bg-red-100 rounded-xl flex items-center justify-center">
-                  <value.icon className="w-7 h-7 text-[#F34147]" />
+            {(siteContent?.about_values?.items || values).map((value: any, index: number) => {
+              const IconComponent = valuesIconMap[value.icon] || Target;
+              return (
+                <div key={index} className="bg-white p-6 rounded-2xl border border-gray-200 text-center">
+                  <div className="w-14 h-14 mx-auto mb-4 bg-red-100 rounded-xl flex items-center justify-center">
+                    <IconComponent className="w-7 h-7 text-[#F34147]" />
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-2">{value.title}</h3>
+                  <p className="text-gray-600 text-sm">{value.description}</p>
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">{value.title}</h3>
-                <p className="text-gray-600 text-sm">{value.description}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -271,11 +312,11 @@ export default function PublicAbout() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {offices.map((office, index) => (
+            {(siteContent?.about_offices?.items || offices).map((office: any, index: number) => (
               <div key={index} data-testid={`card-office-${office.city.toLowerCase()}`} className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="aspect-video overflow-hidden">
                   <img 
-                    src={office.image} 
+                    src={officeImageMap[office.city] || office.image} 
                     alt={`${office.city} Office`} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
