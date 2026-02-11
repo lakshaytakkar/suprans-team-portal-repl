@@ -127,15 +127,15 @@ export default function PublicHome() {
   const dynamicFaqs = siteContent?.home_faqs?.items || faqs;
   const dynamicVideos = siteContent?.home_videos?.items || videoTestimonials;
 
-  const heroTags = siteContent?.home_hero?.tags || ["USA Dropshipping", "LLC Formation", "China Imports", "Brand Development"];
-  const heroTrustBadge = siteContent?.home_hero?.trust_badge || "Trusted by 1000+ Entrepreneurs Worldwide";
-  const heroHeadline = siteContent?.home_hero?.headline || "Your Business, Our Ecosystem";
-  const heroHeadlineSubtitle = siteContent?.home_hero?.headline_subtitle || "From Idea to Global Enterprise";
-  const heroDescription = siteContent?.home_hero?.description || "Suprans is India's leading business ecosystem — from USA LLC formation and dropshipping mentorship to China sourcing, brand development, and franchise setup. Mr. Suprans has helped 1000+ entrepreneurs build profitable global businesses.";
-  const heroDescriptionStrong = "One partner for every stage of your business journey.";
-  const heroDescriptionMobile = siteContent?.home_hero?.description_mobile || "LLC formation, dropshipping mentorship, China sourcing & brand development — 1000+ entrepreneurs trust Mr. Suprans.";
-  const heroCtaPrimary = siteContent?.home_hero?.cta_primary || { text: "Explore Our Services", link: "/services" };
-  const heroCtaSecondary = siteContent?.home_hero?.cta_secondary || { text: "Book a Free Consultation", link: "/contact" };
+  const heroTags = siteContent?.home_hero?.tags || ["Business Consulting", "China Sourcing", "USA LLC & Dropshipping", "Brand Building", "Franchise Setup"];
+  const heroTrustBadge = siteContent?.home_hero?.trust_badge || "Trusted by 1000+ Entrepreneurs across 50+ Countries";
+  const heroHeadline = siteContent?.home_hero?.headline || "We Don't Just Consult. We Build Businesses.";
+  const heroHeadlineHighlight = siteContent?.home_hero?.headline_highlight || siteContent?.home_hero?.headline_subtitle || "Build Businesses.";
+  const heroDescription = siteContent?.home_hero?.description || "Mr. Suprans has spent 15+ years helping entrepreneurs go from zero to global — launching LLCs in the USA, sourcing directly from China, building brands from scratch, and scaling existing businesses into new markets. Whether you're starting fresh or expanding what you've already built, Suprans is the ecosystem that makes it happen.";
+  const heroDescriptionStrong = siteContent?.home_hero?.description_strong || "One ecosystem. Every stage of business. India to the world.";
+  const heroDescriptionMobile = siteContent?.home_hero?.description_mobile || "15+ years. 1000+ businesses built. From LLC formation & China sourcing to brand building & franchise setup — Mr. Suprans is your partner at every stage.";
+  const heroCtaPrimary = siteContent?.home_hero?.cta_primary || { text: "See How We Help", link: "/services" };
+  const heroCtaSecondary = siteContent?.home_hero?.cta_secondary || { text: "Talk to Us Free", link: "/contact" };
 
   useEffect(() => {
     setIsVisible(true);
@@ -235,9 +235,17 @@ export default function PublicHome() {
 
               {/* Headline */}
               <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-3 md:mb-6">
-                {heroHeadline.split(' ').slice(0, -1).join(' ')}{' '}
-                <span className="text-[#F34147]">{heroHeadline.split(' ').slice(-1)[0]}</span>
-                <span className="block text-lg md:text-4xl mt-1 md:mt-2 text-gray-600">{heroHeadlineSubtitle}</span>
+                {heroHeadline.includes(heroHeadlineHighlight) ? (
+                  <>
+                    {heroHeadline.split(heroHeadlineHighlight)[0]}
+                    <span className="text-[#F34147]">{heroHeadlineHighlight}</span>
+                  </>
+                ) : (
+                  <>
+                    {heroHeadline.split(' ').slice(0, -1).join(' ')}{' '}
+                    <span className="text-[#F34147]">{heroHeadline.split(' ').slice(-1)[0]}</span>
+                  </>
+                )}
               </h1>
 
               {/* Description - Shortened on mobile */}
@@ -270,12 +278,12 @@ export default function PublicHome() {
                 </Link>
               </div>
 
-              {/* Trust Indicators - Hidden on mobile */}
+              {/* Trust Indicators */}
               <div className="flex mt-6 md:mt-10 flex-wrap items-center gap-2 md:gap-6 justify-center lg:justify-start">
                 {[
-                  "1000+ Businesses Built",
-                  "15+ Years Experience",
-                  "End-to-End Support",
+                  "1000+ Businesses Launched",
+                  "India, China & USA",
+                  "Startups to Scale-ups",
                 ].map((text, i) => (
                   <div
                     key={text}
