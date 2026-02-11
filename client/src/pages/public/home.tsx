@@ -293,19 +293,21 @@ export default function PublicHome() {
               </div>
 
               {/* Trust Indicators - Hidden on mobile */}
-              <div className="hidden md:flex mt-10 flex-wrap items-center gap-6 text-gray-600 text-sm justify-center lg:justify-start">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>Verified Suppliers</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>Complete Visa Support</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  <span>On-ground Assistance</span>
-                </div>
+              <div className="hidden md:flex mt-10 flex-wrap items-center gap-6 justify-center lg:justify-start">
+                {[
+                  "Verified Suppliers",
+                  "Complete Visa Support",
+                  "On-ground Assistance",
+                ].map((text, i) => (
+                  <div
+                    key={text}
+                    className={`flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-2 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                    style={{ transitionDelay: `${800 + i * 150}ms` }}
+                  >
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <span className="text-sm font-medium text-green-800">{text}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -320,8 +322,8 @@ export default function PublicHome() {
               const iconMap: Record<string, any> = { Users, Award, Globe, Star };
               const IconComponent = stat.icon ? (typeof stat.icon === 'string' ? iconMap[stat.icon] || Star : stat.icon) : Star;
               return (
-                <div key={index} className="text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-[#F34147]/10 rounded-2xl flex items-center justify-center">
+                <div key={index} className="text-center group">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-[#F34147]/10 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 animate-[bounce-subtle_2s_ease-in-out_infinite]" style={{ animationDelay: `${index * 300}ms` }}>
                     <IconComponent className="w-8 h-8 text-[#F34147]" />
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
