@@ -1527,3 +1527,21 @@ export const insertLLCClientTimelineSchema = createInsertSchema(llcClientTimelin
 
 export type InsertLLCClientTimeline = z.infer<typeof insertLLCClientTimelineSchema>;
 export type LLCClientTimeline = typeof llcClientTimeline.$inferSelect;
+
+// Website Content (CMS)
+export const websiteContent = pgTable("website_content", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  section: text("section").notNull(),
+  key: text("key").notNull(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  updatedBy: varchar("updated_by"),
+});
+
+export const insertWebsiteContentSchema = createInsertSchema(websiteContent).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export type InsertWebsiteContent = z.infer<typeof insertWebsiteContentSchema>;
+export type WebsiteContent = typeof websiteContent.$inferSelect;

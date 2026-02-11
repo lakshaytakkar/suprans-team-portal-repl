@@ -60,7 +60,9 @@ import {
   type LLCBank, type InsertLLCBank,
   type LLCClient, type InsertLLCClient,
   type LLCClientDocument, type InsertLLCClientDocument,
-  type LLCClientTimeline, type InsertLLCClientTimeline
+  type LLCClientTimeline, type InsertLLCClientTimeline,
+  websiteContent,
+  type WebsiteContent, type InsertWebsiteContent
 } from "@shared/schema";
 
 export interface IStorage {
@@ -341,6 +343,11 @@ export interface IStorage {
   updateInterview(id: string, updates: Partial<InsertInterview>): Promise<Interview | undefined>;
   deleteInterview(id: string): Promise<boolean>;
   bulkCreateInterviews(interviewList: InsertInterview[]): Promise<Interview[]>;
+
+  // Website Content
+  getWebsiteContent(): Promise<WebsiteContent[]>;
+  getWebsiteContentBySection(section: string): Promise<WebsiteContent[]>;
+  upsertWebsiteContent(section: string, key: string, value: any, updatedBy?: string): Promise<WebsiteContent>;
 }
 
 export class Storage implements IStorage {
@@ -1747,6 +1754,31 @@ export class Storage implements IStorage {
   async createLLCClientTimelineEntry(entry: InsertLLCClientTimeline): Promise<LLCClientTimeline> {
     const result = await db.insert(llcClientTimeline).values(entry).returning();
     return result[0];
+  }
+  // Website Content
+  async getWebsiteContent(): Promise<WebsiteContent[]> {
+    return db.select().from(websiteContent);
+  }
+
+  async getWebsiteContentBySection(section: string): Promise<WebsiteContent[]> {
+    return db.select().from(websiteContent).where(eq(websiteContent.section, section));
+  }
+
+  async upsertWebsiteContent(section: string, key: string, value: any, updatedBy?: string): Promise<WebsiteContent> {
+    const existing = await db.select().from(websiteContent)
+      .where(and(eq(websiteContent.section, section), eq(websiteContent.key, key)));
+    if (existing.length > 0) {
+      const result = await db.update(websiteContent)
+        .set({ value, updatedAt: new Date(), updatedBy: updatedBy || null })
+        .where(and(eq(websiteContent.section, section), eq(websiteContent.key, key)))
+        .returning();
+      return result[0];
+    } else {
+      const result = await db.insert(websiteContent)
+        .values({ section, key, value, updatedBy: updatedBy || null })
+        .returning();
+      return result[0];
+    }
   }
 }
 

@@ -4285,5 +4285,48 @@ cs@suprans.in`;
     }
   });
 
+  // Website Content API
+  app.get("/api/website-content", async (req, res) => {
+    const content = await storage.getWebsiteContent();
+    res.json(content);
+  });
+
+  app.get("/api/website-content/:section", async (req, res) => {
+    const content = await storage.getWebsiteContentBySection(req.params.section);
+    res.json(content);
+  });
+
+  app.get("/api/public/website-content", async (req, res) => {
+    const content = await storage.getWebsiteContent();
+    const grouped: Record<string, Record<string, any>> = {};
+    for (const item of content) {
+      if (!grouped[item.section]) grouped[item.section] = {};
+      grouped[item.section][item.key] = item.value;
+    }
+    res.json(grouped);
+  });
+
+  app.patch("/api/website-content", async (req, res) => {
+    if (!req.isAuthenticated() || (req.user as any).role !== 'superadmin') {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    const { section, key, value } = req.body;
+    if (!section || !key || value === undefined) {
+      return res.status(400).json({ message: "section, key, and value are required" });
+    }
+    const result = await storage.upsertWebsiteContent(section, key, value, (req.user as any).id);
+    res.json(result);
+  });
+
+  app.post("/api/admin/seed-website-content", requireAuth, requireRole("superadmin"), async (req, res, next) => {
+    try {
+      const { seedWebsiteContent } = await import("./seed-website-content");
+      await seedWebsiteContent(storage);
+      res.json({ message: "Website content seeded successfully" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   return httpServer;
 }
