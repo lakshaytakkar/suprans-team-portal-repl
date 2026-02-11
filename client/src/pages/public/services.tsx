@@ -67,12 +67,12 @@ export default function PublicServices() {
   return (
     <PublicLayout>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#F34147]/10 via-white to-yellow-50 py-16 lg:py-24">
+      <section className="bg-gradient-to-br from-[#F34147]/10 via-white to-yellow-50 py-10 md:py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 md:mb-6">
             Our <span className="text-[#F34147]">Services</span>
           </h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-8">
+          <p className="text-base md:text-lg text-gray-600 max-w-3xl mx-auto mb-6 md:mb-8">
             Comprehensive solutions to help you build and scale your global business. 
             From China travel to USA dropshipping to brand development, we've got you covered.
           </p>
@@ -113,7 +113,7 @@ export default function PublicServices() {
       )}
 
       {/* Services Grid */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {isLoading ? (
             <div className="text-center py-12">
@@ -176,12 +176,12 @@ export default function PublicServices() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-gray-900 text-white">
+      <section className="py-10 md:py-16 bg-gray-900 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl font-bold mb-4">
+          <h2 className="text-xl md:text-3xl font-bold mb-3 md:mb-4">
             Not Sure Which Service You Need?
           </h2>
-          <p className="text-gray-400 mb-8">
+          <p className="text-gray-400 mb-6 md:mb-8 text-sm md:text-base">
             Get a callback from our team and we'll guide you to the right solution.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -203,11 +203,11 @@ export default function PublicServices() {
       </section>
 
       {/* Contact Info */}
-      <section className="py-12 bg-white">
+      <section className="py-8 md:py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="p-6">
-              <Phone className="w-10 h-10 mx-auto text-[#F34147] mb-4" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-center">
+            <div className="p-4 md:p-6">
+              <Phone className="w-8 h-8 md:w-10 md:h-10 mx-auto text-[#F34147] mb-3 md:mb-4" />
               <h3 className="font-semibold text-gray-900 mb-2">Call Us</h3>
               <p className="text-gray-600">+91 9350-818-272 (Mr. Sahil)</p>
               <p className="text-gray-600">+91 9266-370-813 (Mr. Yash)</p>

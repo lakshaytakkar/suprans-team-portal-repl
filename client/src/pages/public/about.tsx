@@ -137,9 +137,9 @@ export default function PublicAbout() {
   return (
     <PublicLayout>
       {/* Hero */}
-      <section className="relative bg-gradient-to-br from-gray-50 to-white py-20 lg:py-28 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-gray-50 to-white py-10 md:py-20 lg:py-28 overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {siteContent?.about_hero?.title ? (
               <>
                 {siteContent.about_hero.title.split(" ").slice(0, -1).join(" ")} <span className="text-[#F34147]">{siteContent.about_hero.title.split(" ").pop()}</span>
@@ -155,9 +155,9 @@ export default function PublicAbout() {
       </section>
 
       {/* Mission */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-10 md:py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 Our <span className="text-[#F34147]">Mission</span>
@@ -174,13 +174,12 @@ export default function PublicAbout() {
                 </Button>
               </Link>
             </div>
-            <div className="bg-gradient-to-br from-red-50 to-yellow-50 rounded-2xl p-8 border border-red-100">
-              <div className="grid grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-red-50 to-yellow-50 rounded-xl md:rounded-2xl p-5 md:p-8 border border-red-100">
+              <div className="grid grid-cols-2 gap-4 md:gap-6">
                 {(siteContent?.about_stats?.items || [{ value: "1000+", label: "Entrepreneurs Guided" }, { value: "15+", label: "Years Experience" }, { value: "50+", label: "Countries Served" }, { value: "98%", label: "Client Satisfaction" }]).map((stat: any, index: number) => (
-                  <div key={index} className="text-center p-4 group">
+                  <div key={index} className="text-center p-2 md:p-4 group">
                     <div
-                      className="text-4xl font-bold text-[#F34147] mb-2 animate-bounce-subtle"
-                      style={{ animationDelay: `${index * 200}ms` }}
+                      className="text-2xl md:text-4xl font-bold text-[#F34147] mb-1 md:mb-2"
                     >
                       {stat.value}
                     </div>
@@ -194,9 +193,9 @@ export default function PublicAbout() {
       </section>
 
       {/* Founder Section */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Meet the <span className="text-[#F34147]">Founder</span>
             </h2>
@@ -205,7 +204,7 @@ export default function PublicAbout() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
             <div className="order-2 lg:order-1 text-center lg:text-left">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Mr. Suprans</h3>
               <p className="text-[#F34147] font-semibold mb-4">Founder & CEO | Global Trade Strategist</p>
@@ -246,7 +245,7 @@ export default function PublicAbout() {
           </div>
 
           {/* Achievement Cards */}
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="mt-8 md:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {(siteContent?.about_achievements?.items || founderAchievements).map((achievement: any, index: number) => {
               const IconComponent = achievementsIconMap[achievement.icon] || Rocket;
               return (
@@ -276,9 +275,9 @@ export default function PublicAbout() {
       </section>
 
       {/* Values */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Our <span className="text-[#F34147]">Values</span>
             </h2>
@@ -287,13 +286,13 @@ export default function PublicAbout() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
             {(siteContent?.about_values?.items || values).map((value: any, index: number) => {
               const IconComponent = valuesIconMap[value.icon] || Target;
               return (
-                <div key={index} className="bg-white p-6 rounded-2xl border border-gray-200 text-center">
-                  <div className="w-14 h-14 mx-auto mb-4 bg-red-100 rounded-xl flex items-center justify-center">
-                    <IconComponent className="w-7 h-7 text-[#F34147]" />
+                <div key={index} className="bg-white p-4 md:p-6 rounded-xl md:rounded-2xl border border-gray-200 text-center">
+                  <div className="w-11 h-11 md:w-14 md:h-14 mx-auto mb-3 md:mb-4 bg-red-100 rounded-lg md:rounded-xl flex items-center justify-center">
+                    <IconComponent className="w-5 h-5 md:w-7 md:h-7 text-[#F34147]" />
                   </div>
                   <h3 className="font-bold text-gray-900 mb-2">{value.title}</h3>
                   <p className="text-gray-600 text-sm">{value.description}</p>
@@ -305,9 +304,9 @@ export default function PublicAbout() {
       </section>
 
       {/* Global Presence */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-10 md:py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
               Our <span className="text-[#F34147]">Global Presence</span>
             </h2>
@@ -318,7 +317,7 @@ export default function PublicAbout() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {(siteContent?.about_offices?.items || offices).map((office: any, index: number) => (
-              <div key={index} data-testid={`card-office-${office.city.toLowerCase()}`} className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+              <div key={index} data-testid={`card-office-${office.city.toLowerCase()}`} className="group bg-white rounded-xl md:rounded-2xl border border-gray-200 overflow-hidden transition-shadow">
                 <div className="aspect-video overflow-hidden">
                   <img 
                     src={officeImageMap[office.city] || office.image} 
@@ -361,9 +360,9 @@ export default function PublicAbout() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-[#F34147]">
+      <section className="py-10 md:py-16 pb-24 md:pb-16 bg-[#F34147]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
             Ready to Work With Us?
           </h2>
           <p className="text-white/80 mb-8">

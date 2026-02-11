@@ -345,7 +345,7 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
             <button 
               onClick={() => setActiveStage('all')}
               className={cn(

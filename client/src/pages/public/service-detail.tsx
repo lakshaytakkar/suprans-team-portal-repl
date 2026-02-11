@@ -356,7 +356,7 @@ export default function PublicServiceDetail() {
   return (
     <PublicLayout>
       {/* Hero with banner image */}
-      <section className={`relative bg-gradient-to-br ${colorScheme.bg} text-white py-16 lg:py-24 overflow-hidden`}>
+      <section className={`relative bg-gradient-to-br ${colorScheme.bg} text-white py-10 md:py-16 lg:py-24 overflow-hidden`}>
         {serviceBanners[service.id] && (
           <img
             src={serviceBanners[service.id]}
@@ -378,8 +378,8 @@ export default function PublicServiceDetail() {
               <div className="inline-block px-3 py-1 bg-white/20 rounded-full text-sm mb-4">
                 {service.category}
               </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">{service.name}</h1>
-              <p className="text-lg text-white/90 mb-8">{service.description}</p>
+              <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 drop-shadow-lg">{service.name}</h1>
+              <p className="text-base md:text-lg text-white/90 mb-6 md:mb-8">{service.description}</p>
               <div className="flex flex-wrap gap-4">
                 <Button
                   onClick={() => setIsInquiryOpen(true)}
@@ -428,17 +428,17 @@ export default function PublicServiceDetail() {
       </section>
 
       {/* Features */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-10 md:py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">What's Included</h2>
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4">What's Included</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Everything you need for a successful outcome
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
             {details.features.map((feature, index) => (
-              <div key={index} className="text-center p-6 bg-gray-50 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow">
+              <div key={index} className="text-center p-4 md:p-6 bg-gray-50 rounded-xl md:rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow">
                 <div
                   className="w-14 h-14 mx-auto mb-4 bg-[#F34147]/10 rounded-xl flex items-center justify-center animate-bounce-subtle"
                   style={{ animationDelay: `${index * 200}ms` }}
@@ -454,18 +454,18 @@ export default function PublicServiceDetail() {
       </section>
 
       {/* Process */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4">How It Works</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Simple, transparent process to get you started
             </p>
           </div>
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {details.process.map((step, index) => (
               <div key={index} className="text-center relative">
-                <div className="w-16 h-16 mx-auto mb-4 bg-[#F34147] text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-lg">
+                <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 bg-[#F34147] text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold shadow-lg">
                   {step.step}
                 </div>
                 <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
@@ -500,10 +500,10 @@ export default function PublicServiceDetail() {
       </section>
 
       {/* FAQs */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-10 md:py-16 lg:py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4">Frequently Asked Questions</h2>
           </div>
           <div className="space-y-4">
             {details.faqs.map((faq, index) => (
@@ -512,7 +512,7 @@ export default function PublicServiceDetail() {
                 className="border border-gray-200 rounded-xl overflow-hidden"
               >
                 <button
-                  className="w-full px-6 py-4 text-left flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors"
+                  className="w-full px-4 md:px-6 py-4 text-left flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-colors min-h-[48px]"
                   onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
                 >
                   <span className="font-semibold text-gray-900">{faq.question}</span>
@@ -530,12 +530,12 @@ export default function PublicServiceDetail() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-[#F34147]">
+      <section className="py-10 md:py-16 bg-[#F34147]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-xl md:text-3xl font-bold text-white mb-3 md:mb-4">
             Ready to Get Started?
           </h2>
-          <p className="text-white/80 mb-8">
+          <p className="text-white/80 mb-6 md:mb-8 text-sm md:text-base">
             Contact us today for a free consultation and quote
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -332,10 +332,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
         {/* Mobile Menu - Linktree Style */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t animate-in slide-in-from-top-2 duration-200 max-h-[80vh] overflow-y-auto">
-            <div className="py-4 px-4">
+          <div className="md:hidden bg-white border-t animate-in slide-in-from-top-2 duration-200 max-h-[75vh] overflow-y-auto overscroll-contain">
+            <div className="py-3 px-4">
               {/* Quick Links */}
-              <div className="space-y-2 mb-6">
+              <div className="space-y-1.5 mb-5">
                 <Link
                   href="/"
                   className={`flex items-center justify-between py-3 px-4 rounded-xl border ${isActive("/") ? "border-[#F34147] bg-red-50 text-[#F34147]" : "border-gray-200 text-gray-700"} font-medium transition-all`}
@@ -366,9 +366,9 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               </div>
 
               {/* Services Section */}
-              <div className="mb-6">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 mb-3">Our Services</h3>
-                <div className="space-y-2">
+              <div className="mb-5">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 mb-2">Our Services</h3>
+                <div className="space-y-1.5">
                   {services.slice(0, 6).map((service) => {
                     const IconComponent = categoryIcons[service.category || ""] || Globe;
                     const serviceSlug = service.slug || service.id;
@@ -400,9 +400,9 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               </div>
 
               {/* Travel Section */}
-              <div className="mb-6">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 mb-3">Travel Packages</h3>
-                <div className="space-y-2">
+              <div className="mb-5">
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider px-2 mb-2">Travel Packages</h3>
+                <div className="space-y-1.5">
                   {travelPackages.slice(0, 4).map((pkg) => {
                     const pkgSlug = pkg.slug || pkg.id;
                     return (
@@ -462,11 +462,11 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
       <MobileActionButtons />
 
       {/* Footer */}
-      <footer className="bg-gradient-to-br from-gray-50 to-white border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <footer className="bg-gradient-to-br from-gray-50 to-white border-t border-gray-200 pb-16 md:pb-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 lg:py-16">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {/* Company Info */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="col-span-2 lg:col-span-2 space-y-4">
               <Link href="/" className="inline-block">
                 <h2 className="text-3xl font-bold text-gray-900">
                   Suprans<span className="text-[#F34147]">.</span>

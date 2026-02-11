@@ -189,24 +189,23 @@ export default function PublicHome() {
   return (
     <PublicLayout>
       {/* Hero Section */}
-      <section className="relative bg-white min-h-[70vh] md:min-h-[90vh] flex items-center overflow-hidden">
+      <section className="relative bg-white min-h-[50vh] md:min-h-[85vh] flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,rgba(243,65,71,0.08),transparent_50%)]" />
           <div className="absolute bottom-0 right-0 w-full h-full bg-[radial-gradient(circle_at_70%_80%,rgba(243,65,71,0.05),transparent_50%)]" />
         </div>
         
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-24">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-24">
           {/* Mobile Layout - Image First */}
-          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
+          <div className="flex flex-col lg:grid lg:grid-cols-2 gap-4 lg:gap-12 items-center">
             {/* Hero Image - Shows first on mobile */}
             <div className={`order-1 lg:order-2 relative transition-all duration-1000 delay-300 ${isVisible ? "opacity-100 translate-y-0 lg:translate-x-0" : "opacity-0 translate-y-8 lg:translate-x-8"}`}>
               <img
                 src={heroImage}
                 alt="Mr. Suprans - Business Mentor & Entrepreneur"
-                className="w-full max-w-xs md:max-w-lg mx-auto rounded-3xl shadow-2xl object-cover"
+                className="w-full max-w-[220px] md:max-w-lg mx-auto rounded-3xl shadow-2xl object-cover"
                 style={{ clipPath: "inset(0 20px 0 0)" }}
                 loading="eager"
-                fetchpriority="high"
                 decoding="async"
               />
             </div>
@@ -214,9 +213,9 @@ export default function PublicHome() {
             {/* Text Content - Below image on mobile */}
             <div className={`order-2 lg:order-1 text-center lg:text-left transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               {/* Expertise Tags */}
-              <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-4 md:mb-6">
+              <div className="flex flex-nowrap overflow-x-auto gap-2 pb-1 -mx-4 px-4 md:flex-wrap md:overflow-visible md:mx-0 md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden justify-center lg:justify-start mb-3 md:mb-6">
                 {heroTags.map((tag: string, idx: number) => (
-                  <span key={idx} className="bg-[#F34147] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                  <span key={idx} className="whitespace-nowrap bg-[#F34147] text-white text-xs font-semibold px-3 py-1.5 rounded-full">
                     {tag}
                   </span>
                 ))}
@@ -235,14 +234,14 @@ export default function PublicHome() {
               </div>
 
               {/* Headline */}
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4 md:mb-6">
+              <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-3 md:mb-6">
                 {heroHeadline.split(' ').slice(0, -1).join(' ')}{' '}
                 <span className="text-[#F34147]">{heroHeadline.split(' ').slice(-1)[0]}</span>
-                <span className="block text-xl md:text-4xl mt-1 md:mt-2 text-gray-600">{heroHeadlineSubtitle}</span>
+                <span className="block text-lg md:text-4xl mt-1 md:mt-2 text-gray-600">{heroHeadlineSubtitle}</span>
               </h1>
 
               {/* Description - Shortened on mobile */}
-              <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-6 md:mb-8">
+              <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-4 md:mb-8">
                 <span className="md:hidden">{heroDescriptionMobile}</span>
                 <span className="hidden md:inline">
                   {heroDescription}{" "}
@@ -272,7 +271,7 @@ export default function PublicHome() {
               </div>
 
               {/* Trust Indicators - Hidden on mobile */}
-              <div className="hidden md:flex mt-10 flex-wrap items-center gap-6 justify-center lg:justify-start">
+              <div className="flex mt-6 md:mt-10 flex-wrap items-center gap-2 md:gap-6 justify-center lg:justify-start">
                 {[
                   "1000+ Businesses Built",
                   "15+ Years Experience",
@@ -280,11 +279,11 @@ export default function PublicHome() {
                 ].map((text, i) => (
                   <div
                     key={text}
-                    className={`flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-4 py-2 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                    className={`flex items-center gap-2 bg-green-50 border border-green-200 rounded-full px-2.5 py-1 md:px-4 md:py-2 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
                     style={{ transitionDelay: `${800 + i * 150}ms` }}
                   >
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                    <span className="text-sm font-medium text-green-800">{text}</span>
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-600" />
+                    <span className="text-xs md:text-sm font-medium text-green-800">{text}</span>
                   </div>
                 ))}
               </div>
@@ -294,21 +293,21 @@ export default function PublicHome() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-white border-b border-gray-100">
+      <section className="py-8 md:py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {dynamicStats.map((stat: any, index: number) => {
               const iconMap: Record<string, any> = { Users, Award, Globe, Star };
               const IconComponent = stat.icon ? (typeof stat.icon === 'string' ? iconMap[stat.icon] || Star : stat.icon) : Star;
               return (
                 <div key={index} className="text-center group">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-[#F34147]/10 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 animate-[bounce-subtle_2s_ease-in-out_infinite]" style={{ animationDelay: `${index * 300}ms` }}>
-                    <IconComponent className="w-8 h-8 text-[#F34147]" />
+                  <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 bg-[#F34147]/10 rounded-xl md:rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+                    <IconComponent className="w-6 h-6 md:w-8 md:h-8 text-[#F34147]" />
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">
+                  <div className="text-2xl md:text-4xl font-bold text-gray-900 mb-1">
                     {animatedStats[stat.value] || 0}{stat.value.includes('+') ? '+' : stat.value.includes('%') ? '%' : ''}
                   </div>
-                  <div className="text-gray-500 text-sm">{stat.label}</div>
+                  <div className="text-gray-500 text-xs md:text-sm">{stat.label}</div>
                 </div>
               );
             })}
@@ -317,9 +316,9 @@ export default function PublicHome() {
       </section>
 
       {/* Services Carousel Section */}
-      <section ref={servicesRef} className="py-16 lg:py-24 bg-gray-50">
+      <section ref={servicesRef} className="py-10 md:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Our <span className="text-[#F34147]">Services</span>
             </h2>
@@ -346,11 +345,11 @@ export default function PublicHome() {
                   <Link
                     key={service.id}
                     href={service.ctaLink || `/services/${service.slug || service.id}`}
-                    className="w-full max-w-[320px] group"
+                    className="w-full group"
                     data-testid={`card-service-${service.slug || service.id}`}
                   >
-                    <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-xl hover:border-[#F34147]/30 transition-all duration-300 h-full flex flex-col">
-                      <div className="relative h-[200px] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                    <div className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-xl hover:border-[#F34147]/30 transition-all duration-300 h-full flex flex-col">
+                      <div className="relative h-[160px] md:h-[200px] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
                         {thumbnail ? (
                           <img
                             src={thumbnail}
@@ -390,12 +389,12 @@ export default function PublicHome() {
       </section>
 
       {/* Founder's Note Section */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-10 md:py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="relative">
               <Quote className="absolute -top-6 -left-4 w-20 h-20 text-[#F34147]/10" />
-              <div className="bg-gray-50 rounded-3xl p-8 border border-gray-100">
+              <div className="bg-gray-50 rounded-3xl p-5 md:p-8 border border-gray-100">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
                   A Note from <span className="text-[#F34147]">Mr. Suprans</span>
                 </h2>
@@ -422,26 +421,26 @@ export default function PublicHome() {
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 md:gap-4">
               <img
                 src={cantonFairImage}
                 alt="Canton Fair"
-                className="rounded-2xl shadow-lg w-full h-40 object-cover"
+                className="rounded-2xl shadow-lg w-full h-28 md:h-40 object-cover"
               />
               <img
                 src={businessMeetingImage}
                 alt="Business Meeting"
-                className="rounded-2xl shadow-lg w-full h-40 object-cover mt-8"
+                className="rounded-2xl shadow-lg w-full h-28 md:h-40 object-cover mt-8"
               />
               <img
                 src={marketTourImage}
                 alt="Market Tour"
-                className="rounded-2xl shadow-lg w-full h-40 object-cover"
+                className="rounded-2xl shadow-lg w-full h-28 md:h-40 object-cover"
               />
               <img
                 src={chinaFactoryImage}
                 alt="Factory Visit"
-                className="rounded-2xl shadow-lg w-full h-40 object-cover mt-8"
+                className="rounded-2xl shadow-lg w-full h-28 md:h-40 object-cover mt-8"
               />
             </div>
           </div>
@@ -449,9 +448,9 @@ export default function PublicHome() {
       </section>
 
       {/* Image Gallery Section */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Our <span className="text-[#F34147]">Journey</span> So Far
             </h2>
@@ -460,13 +459,13 @@ export default function PublicHome() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
             {galleryImages.map((image, index) => (
-              <div key={index} className="group relative overflow-hidden rounded-2xl aspect-[4/3] shadow-sm border border-gray-200">
+              <div key={index} className="group relative overflow-hidden rounded-xl md:rounded-2xl aspect-[4/3] shadow-sm border border-gray-200">
                 <img
                   src={image.src}
                   alt={image.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4">
@@ -484,9 +483,9 @@ export default function PublicHome() {
 
       {/* Upcoming Events Section */}
       {events.length > 0 && (
-        <section className="py-16 lg:py-24 bg-white">
+        <section className="py-10 md:py-16 lg:py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 md:mb-12">
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                   Upcoming <span className="text-[#F34147]">Events</span>
@@ -505,7 +504,7 @@ export default function PublicHome() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {events.slice(0, 3).map((event) => (
                 <Link key={event.id} href={`/events/${event.id}`}>
-                  <div className="group relative overflow-hidden rounded-2xl border border-gray-200 shadow-sm h-full cursor-pointer" data-testid={`card-home-event-${event.id}`}>
+                  <div className="group relative overflow-hidden rounded-xl md:rounded-2xl border border-gray-200 shadow-sm h-full cursor-pointer" data-testid={`card-home-event-${event.id}`}>
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={getEventImage(event.city)}
@@ -557,9 +556,9 @@ export default function PublicHome() {
       )}
 
       {/* Process Section */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               How It <span className="text-[#F34147]">Works</span>
             </h2>
@@ -568,14 +567,14 @@ export default function PublicHome() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
             {dynamicProcess.map((step: any, index: number) => (
               <div key={index} className="text-center relative">
-                <div className="w-16 h-16 mx-auto mb-4 bg-[#F34147] text-white rounded-full flex items-center justify-center text-2xl font-bold shadow-lg">
+                <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 bg-[#F34147] text-white rounded-full flex items-center justify-center text-xl md:text-2xl font-bold shadow-lg">
                   {step.step}
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
-                <p className="text-gray-600 text-sm">{step.description}</p>
+                <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
+                <p className="text-gray-600 text-xs md:text-sm">{step.description}</p>
                 {index < dynamicProcess.length - 1 && (
                   <ChevronRight className="hidden md:block absolute top-6 -right-4 w-8 h-8 text-gray-300" />
                 )}
@@ -586,9 +585,9 @@ export default function PublicHome() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 lg:py-24 bg-gray-50">
+      <section className="py-10 md:py-16 lg:py-24 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               What Our <span className="text-[#F34147]">Clients</span> Say
             </h2>
@@ -598,11 +597,11 @@ export default function PublicHome() {
           </div>
 
           {/* Video Testimonials */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
             {dynamicVideos.map((video: any, index: number) => (
               <div
                 key={video.id}
-                className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm"
+                className="bg-white rounded-lg md:rounded-xl border border-gray-200 overflow-hidden shadow-sm"
                 data-testid={`card-video-testimonial-${index}`}
               >
                 <div className="aspect-video">
@@ -612,6 +611,7 @@ export default function PublicHome() {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full"
+                    loading="lazy"
                   />
                 </div>
               </div>
@@ -621,9 +621,9 @@ export default function PublicHome() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-10 md:py-16 lg:py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Frequently Asked <span className="text-[#F34147]">Questions</span>
             </h2>
@@ -633,11 +633,11 @@ export default function PublicHome() {
             {dynamicFaqs.map((faq: any, index: number) => (
               <div
                 key={index}
-                className="border border-gray-200 rounded-2xl overflow-hidden"
+                className="border border-gray-200 rounded-xl md:rounded-2xl overflow-hidden"
               >
                 <button
                   onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
-                  className="w-full flex items-center justify-between p-5 text-left bg-white hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-between p-4 md:p-5 min-h-[48px] text-left bg-white hover:bg-gray-50 transition-colors"
                   data-testid={`button-faq-${index}`}
                 >
                   <span className="font-semibold text-gray-900">{faq.question}</span>
@@ -648,7 +648,7 @@ export default function PublicHome() {
                   />
                 </button>
                 {expandedFaq === index && (
-                  <div className="px-5 pb-5 text-gray-600 bg-gray-50">
+                  <div className="px-4 pb-4 md:px-5 md:pb-5 text-gray-600 bg-gray-50">
                     {faq.answer}
                   </div>
                 )}
@@ -659,12 +659,12 @@ export default function PublicHome() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 lg:py-24 bg-[#F34147]">
+      <section className="py-10 md:py-16 lg:py-24 pb-24 md:pb-10 bg-[#F34147]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+          <h2 className="text-2xl md:text-4xl font-bold text-white mb-6">
             Ready to Start Your Business Journey?
           </h2>
-          <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
+          <p className="text-white/90 text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto">
             Join 1000+ entrepreneurs who have transformed their businesses with our guidance.
             Get a callback from our team today.
           </p>

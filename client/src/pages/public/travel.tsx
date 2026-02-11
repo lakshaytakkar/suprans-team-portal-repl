@@ -119,8 +119,8 @@ function PackageCard({ pkg }: { pkg: TravelPackage }) {
   const hasDiscount = pkg.originalPrice && pkg.originalPrice > pkg.price;
   
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row" data-testid={`card-package-${pkg.id}`}>
-      <div className="relative md:w-72 h-48 md:h-auto flex-shrink-0">
+    <div className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row" data-testid={`card-package-${pkg.id}`}>
+      <div className="relative md:w-72 h-40 md:h-auto flex-shrink-0">
         <img
           src={getImage(pkg.image)}
           alt={pkg.title}
@@ -196,7 +196,7 @@ export default function TravelPage() {
     <PublicLayout>
       <div className="bg-[#FCFCFC] min-h-screen">
         {/* Hero Section with Image Background */}
-        <section className="relative h-[600px] overflow-hidden">
+        <section className="relative h-[400px] md:h-[600px] overflow-hidden">
           <div className="absolute inset-0">
             <img
               src={getImage("/assets/images/travel/hong-kong-canton.png")}
@@ -207,10 +207,10 @@ export default function TravelPage() {
           </div>
           
           <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-4">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold text-white mb-3 md:mb-4">
               Enjoy in the best way!
             </h1>
-            <p className="text-lg md:text-xl text-white/90 mb-8">
+            <p className="text-base md:text-xl text-white/90 mb-6 md:mb-8">
               Explore Business in China with Mr. Suprans
             </p>
             
@@ -249,11 +249,11 @@ export default function TravelPage() {
         </section>
 
         {/* Must Experience Packages */}
-        <section id="packages" className="py-20 px-4">
+        <section id="packages" className="py-10 md:py-20 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8 md:mb-12">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
                   Must experience<br />
                   <span className="text-[#F34147]">packages</span>
                 </h2>
@@ -292,10 +292,10 @@ export default function TravelPage() {
         </section>
 
         {/* Our Service Section */}
-        <section className="py-20 px-4 bg-white">
+        <section className="py-10 md:py-20 px-4 bg-white">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+            <div className="text-center mb-8 md:mb-14">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
                 Our <span className="text-[#F34147]">Service</span>
               </h2>
               <div className="flex justify-center gap-2 mt-2">
@@ -304,18 +304,18 @@ export default function TravelPage() {
               </div>
             </div>
             
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
               {[
                 { icon: Ticket, title: "Ticket Booking", desc: "Get the best deals on flights from major Indian cities with seamless booking experience." },
                 { icon: Hotel, title: "Hotel Booking", desc: "We help you find the best quality hotels with premium amenities for a comfortable stay." },
                 { icon: Map, title: "Tour Plan", desc: "Get the best itineraries tailored to your needs with factory visits and fair tours." },
               ].map((item, index) => (
-                <div key={item.title} className="text-center p-8 rounded-2xl hover:shadow-lg transition-shadow group">
+                <div key={item.title} className="text-center p-6 md:p-8 rounded-xl md:rounded-2xl hover:shadow-lg transition-shadow group">
                   <div
-                    className="w-20 h-20 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-subtle transition-transform duration-500 group-hover:scale-110"
+                    className="w-14 h-14 md:w-20 md:h-20 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 transition-transform duration-500 group-hover:scale-110"
                     style={{ animationDelay: `${index * 300}ms` }}
                   >
-                    <item.icon className="w-10 h-10 text-[#F34147]" />
+                    <item.icon className="w-7 h-7 md:w-10 md:h-10 text-[#F34147]" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
                   <p className="text-gray-500 text-sm">{item.desc}</p>
@@ -326,21 +326,21 @@ export default function TravelPage() {
         </section>
 
         {/* Top Vacation Destinations */}
-        <section className="py-20 px-4">
+        <section className="py-10 md:py-20 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <div className="text-center mb-8 md:mb-14">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
                 Top Business <span className="text-[#F34147]">Destinations</span>
               </h2>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {destinations.map((dest, i) => (
-                <div key={i} className="relative rounded-2xl overflow-hidden group cursor-pointer h-64">
+                <div key={i} className="relative rounded-xl md:rounded-2xl overflow-hidden group cursor-pointer h-48 md:h-64">
                   <img
                     src={dest.image}
                     alt={dest.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
@@ -353,16 +353,16 @@ export default function TravelPage() {
         </section>
 
         {/* Travel Any Corner Section */}
-        <section className="py-20 px-4 bg-white">
+        <section className="py-10 md:py-20 px-4 bg-white">
           <div className="max-w-7xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <Badge className="bg-[#F34147]/10 text-[#F34147] border-0 mb-4">OUR MISSION</Badge>
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-4 md:mb-6">
                   Travel Any Corner of<br />
                   The World With Us
                 </h2>
-                <p className="text-gray-600 mb-8">
+                <p className="text-gray-600 mb-6 md:mb-8 text-sm md:text-base">
                   We craft travel experiences that take you to best sourcing destinations. From Canton Fair to Yiwu markets, our expert guides help you build successful business connections.
                 </p>
                 
@@ -426,17 +426,17 @@ export default function TravelPage() {
         </section>
 
         {/* Happy Client Stories */}
-        <section className="py-20 px-4">
+        <section className="py-10 md:py-20 px-4">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <div className="text-center mb-8 md:mb-14">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
                 Happy <span className="text-[#F34147]">Client Stories</span>
               </h2>
             </div>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {testimonials.map((t, i) => (
-                <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <div key={i} className="bg-white rounded-xl md:rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100">
                   <div className="flex gap-1 mb-4">
                     {[...Array(t.rating)].map((_, j) => (
                       <Star key={j} className="w-4 h-4 text-yellow-400 fill-current" />
@@ -457,10 +457,10 @@ export default function TravelPage() {
         </section>
 
         {/* All Packages Grid */}
-        <section id="all-packages" className="py-20 px-4 bg-white">
+        <section id="all-packages" className="py-10 md:py-20 px-4 bg-white">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <div className="text-center mb-8 md:mb-14">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
                 Don't Miss The <span className="text-[#F34147]">Best Deals</span>
               </h2>
             </div>
@@ -472,10 +472,10 @@ export default function TravelPage() {
                 ))}
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 {allPackages.map((pkg) => (
-                  <div key={pkg.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all group" data-testid={`card-grid-${pkg.id}`}>
-                    <div className="relative h-48">
+                  <div key={pkg.id} className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all group" data-testid={`card-grid-${pkg.id}`}>
+                    <div className="relative h-36 md:h-48">
                       <img
                         src={getImage(pkg.image)}
                         alt={pkg.title}
@@ -507,10 +507,10 @@ export default function TravelPage() {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-20 px-4">
+        <section className="py-10 md:py-20 px-4">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <div className="text-center mb-8 md:mb-14">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
                 Frequently Asked <span className="text-[#F34147]">Questions</span>
               </h2>
             </div>
@@ -523,7 +523,7 @@ export default function TravelPage() {
                   data-testid={`faq-${i}`}
                 >
                   <button
-                    className="w-full px-6 py-5 text-left flex items-center justify-between"
+                    className="w-full px-4 md:px-6 py-4 md:py-5 text-left flex items-center justify-between min-h-[48px]"
                     onClick={() => setExpandedFaq(expandedFaq === i ? null : i)}
                     data-testid={`button-faq-${i}`}
                   >
@@ -546,7 +546,7 @@ export default function TravelPage() {
         </section>
 
         {/* CTA Banner */}
-        <section className="py-16 px-4">
+        <section className="py-10 md:py-16 px-4">
           <div className="max-w-5xl mx-auto">
             <div className="relative rounded-3xl overflow-hidden">
               <img 

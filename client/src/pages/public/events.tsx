@@ -49,23 +49,23 @@ export default function PublicEventsPage() {
 
   return (
     <PublicLayout>
-      <section className="bg-gradient-to-br from-[#F34147] to-[#1e1e1e] py-20 text-white">
+      <section className="bg-gradient-to-br from-[#F34147] to-[#1e1e1e] py-12 md:py-20 text-white">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <Badge variant="secondary" className="mb-4 bg-white/10 text-white border-white/20">
+            <Badge variant="secondary" className="mb-3 md:mb-4 bg-white/10 text-white border-white/20">
               Upcoming Events
             </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
+            <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">
               Join Our Business Events
             </h1>
-            <p className="text-xl text-white/80">
+            <p className="text-base md:text-xl text-white/80">
               Connect with industry experts, learn from successful entrepreneurs, and discover new opportunities at our exclusive business events across India.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-16 bg-background">
+      <section className="py-10 md:py-16 bg-background">
         <div className="container mx-auto px-4">
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -151,10 +151,10 @@ export default function PublicEventsPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-muted/30">
+      <section className="py-10 md:py-16 bg-muted/30">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-bold mb-4">Want to Host an Event?</h2>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4">Want to Host an Event?</h2>
+          <p className="text-muted-foreground mb-4 md:mb-6 max-w-2xl mx-auto text-sm md:text-base">
             Partner with Suprans to organize business seminars, workshops, or networking events in your city.
           </p>
           <Link href="/contact">

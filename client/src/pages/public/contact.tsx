@@ -86,9 +86,9 @@ export default function PublicContact() {
   return (
     <PublicLayout>
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#F34147]/10 via-white to-yellow-50 py-16 lg:py-24">
+      <section className="bg-gradient-to-br from-[#F34147]/10 via-white to-yellow-50 py-10 md:py-16 lg:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 md:mb-6">
             Contact <span className="text-[#F34147]">Us</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
@@ -97,10 +97,10 @@ export default function PublicContact() {
         </div>
       </section>
 
-      {/* Sales Team Contacts - Desktop */}
-      <section className="py-12 bg-white border-b border-gray-100">
+      {/* Sales Team Contacts */}
+      <section className="py-8 md:py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-10">
+          <div className="text-center mb-6 md:mb-10">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
               Reach Our <span className="text-[#F34147]">Team</span>
             </h2>
@@ -108,15 +108,14 @@ export default function PublicContact() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {salesContacts.map((contact, index) => (
-              <div key={index} className="bg-gray-50 border border-gray-200 rounded-2xl p-5 text-center hover:shadow-lg transition-shadow group" data-testid={`card-sales-contact-${index}`}>
+              <div key={index} className="bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl p-4 md:p-5 text-center group" data-testid={`card-sales-contact-${index}`}>
                 <div
-                  className="w-14 h-14 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce-subtle group-hover:scale-110 transition-transform duration-500"
-                  style={{ animationDelay: `${index * 200}ms` }}
+                  className="w-11 h-11 md:w-14 md:h-14 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4"
                 >
-                  {index === 0 && <Globe className="w-7 h-7 text-[#F34147]" />}
-                  {index === 1 && <MapPin className="w-7 h-7 text-[#F34147]" />}
-                  {index === 2 && <Users className="w-7 h-7 text-[#F34147]" />}
-                  {index === 3 && <Headphones className="w-7 h-7 text-[#F34147]" />}
+                  {index === 0 && <Globe className="w-5 h-5 md:w-7 md:h-7 text-[#F34147]" />}
+                  {index === 1 && <MapPin className="w-5 h-5 md:w-7 md:h-7 text-[#F34147]" />}
+                  {index === 2 && <Users className="w-5 h-5 md:w-7 md:h-7 text-[#F34147]" />}
+                  {index === 3 && <Headphones className="w-5 h-5 md:w-7 md:h-7 text-[#F34147]" />}
                 </div>
                 <h3 className="font-bold text-gray-900 mb-1">{contact.name}</h3>
                 <p className="text-xs text-gray-500 mb-3">{contact.role}</p>
@@ -135,9 +134,9 @@ export default function PublicContact() {
       </section>
 
       {/* Contact Info + Form */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-10 md:py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-12">
             {/* Contact Information */}
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-8">Get in Touch</h2>
@@ -225,11 +224,11 @@ export default function PublicContact() {
             </div>
 
             {/* Contact Form */}
-            <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+            <div className="bg-gray-50 p-5 md:p-8 rounded-xl md:rounded-2xl border border-gray-200">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
               
               <form onSubmit={handleSubmit} className="space-y-5" data-testid="form-contact">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">Name *</label>
                     <Input
