@@ -4,7 +4,7 @@ import { Link } from "wouter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Calendar, Users, Clock, Star, ChevronRight, ChevronDown, Plane, Hotel, Utensils, ShieldCheck, Check, ArrowRight, Phone, MessageCircle, Briefcase, Globe, Award, Sparkles, Search, Ticket, Map, Quote } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, Star, ChevronRight, ChevronDown, Plane, Hotel, Utensils, ShieldCheck, Check, ArrowRight, Phone, MessageCircle, Briefcase, Globe, Award, Sparkles, Search, Ticket, Map, Quote, Flame, CreditCard } from "lucide-react";
 import PublicLayout from "@/components/public/PublicLayout";
 import type { TravelPackage } from "@shared/schema";
 
@@ -117,6 +117,9 @@ const faqs = [
 
 function PackageCard({ pkg }: { pkg: TravelPackage }) {
   const hasDiscount = pkg.originalPrice && pkg.originalPrice > pkg.price;
+  const seatsLeft = pkg.seatsLeft ?? 10;
+  const isLowSeats = seatsLeft <= 5;
+  const bookingAmount = pkg.bookingAmount || 30000;
   
   return (
     <div className="bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex flex-col md:flex-row" data-testid={`card-package-${pkg.id}`}>
@@ -126,11 +129,22 @@ function PackageCard({ pkg }: { pkg: TravelPackage }) {
           alt={pkg.title}
           className="w-full h-full object-cover"
         />
-        {hasDiscount && (
-          <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {hasDiscount && (
             <Badge className="bg-[#F34147] text-white border-0 px-3 py-1">
               {Math.round(((pkg.originalPrice! - pkg.price) / pkg.originalPrice!) * 100)}% OFF
             </Badge>
+          )}
+          {isLowSeats && seatsLeft > 0 && (
+            <Badge className="bg-orange-500 text-white border-0 px-3 py-1 animate-pulse" data-testid={`badge-seats-${pkg.id}`}>
+              <Flame className="w-3 h-3 mr-1" />
+              Only {seatsLeft} seats left
+            </Badge>
+          )}
+        </div>
+        {seatsLeft === 0 && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <span className="text-white font-bold text-lg bg-red-600 px-4 py-2 rounded-lg">SOLD OUT</span>
           </div>
         )}
       </div>
@@ -159,22 +173,37 @@ function PackageCard({ pkg }: { pkg: TravelPackage }) {
             <span>{pkg.accommodation}</span>
           </div>
         </div>
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-          <div>
-            {hasDiscount && (
-              <span className="text-gray-400 line-through text-sm mr-2">
-                {formatPrice(pkg.originalPrice!)}
+        <div className="flex flex-col gap-2 pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              {hasDiscount && (
+                <span className="text-gray-400 line-through text-sm mr-2">
+                  {formatPrice(pkg.originalPrice!)}
+                </span>
+              )}
+              <span className="text-2xl font-bold text-[#F34147]">
+                {formatPrice(pkg.price)}
               </span>
-            )}
-            <span className="text-2xl font-bold text-[#F34147]">
-              {formatPrice(pkg.price)}
-            </span>
+              <span className="text-xs text-gray-500 ml-1">/person</span>
+            </div>
+            <Link href={`/travel/${pkg.slug}`}>
+              <Button className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid={`button-book-${pkg.id}`} disabled={seatsLeft === 0}>
+                {seatsLeft === 0 ? "Sold Out" : "Book Now"}
+              </Button>
+            </Link>
           </div>
-          <Link href={`/travel/${pkg.slug}`}>
-            <Button className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid={`button-book-${pkg.id}`}>
-              Book Now
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3 text-xs text-gray-500">
+            <div className="flex items-center gap-1">
+              <CreditCard className="w-3 h-3 text-green-600" />
+              <span>Book with {formatPrice(bookingAmount)} only</span>
+            </div>
+            {seatsLeft > 0 && !isLowSeats && (
+              <div className="flex items-center gap-1">
+                <Users className="w-3 h-3" />
+                <span>{seatsLeft} seats available</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

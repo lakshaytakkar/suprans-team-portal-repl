@@ -30,10 +30,10 @@ import {
 import {
   MapPin, Calendar, Users, Clock, Star, ChevronRight, ChevronLeft,
   Hotel, Utensils, Car, Check, X, Phone, Mail, User,
-  Plane, Shield, Coffee, Briefcase, CreditCard, Loader2
+  Plane, Shield, Coffee, Briefcase, CreditCard, Loader2, Flame, CheckCircle, PhoneCall, PartyPopper
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import PublicLayout from "@/components/public/PublicLayout";
 import type { TravelPackage } from "@shared/schema";
 
@@ -103,6 +103,7 @@ export default function TravelDetailPage() {
     notes: "",
   });
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
   const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
@@ -171,11 +172,9 @@ export default function TravelDetailPage() {
     onSuccess: () => {
       setIsProcessingPayment(false);
       setBookingDialogOpen(false);
-      toast({
-        title: "Payment Successful",
-        description: "Your booking has been confirmed! Check your email for details.",
-      });
-      setBookingData({ name: "", email: "", phone: "", travelers: "1", notes: "" });
+      setSuccessDialogOpen(true);
+      queryClient.invalidateQueries({ queryKey: ["/api/public/travel-packages", slug] });
+      queryClient.invalidateQueries({ queryKey: ["/api/public/travel-packages"] });
     },
     onError: () => {
       setIsProcessingPayment(false);
@@ -358,14 +357,16 @@ export default function TravelDetailPage() {
             <span>{pkg.days} Days | {pkg.nights} Nights | {pkg.destination}</span>
           </div>
           
-          <div className="flex flex-wrap justify-center gap-6 text-white/80 text-sm">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-white/80 text-sm">
+            {pkg.seatsLeft !== null && pkg.seatsLeft !== undefined && pkg.seatsLeft > 0 && pkg.seatsLeft <= 5 && (
+              <div className="flex items-center gap-2 bg-orange-500/90 text-white px-3 py-1.5 rounded-full animate-pulse">
+                <Flame className="h-4 w-4" />
+                <span className="font-semibold">Only {pkg.seatsLeft} seats left</span>
+              </div>
+            )}
             <div className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-green-400" />
-              <span>No Booking Fee</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-5 w-5 text-green-400" />
-              <span>Best Price Ever</span>
+              <CreditCard className="h-5 w-5 text-green-400" />
+              <span>Book with just {formatPrice(pkg.bookingAmount || 30000)}</span>
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 text-yellow-400 fill-yellow-400" />
@@ -561,16 +562,28 @@ export default function TravelDetailPage() {
           <div className="space-y-6">
             <Card className="sticky top-24 border-2 border-primary/20">
               <CardHeader className="bg-primary/5">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
                   {hasDiscount && (
                     <Badge className="bg-red-500 text-white border-0">
                       {Math.round((1 - pkg.price / pkg.originalPrice!) * 100)}% Off
                     </Badge>
                   )}
+                  {pkg.seatsLeft !== null && pkg.seatsLeft !== undefined && pkg.seatsLeft > 0 && pkg.seatsLeft <= 5 && (
+                    <Badge className="bg-orange-500 text-white border-0 animate-pulse">
+                      <Flame className="w-3 h-3 mr-1" />
+                      Only {pkg.seatsLeft} seats left
+                    </Badge>
+                  )}
+                  {pkg.seatsLeft !== null && pkg.seatsLeft !== undefined && pkg.seatsLeft > 5 && (
+                    <Badge variant="secondary">
+                      <Users className="w-3 h-3 mr-1" />
+                      {pkg.seatsLeft} seats available
+                    </Badge>
+                  )}
                 </div>
                 <div className="space-y-1">
-                  <span className="text-sm text-muted-foreground">Starting From</span>
-                  <div className="flex items-baseline gap-2">
+                  <span className="text-sm text-muted-foreground">Package Price</span>
+                  <div className="flex items-baseline gap-2 flex-wrap">
                     {hasDiscount && (
                       <span className="text-lg text-muted-foreground line-through">
                         {formatPrice(pkg.originalPrice!)}
@@ -581,6 +594,13 @@ export default function TravelDetailPage() {
                     </span>
                     <span className="text-sm text-muted-foreground">/per person</span>
                   </div>
+                </div>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-2">
+                  <div className="flex items-center gap-2 text-green-700 font-semibold text-sm">
+                    <CreditCard className="h-4 w-4" />
+                    <span>Reserve your spot with just {formatPrice(pkg.bookingAmount || 30000)}</span>
+                  </div>
+                  <p className="text-xs text-green-600 mt-1">Our executive will call you for remaining payment & formalities</p>
                 </div>
               </CardHeader>
               <CardContent className="p-4 space-y-4">
@@ -673,10 +693,13 @@ export default function TravelDetailPage() {
                     className="w-full"
                     size="lg"
                     onClick={() => setBookingDialogOpen(true)}
+                    disabled={pkg.seatsLeft !== null && pkg.seatsLeft !== undefined && pkg.seatsLeft <= 0}
                     data-testid="button-book-now"
                   >
                     <CreditCard className="mr-2 h-5 w-5" />
-                    Book Now & Pay Online
+                    {pkg.seatsLeft !== null && pkg.seatsLeft !== undefined && pkg.seatsLeft <= 0
+                      ? "Sold Out"
+                      : `Reserve Now - ${formatPrice(pkg.bookingAmount || 30000)}`}
                   </Button>
                   
                   <p className="text-xs text-center text-muted-foreground">
@@ -701,29 +724,34 @@ export default function TravelDetailPage() {
       <Dialog open={bookingDialogOpen} onOpenChange={setBookingDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Book Your Trip</DialogTitle>
+            <DialogTitle>Reserve Your Spot</DialogTitle>
             <DialogDescription>
-              Complete your booking for {pkg?.title}
+              Secure your booking for {pkg?.title}
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4 py-4">
-            <div className="bg-muted/50 p-3 rounded-lg">
+            <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">Package Price:</span>
+                <span className="text-sm text-gray-600">Package Price:</span>
                 <span className="font-semibold">{formatPrice(pkg?.price || 0)} / person</span>
               </div>
-              <div className="flex justify-between items-center mt-1">
-                <span className="text-sm text-muted-foreground">Travelers:</span>
-                <span className="font-semibold">{bookingData.travelers}</span>
-              </div>
-              <div className="flex justify-between items-center mt-2 pt-2 border-t">
-                <span className="font-medium">Total Amount:</span>
-                <span className="text-lg font-bold text-[#F34147]">
-                  {formatPrice((pkg?.price || 0) * parseInt(bookingData.travelers))}
+              <div className="flex justify-between items-center mt-2 pt-2 border-t border-green-200">
+                <span className="font-semibold text-green-700">Booking Amount (Pay Now):</span>
+                <span className="text-xl font-bold text-green-700">
+                  {formatPrice(pkg?.bookingAmount || 30000)}
                 </span>
               </div>
+              <p className="text-xs text-green-600 mt-2">
+                Remaining amount to be discussed with our executive after booking
+              </p>
             </div>
+            {pkg?.seatsLeft !== null && pkg?.seatsLeft !== undefined && pkg.seatsLeft > 0 && pkg.seatsLeft <= 5 && (
+              <div className="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-lg p-3 text-sm text-orange-700">
+                <Flame className="h-4 w-4 flex-shrink-0" />
+                <span className="font-medium">Hurry! Only {pkg.seatsLeft} seats remaining for this trip</span>
+              </div>
+            )}
             
             <div className="space-y-2">
               <Label htmlFor="booking-name">Full Name *</Label>
@@ -759,39 +787,40 @@ export default function TravelDetailPage() {
               />
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="booking-travelers">Number of Travelers</Label>
-              <Select
-                value={bookingData.travelers}
-                onValueChange={(value) => setBookingData({ ...bookingData, travelers: value })}
-              >
-                <SelectTrigger data-testid="select-travelers">
-                  <SelectValue placeholder="Select travelers" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                    <SelectItem key={num} value={num.toString()}>
-                      {num} {num === 1 ? "Traveler" : "Travelers"}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="booking-notes">Special Requests (Optional)</Label>
-              <Textarea
-                id="booking-notes"
-                placeholder="Any special requirements..."
-                value={bookingData.notes}
-                onChange={(e) => setBookingData({ ...bookingData, notes: e.target.value })}
-                rows={2}
-                data-testid="input-booking-notes"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="booking-travelers">Travelers</Label>
+                <Select
+                  value={bookingData.travelers}
+                  onValueChange={(value) => setBookingData({ ...bookingData, travelers: value })}
+                >
+                  <SelectTrigger data-testid="select-travelers">
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num} {num === 1 ? "Traveler" : "Travelers"}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="booking-notes">Special Requests</Label>
+                <Textarea
+                  id="booking-notes"
+                  placeholder="Any requirements..."
+                  value={bookingData.notes}
+                  onChange={(e) => setBookingData({ ...bookingData, notes: e.target.value })}
+                  rows={1}
+                  data-testid="input-booking-notes"
+                />
+              </div>
             </div>
             
             <Button
-              className="w-full"
+              className="w-full bg-green-600 hover:bg-green-700"
               size="lg"
               onClick={handleBookNow}
               disabled={isProcessingPayment || !razorpayLoaded}
@@ -805,14 +834,90 @@ export default function TravelDetailPage() {
               ) : (
                 <>
                   <CreditCard className="mr-2 h-5 w-5" />
-                  Proceed to Pay {formatPrice((pkg?.price || 0) * parseInt(bookingData.travelers))}
+                  Pay {formatPrice(pkg?.bookingAmount || 30000)} to Reserve
                 </>
               )}
             </Button>
             
             <p className="text-xs text-center text-muted-foreground">
-              By proceeding, you agree to our terms and conditions
+              Secure payment via Razorpay. Our team will contact you within 24 hours to complete formalities.
             </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Success Confirmation Dialog */}
+      <Dialog open={successDialogOpen} onOpenChange={(open) => {
+        if (!open) {
+          setSuccessDialogOpen(false);
+          setBookingData({ name: "", email: "", phone: "", travelers: "1", notes: "" });
+        }
+      }}>
+        <DialogContent className="sm:max-w-md">
+          <div className="text-center py-6 space-y-6">
+            <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+              <CheckCircle className="w-10 h-10 text-green-600" />
+            </div>
+            
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold text-gray-900">Booking Confirmed!</h2>
+              <p className="text-gray-500">Your spot has been reserved successfully</p>
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-5 text-left space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-[#F34147]/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <PhoneCall className="w-4 h-4 text-[#F34147]" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">Our executive will call you shortly</p>
+                  <p className="text-xs text-gray-500">Within the next 24 hours to discuss your travel details, visa requirements, and remaining payment</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Mail className="w-4 h-4 text-blue-600" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">Confirmation sent to your email</p>
+                  <p className="text-xs text-gray-500">Check your inbox for booking details and payment receipt</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Shield className="w-4 h-4 text-green-600" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 text-sm">100% Secure Booking</p>
+                  <p className="text-xs text-gray-500">Your payment is protected with full refund guarantee if trip is cancelled by us</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#F34147]/5 border border-[#F34147]/20 rounded-xl p-4">
+              <p className="text-sm text-gray-700">
+                <span className="font-semibold">What happens next?</span> Our travel coordinator will reach out to finalize your itinerary, arrange visa documentation, and coordinate the remaining payment at your convenience.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Button
+                onClick={() => {
+                  setSuccessDialogOpen(false);
+                  setBookingData({ name: "", email: "", phone: "", travelers: "1", notes: "" });
+                }}
+                className="w-full"
+                data-testid="button-close-success"
+              >
+                Got it, Thanks!
+              </Button>
+              <a href="https://wa.me/919350818272" target="_blank" rel="noopener noreferrer" className="w-full">
+                <Button variant="outline" className="w-full border-green-500 text-green-700" data-testid="button-whatsapp-success">
+                  <Phone className="w-4 h-4 mr-2" />
+                  Chat with us on WhatsApp
+                </Button>
+              </a>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

@@ -699,9 +699,15 @@ export async function registerRoutes(
         return res.status(404).json({ message: "Travel package not found" });
       }
 
-      // Calculate total amount in paise (Razorpay uses smallest currency unit)
+      // Check seats availability
+      if (pkg.seatsLeft !== null && pkg.seatsLeft !== undefined && pkg.seatsLeft <= 0) {
+        return res.status(400).json({ message: "Sorry, this package is fully booked. No seats available." });
+      }
+
+      // Charge fixed booking amount (₹30,000 default) in paise
       const travelers = numberOfTravelers || 1;
-      const totalAmount = pkg.price * travelers * 100;
+      const bookingAmount = pkg.bookingAmount || 30000;
+      const totalAmount = bookingAmount * 100;
 
       // Initialize Razorpay
       const razorpay = new Razorpay({
@@ -815,6 +821,16 @@ export async function registerRoutes(
         razorpaySignature: razorpay_signature,
         status: "paid",
       });
+
+      // Decrement seats left for the package
+      if (booking && booking.packageId) {
+        const pkg = await storage.getTravelPackage(booking.packageId);
+        if (pkg && pkg.seatsLeft !== null && pkg.seatsLeft !== undefined && pkg.seatsLeft > 0) {
+          await storage.updateTravelPackage(booking.packageId, {
+            seatsLeft: pkg.seatsLeft - 1,
+          });
+        }
+      }
 
       res.json({
         success: true,
