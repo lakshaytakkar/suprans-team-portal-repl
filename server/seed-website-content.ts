@@ -4,7 +4,7 @@ export async function seedWebsiteContent(storage: IStorage) {
   console.log("Seeding website content...");
 
   const contentData: { section: string; key: string; value: any }[] = [
-    { section: "site_banner", key: "text", value: "Canton Fair 137th Phase 1 starting April 15th, 2025. Register Now!" },
+    { section: "site_banner", key: "text", value: "Canton Fair 139th Phase 1 starting April 15th, 2025. Register Now!" },
 
     { section: "home_hero", key: "tags", value: ["USA Dropshipping Expert", "E2E Imports from China", "India's #1 Business Channel"] },
     { section: "home_hero", key: "trust_badge", value: "Trusted by 1000+ Indian Entrepreneurs" },

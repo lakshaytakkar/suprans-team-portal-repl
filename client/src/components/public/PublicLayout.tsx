@@ -128,7 +128,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
     <div className="min-h-screen flex flex-col">
       {/* Top Banner */}
       <div className="bg-[#F34147] text-white text-xs sm:text-sm py-2 text-center px-4">
-        {siteContent?.site_banner?.text || "Canton Fair 137th Phase 1 starting April 15th, 2025. Register Now!"}
+        {siteContent?.site_banner?.text || "Canton Fair 139th Phase 1 starting April 15th, 2025. Register Now!"}
       </div>
 
       {/* Navbar */}
