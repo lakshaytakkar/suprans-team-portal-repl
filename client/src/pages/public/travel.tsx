@@ -305,35 +305,22 @@ export default function TravelPage() {
             </div>
             
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center p-8 rounded-2xl hover:shadow-lg transition-shadow">
-                <div className="w-20 h-20 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Ticket className="w-10 h-10 text-[#F34147]" />
+              {[
+                { icon: Ticket, title: "Ticket Booking", desc: "Get the best deals on flights from major Indian cities with seamless booking experience." },
+                { icon: Hotel, title: "Hotel Booking", desc: "We help you find the best quality hotels with premium amenities for a comfortable stay." },
+                { icon: Map, title: "Tour Plan", desc: "Get the best itineraries tailored to your needs with factory visits and fair tours." },
+              ].map((item, index) => (
+                <div key={item.title} className="text-center p-8 rounded-2xl hover:shadow-lg transition-shadow group">
+                  <div
+                    className="w-20 h-20 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-subtle transition-transform duration-500 group-hover:scale-110"
+                    style={{ animationDelay: `${index * 300}ms` }}
+                  >
+                    <item.icon className="w-10 h-10 text-[#F34147]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
+                  <p className="text-gray-500 text-sm">{item.desc}</p>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Ticket Booking</h3>
-                <p className="text-gray-500 text-sm">
-                  Get the best deals on flights from major Indian cities with seamless booking experience.
-                </p>
-              </div>
-              
-              <div className="text-center p-8 rounded-2xl hover:shadow-lg transition-shadow">
-                <div className="w-20 h-20 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Hotel className="w-10 h-10 text-[#F34147]" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Hotel Booking</h3>
-                <p className="text-gray-500 text-sm">
-                  We help you find the best quality hotels with premium amenities for a comfortable stay.
-                </p>
-              </div>
-              
-              <div className="text-center p-8 rounded-2xl hover:shadow-lg transition-shadow">
-                <div className="w-20 h-20 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Map className="w-10 h-10 text-[#F34147]" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Tour Plan</h3>
-                <p className="text-gray-500 text-sm">
-                  Get the best itineraries tailored to your needs with factory visits and fair tours.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </section>

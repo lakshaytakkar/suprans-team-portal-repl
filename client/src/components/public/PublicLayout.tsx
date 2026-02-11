@@ -228,13 +228,18 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                     <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 p-6 min-w-[700px] animate-in fade-in slide-in-from-top-2 duration-200">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-bold text-gray-900 text-lg">Travel Packages</h3>
-                        <Link
+                        <a
                           href="/travel"
                           className="text-sm font-medium text-[#F34147] hover:underline flex items-center gap-1"
-                          onClick={() => setIsTravelMenuOpen(false)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setIsTravelMenuOpen(false);
+                            window.location.href = "/travel";
+                          }}
+                          data-testid="link-travel-view-all"
                         >
                           View All <ChevronRight className="w-4 h-4" />
-                        </Link>
+                        </a>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         {travelPackages.slice(0, 6).map((pkg) => (
@@ -478,6 +483,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                   <Mail className="text-[#F34147] mt-1 flex-shrink-0 h-4 w-4" />
                   <div className="text-sm text-gray-600">
                     <div>{siteContent?.footer_contact?.email || "info@suprans.in"}</div>
+                    <div>cs@suprans.in</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">

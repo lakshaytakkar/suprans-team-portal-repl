@@ -1,12 +1,19 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Phone, Mail, MapPin, MessageCircle, Clock, Send, Loader2 } from "lucide-react";
+import { Phone, Mail, MapPin, MessageCircle, Clock, Send, Loader2, Users, Globe, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import PublicLayout from "@/components/public/PublicLayout";
 import type { Service } from "@shared/schema";
+
+const salesContacts = [
+  { name: "Dropshipping & LLC", email: "ds@suprans.in", phone: "+91 9350830133", role: "Mentorship & Formation" },
+  { name: "China Travel & Canton Fair", email: "travel@suprans.in", phone: "+91 9350818272", role: "Travel Packages" },
+  { name: "Brand Development", email: "info@suprans.in", phone: "+91 7988702534", role: "Private Label & Branding" },
+  { name: "Customer Support", email: "cs@suprans.in", phone: "+91 8851492209", role: "General Inquiries" },
+];
 
 export default function PublicContact() {
   const { toast } = useToast();
@@ -90,6 +97,43 @@ export default function PublicContact() {
         </div>
       </section>
 
+      {/* Sales Team Contacts - Desktop */}
+      <section className="py-12 bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+              Reach Our <span className="text-[#F34147]">Team</span>
+            </h2>
+            <p className="text-gray-600 max-w-xl mx-auto">Contact the right department directly for faster assistance</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {salesContacts.map((contact, index) => (
+              <div key={index} className="bg-gray-50 border border-gray-200 rounded-2xl p-5 text-center hover:shadow-lg transition-shadow group" data-testid={`card-sales-contact-${index}`}>
+                <div
+                  className="w-14 h-14 bg-[#F34147]/10 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce-subtle group-hover:scale-110 transition-transform duration-500"
+                  style={{ animationDelay: `${index * 200}ms` }}
+                >
+                  {index === 0 && <Globe className="w-7 h-7 text-[#F34147]" />}
+                  {index === 1 && <MapPin className="w-7 h-7 text-[#F34147]" />}
+                  {index === 2 && <Users className="w-7 h-7 text-[#F34147]" />}
+                  {index === 3 && <Headphones className="w-7 h-7 text-[#F34147]" />}
+                </div>
+                <h3 className="font-bold text-gray-900 mb-1">{contact.name}</h3>
+                <p className="text-xs text-gray-500 mb-3">{contact.role}</p>
+                <div className="space-y-1.5">
+                  <a href={`tel:${contact.phone.replace(/\D/g, "")}`} className="flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-[#F34147] transition-colors" data-testid={`link-phone-${index}`}>
+                    <Phone className="w-3.5 h-3.5" /> {contact.phone}
+                  </a>
+                  <a href={`mailto:${contact.email}`} className="flex items-center justify-center gap-2 text-sm text-gray-600 hover:text-[#F34147] transition-colors" data-testid={`link-email-${index}`}>
+                    <Mail className="w-3.5 h-3.5" /> {contact.email}
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Contact Info + Form */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -120,6 +164,7 @@ export default function PublicContact() {
                     {emails.map((email, index) => (
                       <p key={index} className="text-gray-600">{email}</p>
                     ))}
+                    <p className="text-gray-600">cs@suprans.in</p>
                   </div>
                 </div>
 

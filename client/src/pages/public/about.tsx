@@ -177,8 +177,13 @@ export default function PublicAbout() {
             <div className="bg-gradient-to-br from-red-50 to-yellow-50 rounded-2xl p-8 border border-red-100">
               <div className="grid grid-cols-2 gap-6">
                 {(siteContent?.about_stats?.items || [{ value: "1000+", label: "Entrepreneurs Guided" }, { value: "15+", label: "Years Experience" }, { value: "50+", label: "Countries Served" }, { value: "98%", label: "Client Satisfaction" }]).map((stat: any, index: number) => (
-                  <div key={index} className="text-center p-4">
-                    <div className="text-4xl font-bold text-[#F34147] mb-2">{stat.value}</div>
+                  <div key={index} className="text-center p-4 group">
+                    <div
+                      className="text-4xl font-bold text-[#F34147] mb-2 animate-bounce-subtle"
+                      style={{ animationDelay: `${index * 200}ms` }}
+                    >
+                      {stat.value}
+                    </div>
                     <div className="text-gray-600 text-sm">{stat.label}</div>
                   </div>
                 ))}

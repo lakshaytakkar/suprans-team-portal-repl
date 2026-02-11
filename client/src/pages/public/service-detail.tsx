@@ -9,6 +9,24 @@ import { Textarea } from "@/components/ui/textarea";
 import PublicLayout from "@/components/public/PublicLayout";
 import type { Service } from "@shared/schema";
 
+import bannerDropshipping from "@/assets/images/banners/banner-dropshipping.png";
+import bannerLlcFormation from "@/assets/images/banners/banner-llc-formation.png";
+import bannerBrandDevelopment from "@/assets/images/banners/banner-brand-development.png";
+import bannerImportService from "@/assets/images/banners/banner-import-service.png";
+import bannerConsultation from "@/assets/images/banners/banner-consultation.png";
+
+const serviceBanners: Record<string, string> = {
+  "srv-dropshipping": bannerDropshipping,
+  "srv-llc-formation": bannerLlcFormation,
+  "srv-brand-development": bannerBrandDevelopment,
+  "srv-import-service": bannerImportService,
+  "srv-consultation": bannerConsultation,
+  "srv-virtual-meet": bannerConsultation,
+  "srv-canton-fair": bannerImportService,
+  "srv-china-travel": bannerImportService,
+  "srv-franchise-store": bannerBrandDevelopment,
+};
+
 const serviceDetails: Record<string, {
   highlights: string[];
   features: { title: string; description: string }[];
@@ -112,6 +130,140 @@ const serviceDetails: Record<string, {
     faqs: [
       { question: "Who will I speak with?", answer: "You'll have a direct consultation with Mr. Suprans or a senior team member based on your requirements." },
       { question: "How long is the session?", answer: "Standard consultations are 30-60 minutes. Extended sessions available for complex requirements." },
+      { question: "Can I book multiple sessions?", answer: "Yes, many clients book follow-up sessions. We offer discounted packages for recurring consultations." },
+      { question: "What topics can I discuss?", answer: "Anything related to global trade, sourcing, branding, market entry, dropshipping, or business scaling strategies." },
+    ],
+  },
+  "Formation": {
+    highlights: [
+      "Complete USA LLC formation end-to-end",
+      "EIN registration & operating agreement",
+      "Registered agent included for 1 year",
+      "US bank account setup assistance",
+    ],
+    features: [
+      { title: "LLC Formation", description: "State filing in Wyoming/Delaware with all paperwork handled" },
+      { title: "EIN Registration", description: "IRS Employer Identification Number obtained for your LLC" },
+      { title: "Registered Agent", description: "1-year registered agent service included with formation" },
+      { title: "Bank Account", description: "Guidance and support to open a US business bank account" },
+    ],
+    process: [
+      { step: 1, title: "Consultation", description: "Discuss your LLC requirements and best state for filing" },
+      { step: 2, title: "Document Prep", description: "We prepare Articles of Organization & Operating Agreement" },
+      { step: 3, title: "Filing", description: "LLC filed with the state + EIN obtained from IRS" },
+      { step: 4, title: "Bank Setup", description: "Assistance with US bank account opening & compliance" },
+    ],
+    faqs: [
+      { question: "Which state is best for my LLC?", answer: "Wyoming and Delaware are most popular for Indian entrepreneurs due to no state tax and privacy protections. We help you choose the best fit." },
+      { question: "How long does formation take?", answer: "Standard processing takes 5-7 business days. Expedited options available for 2-3 business days." },
+      { question: "Do I need to visit the USA?", answer: "No, the entire process is done remotely. We handle all paperwork and filings on your behalf." },
+      { question: "What is an EIN?", answer: "An Employer Identification Number (EIN) is like a PAN number for your US business. Required for bank accounts, taxes, and vendor payments." },
+      { question: "Can I open a US bank account from India?", answer: "Yes, we assist with Mercury, Relay, or other neobanks that allow remote account opening for foreign-owned LLCs." },
+      { question: "What ongoing compliance is needed?", answer: "Annual report filing (varies by state), registered agent renewal, and basic bookkeeping. We can help with all of these." },
+    ],
+  },
+  "Trade": {
+    highlights: [
+      "End-to-end sourcing from China",
+      "Quality inspection before shipping",
+      "Customs clearance handled",
+      "Door-to-door delivery to India",
+    ],
+    features: [
+      { title: "Product Sourcing", description: "Find verified factories and negotiate best prices for your products" },
+      { title: "Quality Check", description: "Pre-shipment inspection at factory to ensure product quality" },
+      { title: "Shipping & Logistics", description: "Sea/air freight booking with complete documentation" },
+      { title: "Customs Clearance", description: "Indian customs handling, duty calculation & clearance support" },
+    ],
+    process: [
+      { step: 1, title: "Requirements", description: "Share product details, quantity & quality expectations" },
+      { step: 2, title: "Sourcing", description: "We find 3-5 verified factories with price comparisons" },
+      { step: 3, title: "Sample & QC", description: "Sample approval + pre-shipment quality inspection" },
+      { step: 4, title: "Ship & Deliver", description: "Complete logistics from factory to your doorstep" },
+    ],
+    faqs: [
+      { question: "What is the minimum order quantity?", answer: "MOQ varies by product. We negotiate with factories to get the lowest possible MOQ for first-time importers." },
+      { question: "How long does shipping take?", answer: "Sea freight: 25-35 days. Air freight: 7-10 days. We recommend sea freight for cost-effective bulk orders." },
+      { question: "Do you handle customs duty?", answer: "Yes, we calculate estimated duty, handle documentation, and coordinate with customs brokers for smooth clearance." },
+      { question: "Can I visit the factory?", answer: "Absolutely! We can arrange factory visits during our Canton Fair trips or schedule dedicated factory tours." },
+    ],
+  },
+  "Business": {
+    highlights: [
+      "Turnkey franchise store setup",
+      "Complete inventory & supply chain",
+      "Staff training & operations manual",
+      "Ongoing marketing & growth support",
+    ],
+    features: [
+      { title: "Store Setup", description: "Complete retail store setup including design, fixtures & branding" },
+      { title: "Product Inventory", description: "Curated product catalog with competitive wholesale pricing" },
+      { title: "Training", description: "Comprehensive staff training on sales, inventory & operations" },
+      { title: "Marketing", description: "Local marketing strategy, social media & grand opening support" },
+    ],
+    process: [
+      { step: 1, title: "Application", description: "Submit franchise application and location details" },
+      { step: 2, title: "Approval", description: "Location assessment, agreement signing & investment planning" },
+      { step: 3, title: "Setup", description: "Store design, fit-out, inventory stocking & staff training" },
+      { step: 4, title: "Launch", description: "Grand opening event, marketing campaign & ongoing support" },
+    ],
+    faqs: [
+      { question: "What is the total investment?", answer: "The franchise fee is ₹15,00,000 which includes store setup, initial inventory, training, and 6 months of marketing support." },
+      { question: "What products will my store carry?", answer: "A curated selection of trending consumer products sourced directly from international manufacturers at wholesale prices." },
+      { question: "What support do I get after launch?", answer: "Ongoing supply chain management, quarterly training updates, marketing campaigns, and a dedicated franchise manager." },
+      { question: "Can I choose my store location?", answer: "Yes, we help you evaluate locations based on foot traffic, demographics, and market potential to maximize your ROI." },
+    ],
+  },
+  "Travel": {
+    highlights: [
+      "Complete Canton Fair guided tour",
+      "4-Star hotel accommodation included",
+      "Personal Mandarin translator",
+      "Factory visits & supplier meetings",
+    ],
+    features: [
+      { title: "Complete Package", description: "7N/8D all-inclusive business travel with hotel & meals" },
+      { title: "Fair Access", description: "Canton Fair badge assistance & guided booth tours" },
+      { title: "Translator", description: "Personal Mandarin interpreter for all business meetings" },
+      { title: "Factory Visits", description: "Curated factory tours in Guangzhou, Foshan & Yiwu" },
+    ],
+    process: [
+      { step: 1, title: "Reserve Slot", description: "Pay ₹30,000 advance to reserve your seat (limited slots)" },
+      { step: 2, title: "Visa & Docs", description: "We assist with China visa application & travel docs" },
+      { step: 3, title: "Travel", description: "Guided tour with Indian team, translator & local support" },
+      { step: 4, title: "Follow-up", description: "Post-trip supplier coordination & order placement support" },
+    ],
+    faqs: [
+      { question: "When is the next Canton Fair?", answer: "Canton Fair happens twice yearly: April (Phase 1: 15-19, Phase 2: 23-27, Phase 3: 1-5 May) and October. Contact us for the next available trip." },
+      { question: "What's included in the package?", answer: "4-star hotel (twin sharing), daily breakfast + Indian dinner, AC coach transfers, Canton Fair badge, translator, Pearl River cruise, and Indian tour manager." },
+      { question: "What's NOT included?", answer: "International flights, China sticker visa fees, lunch, personal expenses, and single room upgrade (available at extra cost)." },
+      { question: "How many seats are available?", answer: "We limit each batch to 15-20 entrepreneurs for personalized attention. Slots fill up fast — reserve early with ₹30,000 advance." },
+      { question: "Is this suitable for first-time visitors?", answer: "Absolutely! Most of our travellers are first-timers. Our experienced team guides you through everything from visa to supplier selection." },
+    ],
+  },
+  "Mentorship": {
+    highlights: [
+      "Structured 3-month mentorship program",
+      "Weekly calls with industry expert",
+      "Exclusive community access",
+      "Real project-based learning",
+    ],
+    features: [
+      { title: "Weekly Calls", description: "One-on-one 45-min calls with your mentor every week" },
+      { title: "Community", description: "Exclusive Telegram/WhatsApp group with fellow entrepreneurs" },
+      { title: "Resources", description: "Access to supplier lists, templates, contracts & SOP documents" },
+      { title: "Certification", description: "Certificate of completion and LinkedIn recommendation" },
+    ],
+    process: [
+      { step: 1, title: "Enroll", description: "Choose your program and complete enrollment" },
+      { step: 2, title: "Onboarding", description: "Meet your mentor and set learning goals" },
+      { step: 3, title: "Learn & Build", description: "Weekly sessions with assignments and real-world projects" },
+      { step: 4, title: "Graduate", description: "Complete the program with certification and ongoing support" },
+    ],
+    faqs: [
+      { question: "What's included in the mentorship?", answer: "12 weekly 1-on-1 sessions, WhatsApp support, resource library, supplier contacts, and a graduation certificate." },
+      { question: "What if I miss a session?", answer: "You can reschedule up to 24 hours in advance. We also offer session recordings when available." },
+      { question: "Is there a payment plan?", answer: "Yes, we offer 3-month EMI options. Contact us for details on installment plans." },
     ],
   },
 };
@@ -196,15 +348,22 @@ export default function PublicServiceDetail() {
     "Dropshipping": { bg: "from-amber-900 to-orange-800", overlay: "bg-amber-950/40" },
     "Brand Development": { bg: "from-blue-900 to-indigo-800", overlay: "bg-blue-950/40" },
     "Consulting": { bg: "from-emerald-900 to-green-800", overlay: "bg-emerald-950/40" },
+    "Mentorship": { bg: "from-purple-900 to-violet-800", overlay: "bg-purple-950/40" },
   };
 
   const colorScheme = categoryColors[service.category] || { bg: "from-gray-900 to-gray-800", overlay: "bg-gray-950/40" };
 
   return (
     <PublicLayout>
-      {/* Hero with grainy texture */}
+      {/* Hero with banner image */}
       <section className={`relative bg-gradient-to-br ${colorScheme.bg} text-white py-16 lg:py-24 overflow-hidden`}>
-        {/* Grainy texture overlay */}
+        {serviceBanners[service.id] && (
+          <img
+            src={serviceBanners[service.id]}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-25"
+          />
+        )}
         <div className={`absolute inset-0 ${colorScheme.overlay}`} style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
           opacity: 0.15
@@ -239,7 +398,11 @@ export default function PublicServiceDetail() {
             <div className="hidden lg:block">
               <div className="grid grid-cols-2 gap-4">
                 {details.highlights.map((highlight, index) => (
-                  <div key={index} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-start gap-3">
+                  <div
+                    key={index}
+                    className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-start gap-3 animate-bounce-subtle"
+                    style={{ animationDelay: `${index * 150}ms` }}
+                  >
                     <CheckCircle className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
                     <span className="text-sm">{highlight}</span>
                   </div>
@@ -275,8 +438,11 @@ export default function PublicServiceDetail() {
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {details.features.map((feature, index) => (
-              <div key={index} className="text-center p-6 bg-gray-50 rounded-2xl border border-gray-200">
-                <div className="w-14 h-14 mx-auto mb-4 bg-[#F34147]/10 rounded-xl flex items-center justify-center">
+              <div key={index} className="text-center p-6 bg-gray-50 rounded-2xl border border-gray-200 hover:shadow-lg transition-shadow">
+                <div
+                  className="w-14 h-14 mx-auto mb-4 bg-[#F34147]/10 rounded-xl flex items-center justify-center animate-bounce-subtle"
+                  style={{ animationDelay: `${index * 200}ms` }}
+                >
                   <CheckCircle className="w-7 h-7 text-[#F34147]" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2">{feature.title}</h3>
@@ -314,26 +480,21 @@ export default function PublicServiceDetail() {
       <section className="py-12 bg-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <Users className="w-8 h-8 mx-auto mb-3 text-[#F34147]" />
-              <div className="text-2xl font-bold mb-1">1000+</div>
-              <div className="text-gray-400 text-sm">Happy Clients</div>
-            </div>
-            <div>
-              <Award className="w-8 h-8 mx-auto mb-3 text-[#F34147]" />
-              <div className="text-2xl font-bold mb-1">15+</div>
-              <div className="text-gray-400 text-sm">Years Experience</div>
-            </div>
-            <div>
-              <Shield className="w-8 h-8 mx-auto mb-3 text-[#F34147]" />
-              <div className="text-2xl font-bold mb-1">100%</div>
-              <div className="text-gray-400 text-sm">Secure Process</div>
-            </div>
-            <div>
-              <Clock className="w-8 h-8 mx-auto mb-3 text-[#F34147]" />
-              <div className="text-2xl font-bold mb-1">24/7</div>
-              <div className="text-gray-400 text-sm">Support Available</div>
-            </div>
+            {[
+              { icon: Users, value: "1000+", label: "Happy Clients" },
+              { icon: Award, value: "15+", label: "Years Experience" },
+              { icon: Shield, value: "100%", label: "Secure Process" },
+              { icon: Clock, value: "24/7", label: "Support Available" },
+            ].map((badge, index) => (
+              <div key={index}>
+                <badge.icon
+                  className="w-8 h-8 mx-auto mb-3 text-[#F34147] animate-bounce-subtle"
+                  style={{ animationDelay: `${index * 200}ms` }}
+                />
+                <div className="text-2xl font-bold mb-1">{badge.value}</div>
+                <div className="text-gray-400 text-sm">{badge.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
