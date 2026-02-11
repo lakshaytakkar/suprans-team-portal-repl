@@ -246,6 +246,8 @@ export const travelPackages = pgTable("travel_packages", {
   ageRange: text("age_range").default("18-60"),
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
+  seatsLeft: integer("seats_left").default(10),
+  bookingAmount: integer("booking_amount").default(30000),
   isFeatured: boolean("is_featured").default(false).notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   displayOrder: integer("display_order").default(0),
