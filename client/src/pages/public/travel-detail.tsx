@@ -43,13 +43,13 @@ declare global {
   }
 }
 
-import foshanTour from "../../assets/images/travel/foshan-tour.png";
-import wuxiEvTour from "../../assets/images/travel/wuxi-ev-tour.png";
-import yiwuShanghaiTour from "../../assets/images/travel/yiwu-shanghai-tour.png";
-import cantonPhase1 from "../../assets/images/travel/canton-phase1.png";
-import cantonPhase2 from "../../assets/images/travel/canton-phase2.png";
-import cantonPhase3 from "../../assets/images/travel/canton-phase3.png";
-import hongKongCanton from "../../assets/images/travel/hong-kong-canton.png";
+import foshanTour from "../../assets/images/travel/foshan-tour-real.jpg";
+import wuxiEvTour from "../../assets/images/travel/wuxi-ev-tour-real.jpg";
+import yiwuShanghaiTour from "../../assets/images/travel/yiwu-shanghai-real.jpg";
+import cantonPhase1 from "../../assets/images/travel/canton-phase-real.jpg";
+import cantonPhase2 from "../../assets/images/travel/canton-phase-real.jpg";
+import cantonPhase3 from "../../assets/images/travel/canton-phase-real.jpg";
+import hongKongCanton from "../../assets/images/travel/hong-kong-real.jpg";
 
 const imageMap: Record<string, string> = {
   "/assets/images/travel/foshan-tour.png": foshanTour,

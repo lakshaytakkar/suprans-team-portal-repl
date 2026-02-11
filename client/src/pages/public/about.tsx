@@ -3,14 +3,14 @@ import { Award, Users, Globe, Target, CheckCircle, ArrowRight, MapPin, Building2
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import PublicLayout from "@/components/public/PublicLayout";
-import mrSupransHero from "@/assets/images/mr-suprans-hero.png";
+import mrSupransHero from "@/assets/images/mr-suprans-hero-opt.jpg";
 
-import gurgaonOffice from "@/assets/images/offices/gurgaon-office.png";
-import mumbaiOffice from "@/assets/images/offices/mumbai-office.png";
-import bangaloreOffice from "@/assets/images/offices/bangalore-office.png";
-import yiwuOffice from "@/assets/images/offices/yiwu-office.png";
-import guangzhouOffice from "@/assets/images/offices/guangzhou-office.png";
-import newjerseyOffice from "@/assets/images/offices/newjersey-office.png";
+import gurgaonOffice from "@/assets/images/offices/gurgaon-office-real.jpg";
+import mumbaiOffice from "@/assets/images/offices/mumbai-office-real.jpg";
+import bangaloreOffice from "@/assets/images/offices/bangalore-office-real.jpg";
+import yiwuOffice from "@/assets/images/offices/yiwu-office-real.jpg";
+import guangzhouOffice from "@/assets/images/offices/guangzhou-office-real.jpg";
+import newjerseyOffice from "@/assets/images/offices/newjersey-office-real.jpg";
 
 // Icon maps for dynamic content
 const valuesIconMap: Record<string, React.ComponentType<any>> = {

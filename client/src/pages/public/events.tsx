@@ -8,12 +8,12 @@ import PublicLayout from "@/components/public/PublicLayout";
 import type { Event } from "@shared/schema";
 import { format } from "date-fns";
 
-import delhiSeminarImage from "@/assets/images/events/delhi-seminar.png";
-import mumbaiCantonImage from "@/assets/images/events/mumbai-canton-preview.png";
-import bangaloreWorkshopImage from "@/assets/images/events/bangalore-workshop.png";
-import hyderabadSummitImage from "@/assets/images/events/hyderabad-summit.png";
-import puneMeetupImage from "@/assets/images/events/pune-meetup.png";
-import chennaiIbsImage from "@/assets/images/events/chennai-ibs.png";
+import delhiSeminarImage from "@/assets/images/events/delhi-seminar-real.jpg";
+import mumbaiCantonImage from "@/assets/images/events/mumbai-event-real.jpg";
+import bangaloreWorkshopImage from "@/assets/images/events/bangalore-workshop-real.jpg";
+import hyderabadSummitImage from "@/assets/images/events/hyderabad-summit-real.jpg";
+import puneMeetupImage from "@/assets/images/events/pune-meetup-real.jpg";
+import chennaiIbsImage from "@/assets/images/events/chennai-ibs-real.jpg";
 
 const eventImageMap: Record<string, string> = {
   'Delhi': delhiSeminarImage,

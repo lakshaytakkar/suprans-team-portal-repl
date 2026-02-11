@@ -8,25 +8,30 @@ import PublicLayout from "@/components/public/PublicLayout";
 import type { Service, Event } from "@shared/schema";
 import { format } from "date-fns";
 
-import founderImage from "@/assets/images/founder-portrait.png";
+import founderImage from "@/assets/images/founder-portrait-opt.jpg";
 import heroImage from "@/assets/images/mr-suprans-hero-optimized.jpg";
-import cantonFairImage from "@/assets/images/canton-fair.png";
-import chinaFactoryImage from "@/assets/images/china-factory.png";
-import businessMeetingImage from "@/assets/images/business-meeting.png";
-import marketTourImage from "@/assets/images/market-tour.png";
-import seminarEventImage from "@/assets/images/seminar-event.png";
-import networkingEventImage from "@/assets/images/networking-event.png";
+import cantonFairImage from "@/assets/images/canton-fair-real.jpg";
+import chinaFactoryImage from "@/assets/images/china-factory-real.jpg";
+import businessMeetingImage from "@/assets/images/business-meeting-real.jpg";
+import marketTourImage from "@/assets/images/market-tour-real.jpg";
+import seminarEventImage from "@/assets/images/seminar-event-real.jpg";
+import networkingEventImage from "@/assets/images/networking-event-real.jpg";
 
-import serviceChinaTravel from "@/assets/images/service-china-travel.png";
-import serviceDropshipping from "@/assets/images/service-dropshipping.png";
-import serviceBrandDevelopment from "@/assets/images/service-brand-development.png";
-import serviceConsultation from "@/assets/images/service-consultation.png";
+import serviceChinaTravel from "@/assets/images/service-china-travel-real.jpg";
+import serviceDropshipping from "@/assets/images/service-dropshipping-real.jpg";
+import serviceBrandDevelopment from "@/assets/images/service-brand-dev-real.jpg";
+import serviceConsultation from "@/assets/images/service-consultation-real.jpg";
+import serviceLlcFormation from "@/assets/images/service-llc-formation.jpg";
+import serviceImport from "@/assets/images/service-import.jpg";
+import serviceFranchise from "@/assets/images/service-franchise.jpg";
+import serviceCantonFair from "@/assets/images/service-canton-fair.jpg";
+import serviceVirtualMeet from "@/assets/images/service-virtual-meet.jpg";
 
-import delhiSeminarImage from "@/assets/images/events/delhi-seminar.png";
-import mumbaiCantonImage from "@/assets/images/events/mumbai-canton-preview.png";
-import bangaloreWorkshopImage from "@/assets/images/events/bangalore-workshop.png";
-import hyderabadSummitImage from "@/assets/images/events/hyderabad-summit.png";
-import puneMeetupImage from "@/assets/images/events/pune-meetup.png";
+import delhiSeminarImage from "@/assets/images/events/delhi-seminar-real.jpg";
+import mumbaiCantonImage from "@/assets/images/events/mumbai-event-real.jpg";
+import bangaloreWorkshopImage from "@/assets/images/events/bangalore-workshop-real.jpg";
+import hyderabadSummitImage from "@/assets/images/events/hyderabad-summit-real.jpg";
+import puneMeetupImage from "@/assets/images/events/pune-meetup-real.jpg";
 
 const eventImageMap: Record<string, string> = {
   'Delhi': delhiSeminarImage,
@@ -50,6 +55,12 @@ const thumbnailMap: Record<string, string> = {
   'srv-dropshipping': serviceDropshipping,
   'srv-brand-development': serviceBrandDevelopment,
   'srv-consultation': serviceConsultation,
+  'srv-llc-formation': serviceLlcFormation,
+  'srv-import-service': serviceImport,
+  'srv-franchise-store': serviceFranchise,
+  'srv-canton-fair': serviceCantonFair,
+  'srv-china-travel': serviceChinaTravel,
+  'srv-virtual-meet': serviceVirtualMeet,
 };
 
 const stats = [
@@ -116,15 +127,15 @@ export default function PublicHome() {
   const dynamicFaqs = siteContent?.home_faqs?.items || faqs;
   const dynamicVideos = siteContent?.home_videos?.items || videoTestimonials;
 
-  const heroTags = siteContent?.home_hero?.tags || ["USA Dropshipping Expert", "E2E Imports from China", "India's #1 Business Channel"];
-  const heroTrustBadge = siteContent?.home_hero?.trust_badge || "Trusted by 1000+ Indian Entrepreneurs";
-  const heroHeadline = siteContent?.home_hero?.headline || "Explore Business in China";
-  const heroHeadlineSubtitle = siteContent?.home_hero?.headline_subtitle || "w/ Mr. Suprans";
-  const heroDescription = siteContent?.home_hero?.description || "Join India's most trusted business mentor for guided Canton Fair tours, factory visits, and supplier connections.";
-  const heroDescriptionStrong = "15+ years of experience helping entrepreneurs build profitable import businesses.";
-  const heroDescriptionMobile = siteContent?.home_hero?.description_mobile || "Canton Fair tours, factory visits & supplier connections with 15+ years expertise.";
-  const heroCtaPrimary = siteContent?.home_hero?.cta_primary || { text: "Explore China Packages", link: "/travel" };
-  const heroCtaSecondary = siteContent?.home_hero?.cta_secondary || { text: "Get a Callback", link: "/contact" };
+  const heroTags = siteContent?.home_hero?.tags || ["USA Dropshipping", "LLC Formation", "China Imports", "Brand Development"];
+  const heroTrustBadge = siteContent?.home_hero?.trust_badge || "Trusted by 1000+ Entrepreneurs Worldwide";
+  const heroHeadline = siteContent?.home_hero?.headline || "Your Business, Our Ecosystem";
+  const heroHeadlineSubtitle = siteContent?.home_hero?.headline_subtitle || "From Idea to Global Enterprise";
+  const heroDescription = siteContent?.home_hero?.description || "Suprans is India's leading business ecosystem — from USA LLC formation and dropshipping mentorship to China sourcing, brand development, and franchise setup. Mr. Suprans has helped 1000+ entrepreneurs build profitable global businesses.";
+  const heroDescriptionStrong = "One partner for every stage of your business journey.";
+  const heroDescriptionMobile = siteContent?.home_hero?.description_mobile || "LLC formation, dropshipping mentorship, China sourcing & brand development — 1000+ entrepreneurs trust Mr. Suprans.";
+  const heroCtaPrimary = siteContent?.home_hero?.cta_primary || { text: "Explore Our Services", link: "/services" };
+  const heroCtaSecondary = siteContent?.home_hero?.cta_secondary || { text: "Book a Free Consultation", link: "/contact" };
 
   useEffect(() => {
     setIsVisible(true);
@@ -191,7 +202,7 @@ export default function PublicHome() {
             <div className={`order-1 lg:order-2 relative transition-all duration-1000 delay-300 ${isVisible ? "opacity-100 translate-y-0 lg:translate-x-0" : "opacity-0 translate-y-8 lg:translate-x-8"}`}>
               <img
                 src={heroImage}
-                alt="Mr. Suprans - Your China Business Guide"
+                alt="Mr. Suprans - Business Mentor & Entrepreneur"
                 className="w-full max-w-xs md:max-w-lg mx-auto rounded-3xl shadow-2xl object-cover"
                 style={{ clipPath: "inset(0 20px 0 0)" }}
                 loading="eager"
@@ -223,12 +234,10 @@ export default function PublicHome() {
                 </span>
               </div>
 
-              {/* Headline - Simplified on mobile */}
+              {/* Headline */}
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4 md:mb-6">
-                <span className="md:hidden">{heroHeadline.replace('Explore ', '')} <span className="text-[#F34147]"></span></span>
-                <span className="hidden md:inline">
-                  {heroHeadline.split('China')[0]}<span className="text-[#F34147]">China</span>{heroHeadline.split('China').slice(1).join('China')}
-                </span>
+                {heroHeadline.split(' ').slice(0, -1).join(' ')}{' '}
+                <span className="text-[#F34147]">{heroHeadline.split(' ').slice(-1)[0]}</span>
                 <span className="block text-xl md:text-4xl mt-1 md:mt-2 text-gray-600">{heroHeadlineSubtitle}</span>
               </h1>
 
@@ -246,9 +255,9 @@ export default function PublicHome() {
               {/* CTA Buttons - Hidden on mobile (pinned at bottom) */}
               <div className="hidden md:flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link href={heroCtaPrimary.link}>
-                  <Button className="bg-[#F34147] hover:bg-[#D93036] text-white px-8 py-6 text-lg font-bold shadow-lg" data-testid="button-explore-packages">
+                  <Button className="bg-[#F34147] hover:bg-[#D93036] text-white px-8 py-6 text-lg font-bold shadow-lg" data-testid="button-explore-services">
                     {heroCtaPrimary.text}
-                    <Plane className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </Link>
                 <Link href={heroCtaSecondary.link}>
@@ -265,9 +274,9 @@ export default function PublicHome() {
               {/* Trust Indicators - Hidden on mobile */}
               <div className="hidden md:flex mt-10 flex-wrap items-center gap-6 justify-center lg:justify-start">
                 {[
-                  "Verified Suppliers",
-                  "Complete Visa Support",
-                  "On-ground Assistance",
+                  "1000+ Businesses Built",
+                  "15+ Years Experience",
+                  "End-to-End Support",
                 ].map((text, i) => (
                   <div
                     key={text}

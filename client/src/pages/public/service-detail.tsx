@@ -9,11 +9,11 @@ import { Textarea } from "@/components/ui/textarea";
 import PublicLayout from "@/components/public/PublicLayout";
 import type { Service } from "@shared/schema";
 
-import bannerDropshipping from "@/assets/images/banners/banner-dropshipping.png";
-import bannerLlcFormation from "@/assets/images/banners/banner-llc-formation.png";
-import bannerBrandDevelopment from "@/assets/images/banners/banner-brand-development.png";
-import bannerImportService from "@/assets/images/banners/banner-import-service.png";
-import bannerConsultation from "@/assets/images/banners/banner-consultation.png";
+import bannerDropshipping from "@/assets/images/banners/banner-dropshipping-real.jpg";
+import bannerLlcFormation from "@/assets/images/banners/banner-llc-real.jpg";
+import bannerBrandDevelopment from "@/assets/images/banners/banner-brand-dev-real.jpg";
+import bannerImportService from "@/assets/images/banners/banner-import-real.jpg";
+import bannerConsultation from "@/assets/images/banners/banner-consultation-real.jpg";
 
 const serviceBanners: Record<string, string> = {
   "srv-dropshipping": bannerDropshipping,

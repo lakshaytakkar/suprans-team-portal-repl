@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Menu, X, ChevronDown, ChevronRight, Phone, Mail, Zap, Facebook, Linkedin, Instagram, Youtube, ArrowUp, MessageCircle, Factory, Globe, Building2, Users, Plane } from "lucide-react";
-import { SiInstagram } from "react-icons/si";
+import { SiInstagram, SiWhatsapp } from "react-icons/si";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -13,13 +13,13 @@ import type { Service, TravelPackage } from "@shared/schema";
 import { format } from "date-fns";
 
 // Travel package images
-import hongKongCantonImg from "@/assets/images/travel/hong-kong-canton.png";
-import cantonPhase1Img from "@/assets/images/travel/canton-phase1.png";
-import cantonPhase2Img from "@/assets/images/travel/canton-phase2.png";
-import cantonPhase3Img from "@/assets/images/travel/canton-phase3.png";
-import foshanTourImg from "@/assets/images/travel/foshan-tour.png";
-import yiwuShanghaiImg from "@/assets/images/travel/yiwu-shanghai-tour.png";
-import wuxiEvImg from "@/assets/images/travel/wuxi-ev-tour.png";
+import hongKongCantonImg from "@/assets/images/travel/hong-kong-real.jpg";
+import cantonPhase1Img from "@/assets/images/travel/canton-phase-real.jpg";
+import cantonPhase2Img from "@/assets/images/travel/canton-phase-real.jpg";
+import cantonPhase3Img from "@/assets/images/travel/canton-phase-real.jpg";
+import foshanTourImg from "@/assets/images/travel/foshan-tour-real.jpg";
+import yiwuShanghaiImg from "@/assets/images/travel/yiwu-shanghai-real.jpg";
+import wuxiEvImg from "@/assets/images/travel/wuxi-ev-tour-real.jpg";
 
 const travelImageMap: Record<string, string> = {
   "hong-kong-canton-exclusive-trip": hongKongCantonImg,
@@ -638,9 +638,9 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         className={`hidden md:flex fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 hover:bg-green-600 rounded-full items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 group ${isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`}
         data-testid="whatsapp-button"
       >
-        <MessageCircle className="w-7 h-7 text-white" />
+        <SiWhatsapp className="w-7 h-7 text-white" />
         <span className="absolute right-full mr-3 px-3 py-1 bg-white text-gray-700 text-sm rounded-lg shadow-lg border border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-          Chat with us
+          Chat on WhatsApp
         </span>
       </a>
 
