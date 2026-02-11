@@ -223,6 +223,7 @@ export default function PublicHome() {
                 src={heroImage}
                 alt="Mr. Suprans - Your China Business Guide"
                 className="w-full max-w-xs md:max-w-lg mx-auto rounded-3xl shadow-2xl object-cover"
+                style={{ clipPath: "inset(0 20px 0 0)" }}
                 loading="eager"
                 fetchpriority="high"
                 decoding="async"
