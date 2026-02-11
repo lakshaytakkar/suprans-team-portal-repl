@@ -103,12 +103,9 @@ const faqs = [
 
 export default function PublicHome() {
   const servicesRef = useRef<HTMLDivElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [animatedStats, setAnimatedStats] = useState<Record<string, number>>({});
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
 
   const { data: siteContent } = useQuery<Record<string, Record<string, any>>>({
     queryKey: ["/api/public/website-content"],
@@ -177,33 +174,6 @@ export default function PublicHome() {
 
   const sortedServices = [...services].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
 
-  const checkScroll = () => {
-    if (carouselRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  };
-
-  const scrollCarousel = (direction: 'left' | 'right') => {
-    if (carouselRef.current) {
-      const scrollAmount = 340;
-      carouselRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-      setTimeout(checkScroll, 300);
-    }
-  };
-
-  useEffect(() => {
-    const carousel = carouselRef.current;
-    if (carousel) {
-      carousel.addEventListener('scroll', checkScroll);
-      checkScroll();
-      return () => carousel.removeEventListener('scroll', checkScroll);
-    }
-  }, [services]);
 
   return (
     <PublicLayout>
@@ -360,78 +330,51 @@ export default function PublicHome() {
               <p className="text-gray-500">Services coming soon</p>
             </div>
           ) : (
-            <div className="relative">
-              {/* Carousel Navigation */}
-              <button
-                onClick={() => scrollCarousel('left')}
-                className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-200 transition-all ${canScrollLeft ? 'opacity-100 hover:bg-gray-50' : 'opacity-0 pointer-events-none'}`}
-                data-testid="button-carousel-left"
-              >
-                <ChevronLeft className="w-6 h-6 text-gray-700" />
-              </button>
-              <button
-                onClick={() => scrollCarousel('right')}
-                className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-200 transition-all ${canScrollRight ? 'opacity-100 hover:bg-gray-50' : 'opacity-0 pointer-events-none'}`}
-                data-testid="button-carousel-right"
-              >
-                <ChevronRight className="w-6 h-6 text-gray-700" />
-              </button>
-
-              {/* Carousel Container */}
-              <div
-                ref={carouselRef}
-                className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-8"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {sortedServices.map((service) => {
-                  // Check by slug first, then by ID
-                  const thumbnail = (service.slug && thumbnailMap[service.slug]) || thumbnailMap[service.id] || null;
-                  return (
-                    <Link
-                      key={service.id}
-                      href={service.ctaLink || `/services/${service.slug || service.id}`}
-                      className="flex-shrink-0 w-[300px] group"
-                      data-testid={`card-service-${service.slug || service.id}`}
-                    >
-                      <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-xl hover:border-[#F34147]/30 transition-all duration-300 h-full flex flex-col">
-                        {/* Thumbnail */}
-                        <div className="relative h-[220px] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
-                          {thumbnail ? (
-                            <img
-                              src={thumbnail}
-                              alt={service.name}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Package className="w-16 h-16 text-gray-300" />
-                            </div>
-                          )}
-                          <div className="absolute top-4 left-4">
-                            <span className="bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-medium px-3 py-1 rounded-full">
-                              {service.category}
-                            </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+              {sortedServices.map((service) => {
+                const thumbnail = (service.slug && thumbnailMap[service.slug]) || thumbnailMap[service.id] || null;
+                return (
+                  <Link
+                    key={service.id}
+                    href={service.ctaLink || `/services/${service.slug || service.id}`}
+                    className="w-full max-w-[320px] group"
+                    data-testid={`card-service-${service.slug || service.id}`}
+                  >
+                    <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-xl hover:border-[#F34147]/30 transition-all duration-300 h-full flex flex-col">
+                      <div className="relative h-[200px] overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+                        {thumbnail ? (
+                          <img
+                            src={thumbnail}
+                            alt={service.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Package className="w-16 h-16 text-gray-300" />
                           </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="p-6 flex flex-col flex-1">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#F34147] transition-colors">
-                            {service.name}
-                          </h3>
-                          <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-1 line-clamp-3">
-                            {service.shortDescription || service.description}
-                          </p>
-                          <div className="flex items-center text-[#F34147] font-semibold text-sm group-hover:gap-2 transition-all">
-                            {service.ctaText || 'Learn More'} 
-                            <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                          </div>
+                        )}
+                        <div className="absolute top-4 left-4">
+                          <span className="bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-medium px-3 py-1 rounded-full">
+                            {service.category}
+                          </span>
                         </div>
                       </div>
-                    </Link>
-                  );
-                })}
-              </div>
+                      <div className="p-5 flex flex-col flex-1">
+                        <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#F34147] transition-colors">
+                          {service.name}
+                        </h3>
+                        <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-1 line-clamp-3">
+                          {service.shortDescription || service.description}
+                        </p>
+                        <div className="flex items-center text-[#F34147] font-semibold text-sm group-hover:gap-2 transition-all">
+                          {service.ctaText || 'Learn More'}
+                          <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
