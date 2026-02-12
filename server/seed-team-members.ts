@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { teamMembers, channels } from "@shared/schema";
+import { teamMembers, channels, users } from "@shared/schema";
 
 const ADMIN_ID = "cef223ad-1909-4c9b-bdee-239aa5e99387";
 
@@ -159,19 +159,35 @@ export async function seedTeamMembers() {
   if (existingMembers.length === 0) {
     console.log("Seeding team members...");
 
+    const existingUsers = await db.select({ id: users.id }).from(users);
+    const existingUserIds = new Set(existingUsers.map(u => u.id));
+
+    if (existingUserIds.size === 0) {
+      console.log("No users found in database - skipping team member seeding (create users first).");
+      return;
+    }
+
     const allMemberRows: { teamId: string; userId: string; role: string }[] = [];
 
     for (const teamId of ALL_TEAMS) {
-      allMemberRows.push({ teamId, userId: ADMIN_ID, role: "manager" });
+      if (existingUserIds.has(ADMIN_ID)) {
+        allMemberRows.push({ teamId, userId: ADMIN_ID, role: "manager" });
+      }
 
       const members = TEAM_MEMBERS[teamId] || [];
       for (const member of members) {
-        allMemberRows.push({ teamId, userId: member.userId, role: member.role });
+        if (existingUserIds.has(member.userId)) {
+          allMemberRows.push({ teamId, userId: member.userId, role: member.role });
+        }
       }
     }
 
-    await db.insert(teamMembers).values(allMemberRows);
-    console.log(`Seeded ${allMemberRows.length} team member records.`);
+    if (allMemberRows.length > 0) {
+      await db.insert(teamMembers).values(allMemberRows);
+      console.log(`Seeded ${allMemberRows.length} team member records.`);
+    } else {
+      console.log("No matching users found for team member seeding.");
+    }
   } else {
     console.log("Team members already seeded, skipping...");
   }

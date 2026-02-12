@@ -412,12 +412,12 @@ export class Storage implements IStorage {
   }
 
   async createLead(lead: InsertLead): Promise<Lead> {
-    const result = await db.insert(leads).values(lead).returning();
+    const result = await db.insert(leads).values(lead as any).returning();
     return result[0];
   }
 
   async updateLead(id: string, updates: Partial<InsertLead>): Promise<Lead | undefined> {
-    const result = await db.update(leads).set(updates).where(eq(leads.id, id)).returning();
+    const result = await db.update(leads).set(updates as any).where(eq(leads.id, id)).returning();
     return result[0];
   }
 
@@ -490,12 +490,12 @@ export class Storage implements IStorage {
   }
 
   async createTask(task: InsertTask): Promise<Task> {
-    const result = await db.insert(tasks).values(task).returning();
+    const result = await db.insert(tasks).values(task as any).returning();
     return result[0];
   }
 
   async updateTask(id: string, updates: Partial<InsertTask>): Promise<Task | undefined> {
-    const result = await db.update(tasks).set(updates).where(eq(tasks.id, id)).returning();
+    const result = await db.update(tasks).set(updates as any).where(eq(tasks.id, id)).returning();
     return result[0];
   }
 
@@ -616,12 +616,12 @@ export class Storage implements IStorage {
   }
 
   async createTravelPackage(pkg: InsertTravelPackage): Promise<TravelPackage> {
-    const result = await db.insert(travelPackages).values(pkg).returning();
+    const result = await db.insert(travelPackages).values(pkg as any).returning();
     return result[0];
   }
 
   async updateTravelPackage(id: string, updates: Partial<InsertTravelPackage>): Promise<TravelPackage | undefined> {
-    const result = await db.update(travelPackages).set(updates).where(eq(travelPackages.id, id)).returning();
+    const result = await db.update(travelPackages).set(updates as any).where(eq(travelPackages.id, id)).returning();
     return result[0];
   }
 

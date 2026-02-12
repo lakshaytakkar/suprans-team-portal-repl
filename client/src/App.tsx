@@ -75,7 +75,7 @@ function TeamPortalRouter() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const user = await api.getCurrentUser();
+        const user = await api.getCurrentUser() as any;
         setCurrentUser(user);
       } catch (error) {
         if (!location.startsWith('/team/login')) {
