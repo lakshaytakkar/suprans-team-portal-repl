@@ -54,18 +54,17 @@ import { Input } from "@/components/ui/input";
 import { AddTaskDialog } from "@/components/dialogs/AddTaskDialog";
 import { TaskDetailDialog } from "@/components/dialogs/TaskDetailDialog";
 
-// Kanban Column Component
 function KanbanColumn({ id, title, tasks, color, onTaskClick }: { id: string, title: string, tasks: any[], color: string, onTaskClick?: (task: any) => void }) {
   const { setNodeRef } = useSortable({ id });
 
   return (
-    <div className="flex flex-col h-full min-w-[280px] w-full max-w-[320px] bg-[#F8F9FB] rounded-[16px] border border-[#DFE1E7]">
-      <div className="p-4 flex items-center justify-between border-b border-[#DFE1E7]">
+    <div className="flex flex-col h-full min-w-[280px] w-full max-w-[320px] bg-muted rounded-xl border">
+      <div className="p-4 flex items-center justify-between border-b">
         <div className="flex items-center gap-2">
           <div className={`h-2 w-2 rounded-full bg-${color}-500`} />
-          <span className="font-semibold text-[14px] text-[#0D0D12]">{title}</span>
+          <span className="font-semibold text-[14px] text-foreground">{title}</span>
         </div>
-        <Badge variant="secondary" className="bg-white text-[#666D80] border-[#DFE1E7]">{tasks.length}</Badge>
+        <Badge variant="secondary" className="bg-card text-muted-foreground">{tasks.length}</Badge>
       </div>
       
       <div ref={setNodeRef} className="flex-1 p-3 space-y-3 overflow-y-auto max-h-[calc(100vh-220px)] scrollbar-thin">
@@ -75,7 +74,7 @@ function KanbanColumn({ id, title, tasks, color, onTaskClick }: { id: string, ti
           ))}
         </SortableContext>
         {tasks.length === 0 && (
-          <div className="h-24 flex items-center justify-center text-xs text-[#666D80] border border-dashed border-[#DFE1E7] rounded-md">
+          <div className="h-24 flex items-center justify-center text-xs text-muted-foreground border border-dashed rounded-md">
             No tasks
           </div>
         )}
@@ -84,7 +83,6 @@ function KanbanColumn({ id, title, tasks, color, onTaskClick }: { id: string, ti
   );
 }
 
-// Draggable Card Component
 function SortableTaskCard({ task, onClick }: { task: any, onClick?: (task: any) => void }) {
   const {
     attributes,
@@ -108,45 +106,44 @@ function SortableTaskCard({ task, onClick }: { task: any, onClick?: (task: any) 
   );
 }
 
-// Actual Card UI
 function TaskCard({ task }: { task: any }) {
   const priorityColor = {
-    low: "text-blue-500 bg-blue-50",
-    medium: "text-orange-500 bg-orange-50",
-    high: "text-red-500 bg-red-50"
+    low: "text-blue-500 bg-blue-50 dark:bg-blue-500/10",
+    medium: "text-orange-500 bg-orange-50 dark:bg-orange-500/10",
+    high: "text-red-500 bg-red-50 dark:bg-red-500/10"
   };
 
   return (
-    <Card className="cursor-grab active:cursor-grabbing hover:shadow-md transition-all border-[#DFE1E7] bg-white group">
+    <Card className="cursor-grab active:cursor-grabbing hover-elevate transition-all bg-card group">
       <CardContent className="p-4 space-y-3">
         <div className="flex justify-between items-start">
           <Badge className={`text-[10px] px-2 py-0.5 border-0 font-medium ${priorityColor[task.priority as keyof typeof priorityColor]} capitalize`}>
             {task.priority}
           </Badge>
-          <button className="text-[#666D80] hover:text-[#0D0D12] opacity-0 group-hover:opacity-100 transition-opacity">
+          <button className="text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
             <MoreHorizontal className="h-4 w-4" />
           </button>
         </div>
 
         <div className="space-y-1">
-          <h4 className="text-[14px] font-semibold text-[#0D0D12] leading-tight">{task.title}</h4>
-          <p className="text-[12px] text-[#666D80] line-clamp-2">{task.description}</p>
+          <h4 className="text-[14px] font-semibold text-foreground leading-tight">{task.title}</h4>
+          <p className="text-[12px] text-muted-foreground line-clamp-2">{task.description}</p>
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
           {task.tags?.map((tag: string) => (
-            <span key={tag} className="text-[10px] font-medium text-[#666D80] bg-[#F8F9FB] px-2 py-0.5 rounded-full border border-[#DFE1E7]">
+            <span key={tag} className="text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full border">
               {tag}
             </span>
           ))}
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-[#F8F9FB]">
-          <div className="flex items-center gap-1.5 text-[12px] text-[#666D80]">
+        <div className="flex items-center justify-between pt-3 border-t border-border/50">
+          <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
             <Calendar className="h-3.5 w-3.5" />
             <span>{format(new Date(task.dueDate), 'MMM d')}</span>
           </div>
-          <Avatar className="h-6 w-6 border border-white shadow-sm">
+          <Avatar className="h-6 w-6 border border-card shadow-sm">
             <AvatarImage src={`https://api.dicebear.com/7.x/micah/svg?seed=${task.assignedTo}`} />
             <AvatarFallback className="text-[10px]">U</AvatarFallback>
           </Avatar>
@@ -158,56 +155,56 @@ function TaskCard({ task }: { task: any }) {
 
 function TasksListView({ tasks, onTaskClick }: { tasks: any[], onTaskClick: (task: any) => void }) {
   const priorityColor = {
-    low: "text-blue-500 bg-blue-50 border-blue-100",
-    medium: "text-orange-500 bg-orange-50 border-orange-100",
-    high: "text-red-500 bg-red-50 border-red-100"
+    low: "text-blue-500 bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20",
+    medium: "text-orange-500 bg-orange-50 dark:bg-orange-500/10 border-orange-100 dark:border-orange-500/20",
+    high: "text-red-500 bg-red-50 dark:bg-red-500/10 border-red-100 dark:border-red-500/20"
   };
 
   return (
-    <div className="border border-[#DFE1E7] rounded-[12px] overflow-hidden bg-white shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)]">
+    <div className="border rounded-lg overflow-hidden bg-card shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none">
       <Table>
-        <TableHeader className="bg-[#F8F9FB]">
-          <TableRow className="hover:bg-transparent border-[#DFE1E7]">
+        <TableHeader className="bg-muted">
+          <TableRow className="hover:bg-transparent border-b">
             <TableHead className="w-[50px] pl-6">
-              <Checkbox className="border-[#DFE1E7] data-[state=checked]:bg-[#F34147] data-[state=checked]:border-[#F34147] rounded-[4px]" />
+              <Checkbox className="border data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded" />
             </TableHead>
-            <TableHead className="text-[12px] font-medium text-[#666D80] uppercase tracking-wider h-[48px]">Task Name</TableHead>
-            <TableHead className="text-[12px] font-medium text-[#666D80] uppercase tracking-wider">Due Date</TableHead>
-            <TableHead className="text-[12px] font-medium text-[#666D80] uppercase tracking-wider">Assignee</TableHead>
-            <TableHead className="text-[12px] font-medium text-[#666D80] uppercase tracking-wider w-[200px]">Progress</TableHead>
-            <TableHead className="text-[12px] font-medium text-[#666D80] uppercase tracking-wider">Priority</TableHead>
-            <TableHead className="text-[12px] font-medium text-[#666D80] uppercase tracking-wider text-right pr-6">Action</TableHead>
+            <TableHead className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider h-[48px]">Task Name</TableHead>
+            <TableHead className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">Due Date</TableHead>
+            <TableHead className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">Assignee</TableHead>
+            <TableHead className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider w-[200px]">Progress</TableHead>
+            <TableHead className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">Priority</TableHead>
+            <TableHead className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider text-right pr-6">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {tasks.map((task) => (
             <TableRow 
               key={task.id} 
-              className="hover:bg-[#F8F9FB] border-[#DFE1E7] cursor-pointer group transition-colors"
+              className="hover-elevate border-b cursor-pointer group transition-colors"
               onClick={() => onTaskClick(task)}
             >
               <TableCell className="pl-6 py-4">
                 <Checkbox 
-                  className="border-[#DFE1E7] data-[state=checked]:bg-[#F34147] data-[state=checked]:border-[#F34147] rounded-[4px]" 
+                  className="border data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded" 
                   onClick={(e) => e.stopPropagation()}
                 />
               </TableCell>
               <TableCell>
                 <div className="flex flex-col gap-1">
-                  <span className="text-[14px] font-medium text-[#0D0D12]">{task.title}</span>
-                  <span className="text-[12px] text-[#666D80] line-clamp-1">{task.description}</span>
+                  <span className="text-[14px] font-medium text-foreground">{task.title}</span>
+                  <span className="text-[12px] text-muted-foreground line-clamp-1">{task.description}</span>
                 </div>
               </TableCell>
               <TableCell>
-                <span className="text-[14px] text-[#0D0D12]">{format(new Date(task.dueDate), 'MMM d, yyyy')}</span>
+                <span className="text-[14px] text-foreground">{format(new Date(task.dueDate), 'MMM d, yyyy')}</span>
               </TableCell>
               <TableCell>
                 <div className="flex -space-x-2">
-                  <Avatar className="h-8 w-8 border-2 border-white">
+                  <Avatar className="h-8 w-8 border-2 border-card">
                     <AvatarImage src={`https://api.dicebear.com/7.x/micah/svg?seed=${task.assignedTo}`} />
                     <AvatarFallback>U</AvatarFallback>
                   </Avatar>
-                  <div className="h-8 w-8 rounded-full bg-[#F3F4F6] border-2 border-white flex items-center justify-center text-[10px] text-[#666D80] font-medium">
+                  <div className="h-8 w-8 rounded-full bg-muted border-2 border-card flex items-center justify-center text-[10px] text-muted-foreground font-medium">
                     +2
                   </div>
                 </div>
@@ -215,7 +212,7 @@ function TasksListView({ tasks, onTaskClick }: { tasks: any[], onTaskClick: (tas
               <TableCell>
                 <div className="flex items-center gap-3">
                   <Progress value={task.status === 'done' ? 100 : task.status === 'in_progress' ? 50 : 0} className="h-1.5" />
-                  <span className="text-[12px] font-medium text-[#0D0D12]">
+                  <span className="text-[12px] font-medium text-foreground">
                     {task.status === 'done' ? '100%' : task.status === 'in_progress' ? '50%' : '0%'}
                   </span>
                 </div>
@@ -226,7 +223,7 @@ function TasksListView({ tasks, onTaskClick }: { tasks: any[], onTaskClick: (tas
                 </Badge>
               </TableCell>
               <TableCell className="text-right pr-6">
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-[#666D80] hover:text-[#0D0D12] opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </TableCell>
@@ -335,23 +332,23 @@ export default function Tasks() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-[24px] font-bold text-[#0D0D12]">{currentUser?.role === 'superadmin' ? 'Team Tasks' : 'My Tasks'}</h1>
-            <p className="text-[14px] text-[#666D80] mt-1">
+            <h1 className="text-xl font-semibold text-foreground leading-[1.35] tracking-tight">{currentUser?.role === 'superadmin' ? 'Team Tasks' : 'My Tasks'}</h1>
+            <p className="text-sm text-muted-foreground mt-1">
               {currentUser?.role === 'superadmin' ? 'Manage and track tasks across the team.' : 'Manage your daily tasks and priorities.'}
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="bg-[#F9F9FB] p-1 rounded-[8px] border border-[#DFE1E7] flex items-center">
+            <div className="bg-muted p-1 rounded-lg border flex items-center">
               <button 
                 onClick={() => setViewMode('board')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-[6px] text-[14px] font-medium transition-all ${viewMode === 'board' ? 'bg-white text-[#0D0D12] shadow-sm' : 'text-[#666D80] hover:text-[#0D0D12]'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-[14px] font-medium transition-all ${viewMode === 'board' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'}`}
               >
                 <LayoutGrid className="h-4 w-4" />
                 Kanban
               </button>
               <button 
                 onClick={() => setViewMode('list')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-[6px] text-[14px] font-medium transition-all ${viewMode === 'list' ? 'bg-white text-[#0D0D12] shadow-sm' : 'text-[#666D80] hover:text-[#0D0D12]'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-[14px] font-medium transition-all ${viewMode === 'list' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground'}`}
               >
                 <List className="h-4 w-4" />
                 List
@@ -360,28 +357,28 @@ export default function Tasks() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pb-4 border-b border-[#DFE1E7]">
+        <div className="flex items-center justify-between pb-4 border-b">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666D80]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
                 placeholder="Search tasks..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-[40px] w-[280px] border-[#DFE1E7] bg-white rounded-[10px]"
+                className="pl-9 h-[40px] w-[280px] bg-card rounded-lg"
               />
             </div>
-            <Button variant="outline" className="h-[40px] border-[#DFE1E7] text-[#666D80] rounded-[10px] hover:text-[#0D0D12] bg-white">
+            <Button variant="outline" className="h-[40px] rounded-lg">
               <ArrowUpDown className="mr-2 h-4 w-4" />
               Sort By
             </Button>
-            <Button variant="outline" className="h-[40px] border-[#DFE1E7] text-[#666D80] rounded-[10px] hover:text-[#0D0D12] bg-white">
+            <Button variant="outline" className="h-[40px] rounded-lg">
               <Filter className="mr-2 h-4 w-4" />
               Filter
             </Button>
           </div>
           <Button 
-            className="bg-[#F34147] hover:bg-[#D93036] text-white h-[40px] rounded-[10px] px-6"
+            className="h-[40px] rounded-lg px-6"
             onClick={() => setAddOpen(true)}
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -393,7 +390,7 @@ export default function Tasks() {
       {/* Content Area */}
       {tasksLoading ? (
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-[#666D80] text-sm">Loading tasks...</div>
+          <div className="text-muted-foreground text-sm">Loading tasks...</div>
         </div>
       ) : viewMode === 'board' ? (
         <DndContext

@@ -99,57 +99,57 @@ export function AddTaskDialog({ children, trigger, open, onOpenChange, onSubmit 
         )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[700px] p-0 rounded-[16px] overflow-hidden gap-0">
-        <DialogHeader className="p-6 border-b border-[#DFE1E7] flex flex-row items-center justify-between space-y-0 h-[88px]">
-          <DialogTitle className="text-[18px] font-semibold text-[#0D0D12] tracking-[0.36px]">Add New Task</DialogTitle>
-          <div className="w-[40px] h-[40px] bg-white border border-[#DFE1E7] rounded-full flex items-center justify-center shadow-sm">
-             <CheckSquare className="h-6 w-6 text-[#0D0D12]" />
+        <DialogHeader className="p-6 border-b border flex flex-row items-center justify-between space-y-0 h-[88px]">
+          <DialogTitle className="text-[18px] font-semibold text-foreground tracking-[0.36px]">Add New Task</DialogTitle>
+          <div className="w-[40px] h-[40px] bg-card border border rounded-full flex items-center justify-center shadow-sm">
+             <CheckSquare className="h-6 w-6 text-foreground" />
           </div>
         </DialogHeader>
         
         <form onSubmit={handleSubmit}>
           <div className="p-6 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title" className="text-[14px] font-medium text-[#666D80] tracking-[0.28px]">Task Title</Label>
+              <Label htmlFor="title" className="text-[14px] font-medium text-muted-foreground tracking-[0.28px]">Task Title</Label>
               <Input 
                 id="title" 
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="h-[52px] rounded-[12px] border-[#DFE1E7] text-[16px] text-[#0D0D12]"
+                className="h-[52px] rounded-lg border text-[16px] text-foreground"
                 placeholder="e.g. Update client proposal"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description" className="text-[14px] font-medium text-[#666D80] tracking-[0.28px]">Description</Label>
+              <Label htmlFor="description" className="text-[14px] font-medium text-muted-foreground tracking-[0.28px]">Description</Label>
               <Textarea 
                 id="description" 
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="min-h-[100px] rounded-[12px] border-[#DFE1E7] text-[16px] text-[#0D0D12] resize-none p-3"
+                className="min-h-[100px] rounded-lg border text-[16px] text-foreground resize-none p-3"
                 placeholder="Add details about this task..."
               />
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="dueDate" className="text-[14px] font-medium text-[#666D80] tracking-[0.28px]">Due Date</Label>
+                <Label htmlFor="dueDate" className="text-[14px] font-medium text-muted-foreground tracking-[0.28px]">Due Date</Label>
                 <Input 
                   id="dueDate" 
                   type="date"
                   required
                   value={formData.dueDate}
                   onChange={(e) => setFormData({...formData, dueDate: e.target.value})}
-                  className="h-[52px] rounded-[12px] border-[#DFE1E7] text-[16px] text-[#0D0D12]"
+                  className="h-[52px] rounded-lg border text-[16px] text-foreground"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="priority" className="text-[14px] font-medium text-[#666D80] tracking-[0.28px]">Priority</Label>
+                <Label htmlFor="priority" className="text-[14px] font-medium text-muted-foreground tracking-[0.28px]">Priority</Label>
                 <Select 
                   value={formData.priority} 
                   onValueChange={(val) => setFormData({...formData, priority: val})}
                 >
-                  <SelectTrigger className="h-[52px] rounded-[12px] border-[#DFE1E7] text-[16px] text-[#0D0D12]">
+                  <SelectTrigger className="h-[52px] rounded-lg border text-[16px] text-foreground">
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent>
@@ -163,12 +163,12 @@ export function AddTaskDialog({ children, trigger, open, onOpenChange, onSubmit 
 
             {isAdmin && (
               <div className="space-y-2">
-                <Label htmlFor="assignedTo" className="text-[14px] font-medium text-[#666D80] tracking-[0.28px]">Assign To</Label>
+                <Label htmlFor="assignedTo" className="text-[14px] font-medium text-muted-foreground tracking-[0.28px]">Assign To</Label>
                 <Select 
                   value={formData.assignedTo} 
                   onValueChange={(val) => setFormData({...formData, assignedTo: val})}
                 >
-                  <SelectTrigger className="h-[52px] rounded-[12px] border-[#DFE1E7] text-[16px] text-[#0D0D12]">
+                  <SelectTrigger className="h-[52px] rounded-lg border text-[16px] text-foreground">
                     <SelectValue placeholder="Select team member" />
                   </SelectTrigger>
                   <SelectContent>
@@ -181,18 +181,18 @@ export function AddTaskDialog({ children, trigger, open, onOpenChange, onSubmit 
             )}
           </div>
           
-          <div className="p-6 border-t border-[#DFE1E7] flex items-center justify-end gap-3 h-[88px] bg-white">
+          <div className="p-6 border-t border flex items-center justify-end gap-3 h-[88px] bg-card">
             <Button 
               type="button" 
               variant="outline" 
               onClick={() => setShow(false)}
-              className="h-[48px] w-[120px] rounded-[10px] border-[#DFE1E7] text-[#0D0D12] font-semibold text-[16px]"
+              className="h-[48px] w-[120px] rounded-[10px] border text-foreground font-semibold text-[16px]"
             >
               Cancel
             </Button>
             <Button 
               type="submit"
-              className="h-[48px] w-[120px] rounded-[10px] bg-[#F34147] hover:bg-[#D93036] text-white font-semibold text-[16px] border border-[#F34147] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)]"
+              className="h-[48px] w-[120px] rounded-lg font-semibold text-[16px]"
             >
               Create Task
             </Button>

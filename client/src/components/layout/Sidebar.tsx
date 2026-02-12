@@ -153,28 +153,29 @@ export function Sidebar({ className }: SidebarProps) {
   const navGroups = (isTeamAdmin && currentTeam.adminGroups) ? currentTeam.adminGroups : currentTeam.groups;
 
   return (
-    <div className={cn("flex h-screen w-[280px] flex-col border-r bg-sidebar p-6 shrink-0 fixed left-0 top-0 overflow-y-auto z-50 no-scrollbar", className)}>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button 
-            className="flex items-center gap-3 mb-8 w-full hover:bg-muted/50 rounded-lg py-2.5 px-2 transition-colors cursor-pointer group"
-            data-testid="button-team-switcher"
-          >
-            <div 
-              className="flex h-9 w-9 items-center justify-center rounded-lg shadow-sm"
-              style={{ backgroundColor: currentTeam.color }}
+    <div className={cn("flex h-screen w-[272px] flex-col border-r bg-sidebar shrink-0 fixed left-0 top-0 overflow-y-auto z-50 no-scrollbar", className)}>
+      <div className="h-20 flex items-center px-5 border-b border-sidebar-border shrink-0">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button 
+              className="flex items-center gap-3 w-full hover-elevate rounded-md py-2 px-2 transition-colors cursor-pointer group"
+              data-testid="button-team-switcher"
             >
-              <currentTeam.icon className="h-5 w-5 text-white" />
-            </div>
-            <div className="flex flex-col flex-1 text-left min-w-0">
-              <span className="text-sm font-bold tracking-tight text-foreground leading-none truncate">{currentTeam.name}</span>
-              <span className="text-xs text-muted-foreground mt-0.5 truncate">
-                {currentTeam.subtitle}
-              </span>
-            </div>
-            <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
-          </button>
-        </DropdownMenuTrigger>
+              <div 
+                className="flex h-9 w-9 items-center justify-center rounded-lg shrink-0"
+                style={{ backgroundColor: currentTeam.color }}
+              >
+                <currentTeam.icon className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex flex-col flex-1 text-left min-w-0">
+                <span className="text-[15px] font-semibold tracking-tight text-foreground leading-none truncate">{currentTeam.name}</span>
+                <span className="text-[12px] text-muted-foreground mt-1 truncate">
+                  {currentTeam.subtitle}
+                </span>
+              </div>
+              <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors flex-shrink-0" />
+            </button>
+          </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-[380px]" sideOffset={4}>
           <ScrollArea className="h-[450px]">
             {businessTeams.length > 0 && (
@@ -240,12 +241,13 @@ export function Sidebar({ className }: SidebarProps) {
             )}
           </ScrollArea>
         </DropdownMenuContent>
-      </DropdownMenu>
+        </DropdownMenu>
+      </div>
 
-      <div className="space-y-6 flex-1">
+      <div className="flex-1 py-2 px-3 space-y-4">
         {navGroups.map((group, i) => (
-          <div key={i} className="space-y-1">
-            <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 mb-2">
+          <div key={i} className="py-2">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground px-2 mb-1">
               {group.label}
             </h3>
             <div className="space-y-0.5">
@@ -257,24 +259,15 @@ export function Sidebar({ className }: SidebarProps) {
                   <Link key={item.label} href={item.href}>
                     <div
                       className={cn(
-                        "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all relative cursor-pointer",
+                        "group flex items-center gap-3 rounded-md px-3 h-9 text-[14px] font-medium transition-all cursor-pointer",
                         active
-                          ? "text-foreground font-semibold bg-muted/50"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                          ? "bg-primary text-white"
+                          : "text-sidebar-foreground hover-elevate"
                       )}
                       data-testid={`navitem-${item.label.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and')}`}
                     >
-                      {active && (
-                        <div 
-                          className="absolute left-0 h-5 w-1 rounded-r-full" 
-                          style={{ backgroundColor: currentTeam.color }}
-                        />
-                      )}
-                      <item.icon 
-                        className={cn("h-4 w-4 transition-colors", active ? "" : "text-muted-foreground group-hover:text-foreground")} 
-                        style={active ? { color: currentTeam.color } : {}}
-                      />
-                      {item.label}
+                      <item.icon className="h-[18px] w-[18px]" />
+                      <span>{item.label}</span>
                     </div>
                   </Link>
                 );
@@ -284,17 +277,22 @@ export function Sidebar({ className }: SidebarProps) {
         ))}
 
         {isSuperadmin && currentTeam.id !== 'admin-it' && (
-          <div className="space-y-1">
-            <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 mb-2">
+          <div className="py-2">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground px-2 mb-1">
               System
             </h3>
             <Link href="/team/admin/settings">
               <div 
-                className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 cursor-pointer transition-all"
+                className={cn(
+                  "group flex items-center gap-3 rounded-md px-3 h-9 text-[14px] font-medium cursor-pointer transition-all",
+                  location.startsWith("/team/admin/settings")
+                    ? "bg-primary text-white"
+                    : "text-sidebar-foreground hover-elevate"
+                )}
                 data-testid="navitem-settings"
               >
-                <Settings className="h-4 w-4 group-hover:text-foreground transition-colors" />
-                Settings
+                <Settings className="h-[18px] w-[18px]" />
+                <span>Settings</span>
               </div>
             </Link>
           </div>

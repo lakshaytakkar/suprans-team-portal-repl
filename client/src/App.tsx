@@ -55,6 +55,7 @@ import FaireSuppliersPage from "@/pages/faire/suppliers";
 import { useStore } from "@/lib/store";
 import { api } from "@/lib/api";
 import { useEffect, useState } from "react";
+import { ThemeProvider } from "@/components/theme-provider";
 
 import Login from "@/pages/login";
 import PublicHome from "@/pages/public/home";
@@ -209,12 +210,14 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ThemeProvider defaultTheme="light" storageKey="suprans-theme">
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

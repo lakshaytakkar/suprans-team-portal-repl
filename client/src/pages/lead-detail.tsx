@@ -163,22 +163,22 @@ export default function LeadDetail() {
       <div className="shrink-0 pt-1 px-1 pb-2 flex flex-col gap-2">
         {/* Header Navigation */}
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center text-sm text-[#666D80] gap-2">
+          <div className="flex items-center text-sm text-muted-foreground gap-2">
             <Link href="/leads">
-              <a className="hover:text-[#0D0D12] transition-colors flex items-center gap-1">
+              <a className="hover:text-foreground transition-colors flex items-center gap-1">
                 <Users className="h-4 w-4" />
                 Leads
               </a>
             </Link>
             <ChevronRight className="h-4 w-4" />
-            <span className="text-[#0D0D12] font-medium truncate">{lead.name}</span>
+            <span className="text-foreground font-medium truncate">{lead.name}</span>
           </div>
           
           <div className="flex items-center gap-2">
             <Button 
               variant="outline" 
               size="icon" 
-              className="h-8 w-8 border-[#DFE1E7]" 
+              className="h-8 w-8 border" 
               disabled={!prevLeadId}
               onClick={() => navigateToLead(prevLeadId)}
             >
@@ -187,7 +187,7 @@ export default function LeadDetail() {
             <Button 
               variant="outline" 
               size="icon" 
-              className="h-8 w-8 border-[#DFE1E7]"
+              className="h-8 w-8 border"
               disabled={!nextLeadId}
               onClick={() => navigateToLead(nextLeadId)}
             >
@@ -197,26 +197,26 @@ export default function LeadDetail() {
         </div>
 
         {/* Main Profile Header Card */}
-        <div className="bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden shrink-0">
+        <div className="bg-card border rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden shrink-0">
           <div className="p-6 pb-4">
           <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-6">
             <div className="flex flex-col gap-4 flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-4">
-                <Avatar className="h-12 w-12 border border-[#DFE1E7] shadow-sm">
+                <Avatar className="h-12 w-12 border shadow-sm">
                   <AvatarImage src={lead.avatar} className="object-cover" />
-                  <AvatarFallback className="text-sm bg-[#F8F9FB]">{lead.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="text-sm bg-muted">{lead.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-3">
-                    <h1 className="text-[20px] font-bold text-[#0D0D12] leading-tight">{lead.name}</h1>
-                    <div className="h-4 w-[1px] bg-[#DFE1E7]" />
+                    <h1 className="text-[20px] font-bold text-foreground leading-tight">{lead.name}</h1>
+                    <div className="h-4 w-[1px] bg-border" />
                     
                     {/* Rating Stars with Integrated Temperature */}
-                    <div className="flex items-center gap-2 bg-gray-50 rounded-full px-2 py-0.5 border border-gray-100">
+                    <div className="flex items-center gap-2 bg-muted rounded-full px-2 py-0.5 border">
                       <div className="flex items-center">
                         {[1, 2, 3, 4, 5].map((star) => {
-                          let fillClass = "text-[#DFE1E7]";
+                          let fillClass = "text-border";
                           if (star <= rating) {
                             if (rating >= 4) fillClass = "fill-red-500 text-red-500";
                             else if (rating === 3) fillClass = "fill-orange-500 text-orange-500";
@@ -242,13 +242,13 @@ export default function LeadDetail() {
                         "text-[10px] font-bold uppercase tracking-wider",
                         rating >= 4 ? "text-red-600" :
                         rating === 3 ? "text-orange-600" :
-                        rating > 0 ? "text-blue-600" : "text-gray-400"
+                        rating > 0 ? "text-blue-600" : "text-muted-foreground"
                       )}>
                         {rating >= 4 ? "Hot" : rating === 3 ? "Warm" : rating > 0 ? "Cold" : "Unrated"}
                       </span>
                     </div>
 
-                    <div className="h-4 w-[1px] bg-[#DFE1E7]" />
+                    <div className="h-4 w-[1px] bg-border" />
 
                     {/* Compact Stage Selector */}
                     <div className="flex items-center gap-1">
@@ -260,29 +260,29 @@ export default function LeadDetail() {
                             onClick={() => updateLeadStage(lead.id, stage.id)}
                             className={cn(
                               "h-2 w-8 rounded-full transition-all hover:scale-105",
-                              isActive ? `bg-${stage.color}-500 ring-2 ring-${stage.color}-200` : "bg-gray-200 hover:bg-gray-300"
+                              isActive ? `bg-${stage.color}-500 ring-2 ring-${stage.color}-200` : "bg-muted"
                             )}
                             title={stage.label}
                           />
                         );
                       })}
-                      <span className="ml-2 text-xs font-medium text-[#0D0D12] uppercase tracking-wide">
+                      <span className="ml-2 text-xs font-medium text-foreground uppercase tracking-wide">
                         {stages.find(s => s.id === lead.stage)?.label}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4 text-xs text-[#666D80]">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                     <div className="flex items-center gap-1.5">
                       <Building2 className="h-3.5 w-3.5" />
                       {lead.company}
                     </div>
-                    <div className="w-1 h-1 rounded-full bg-[#DFE1E7]" />
+                    <div className="w-1 h-1 rounded-full bg-border" />
                     <div className="flex items-center gap-1.5">
                       <MapPin className="h-3.5 w-3.5" />
                       {lead.address || "No location"}
                     </div>
-                    <div className="w-1 h-1 rounded-full bg-[#DFE1E7]" />
+                    <div className="w-1 h-1 rounded-full bg-border" />
                     <div className="flex items-center gap-1.5">
                       <Globe className="h-3.5 w-3.5" />
                       {lead.source}
@@ -297,7 +297,7 @@ export default function LeadDetail() {
                 leadId={lead.id} 
                 defaultType="call"
                 trigger={
-                  <Button variant="outline" className="h-[40px] border-[#DFE1E7] text-[#0D0D12] font-medium shadow-sm hover:bg-gray-50">
+                  <Button variant="outline" className="h-[40px] border text-foreground font-medium shadow-sm hover:bg-muted">
                     <Phone className="mr-2 h-4 w-4" />
                     Call
                   </Button>
@@ -306,7 +306,7 @@ export default function LeadDetail() {
               <SendEmailDialog 
                 leadId={lead.id} 
                 trigger={
-                  <Button variant="outline" className="h-[40px] border-[#DFE1E7] text-[#0D0D12] font-medium shadow-sm hover:bg-gray-50">
+                  <Button variant="outline" className="h-[40px] border text-foreground font-medium shadow-sm hover:bg-muted">
                     <Mail className="mr-2 h-4 w-4" />
                     Email
                   </Button>
@@ -315,17 +315,17 @@ export default function LeadDetail() {
               <SendWhatsAppDialog 
                 leadId={lead.id} 
                 trigger={
-                  <Button variant="outline" className="h-[40px] border-[#DFE1E7] text-[#0D0D12] font-medium shadow-sm hover:bg-gray-50">
+                  <Button variant="outline" className="h-[40px] border text-foreground font-medium shadow-sm hover:bg-muted">
                     <MessageSquare className="mr-2 h-4 w-4" />
                     WhatsApp
                   </Button>
                 }
               />
-              <div className="h-8 w-[1px] bg-[#DFE1E7] mx-1" />
+              <div className="h-8 w-[1px] bg-border mx-1" />
               {lead.stage !== 'lost' && (
                 <Button 
                   onClick={() => updateLeadStage(lead.id, 'lost')} 
-                  className="h-[40px] bg-white hover:bg-red-50 text-red-600 border border-red-200 shadow-sm font-medium"
+                  className="h-[40px] bg-card hover:bg-red-50 text-red-600 border border-red-200 shadow-sm font-medium"
                 >
                   <XCircle className="mr-2 h-4 w-4" />
                   Mark Lost
@@ -342,7 +342,7 @@ export default function LeadDetail() {
               )}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon" className="h-[40px] w-[40px] border-[#DFE1E7] text-[#666D80]">
+                  <Button variant="outline" size="icon" className="h-[40px] w-[40px] border text-muted-foreground">
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -364,50 +364,50 @@ export default function LeadDetail() {
           {/* Left Column: Info Cards - Scrollable */}
           <div className="space-y-6 lg:col-span-1 overflow-y-auto h-full pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* Key Details */}
-            <div className="bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden">
-                <div className="px-5 py-4 border-b border-[#DFE1E7] flex items-center justify-between">
-                  <h3 className="text-[16px] font-semibold text-[#0D0D12]">Lead Details</h3>
-                  <EditLeadDialog leadId={lead.id} trigger={<Button variant="ghost" size="sm" className="h-8 text-[#F34147] hover:text-[#D93036] hover:bg-[#FFF0F3]">Edit</Button>} />
+            <div className="bg-card border rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden">
+                <div className="px-5 py-4 border-b border flex items-center justify-between">
+                  <h3 className="text-[16px] font-semibold text-foreground">Lead Details</h3>
+                  <EditLeadDialog leadId={lead.id} trigger={<Button variant="ghost" size="sm" className="h-8 text-primary hover:text-primary hover:bg-muted">Edit</Button>} />
                 </div>
                 <div className="p-5">
                    <div className="mb-6">
-                      <p className="text-xs font-medium text-[#666D80] flex items-center gap-1.5 mb-1">
+                      <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5 mb-1">
                         <Phone className="h-3 w-3" /> Phone
                       </p>
-                      <a href={`tel:${lead.phone}`} className="text-xl font-bold text-[#0D0D12] hover:underline block">
+                      <a href={`tel:${lead.phone}`} className="text-xl font-bold text-foreground hover:underline block">
                         {lead.phone}
                       </a>
                    </div>
                    
                    <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <p className="text-xs font-medium text-[#666D80] flex items-center gap-1.5">
+                        <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
                            <DollarSign className="h-3 w-3" /> Deal Value
                         </p>
                         <p className="text-sm font-bold text-[#10B981]">₹{lead.value.toLocaleString()}</p>
                       </div>
 
                       <div className="space-y-1">
-                        <p className="text-xs font-medium text-[#666D80] flex items-center gap-1.5">
+                        <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
                            <Tag className="h-3 w-3" /> Service
                         </p>
-                        <p className="text-sm font-medium text-[#0D0D12] truncate" title={lead.service}>{lead.service}</p>
+                        <p className="text-sm font-medium text-foreground truncate" title={lead.service}>{lead.service}</p>
                       </div>
 
                       <div className="space-y-1 col-span-2">
-                        <p className="text-xs font-medium text-[#666D80] flex items-center gap-1.5">
+                        <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
                            <Mail className="h-3 w-3" /> Email
                         </p>
-                        <a href={`mailto:${lead.email}`} className="text-sm font-medium text-[#F34147] hover:underline truncate block">
+                        <a href={`mailto:${lead.email}`} className="text-sm font-medium text-primary hover:underline truncate block">
                            {lead.email}
                         </a>
                       </div>
                       
                       <div className="space-y-1 col-span-2">
-                         <p className="text-xs font-medium text-[#666D80] flex items-center gap-1.5">
+                         <p className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
                            <Clock className="h-3 w-3" /> Created
                          </p>
-                         <p className="text-sm text-[#0D0D12]">
+                         <p className="text-sm text-foreground">
                            {format(new Date(lead.createdAt), 'MMM d, yyyy')}
                          </p>
                       </div>
@@ -417,51 +417,51 @@ export default function LeadDetail() {
 
               {/* Last Connected Card */}
               {lead.lastConnected ? (
-                 <div className="bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden">
-                  <div className="px-5 py-4 border-b border-[#DFE1E7]">
-                    <h3 className="text-[16px] font-semibold text-[#0D0D12] flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-[#F34147]" /> Last Connected
+                 <div className="bg-card border rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden">
+                  <div className="px-5 py-4 border-b border">
+                    <h3 className="text-[16px] font-semibold text-foreground flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-primary" /> Last Connected
                     </h3>
                   </div>
                   <div className="p-5">
                     <div className="grid grid-cols-2 gap-y-4 gap-x-2">
                       <div className="space-y-1">
-                        <p className="text-xs text-[#666D80] uppercase tracking-wide font-medium">Date</p>
-                        <p className="text-sm font-medium text-[#0D0D12]">
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Date</p>
+                        <p className="text-sm font-medium text-foreground">
                           {format(new Date(lead.lastConnected.date), 'MMM d, h:mm a')}
                         </p>
                       </div>
                       
                       <div className="space-y-1">
-                        <p className="text-xs text-[#666D80] uppercase tracking-wide font-medium">Outcome</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Outcome</p>
                         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 capitalize font-medium">
                           {lead.lastConnected.outcome}
                         </Badge>
                       </div>
 
                       <div className="space-y-1">
-                        <p className="text-xs text-[#666D80] uppercase tracking-wide font-medium">Duration</p>
-                        <p className="text-sm font-medium text-[#0D0D12] flex items-center gap-1">
-                          <Clock className="h-3 w-3 text-[#666D80]" />
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Duration</p>
+                        <p className="text-sm font-medium text-foreground flex items-center gap-1">
+                          <Clock className="h-3 w-3 text-muted-foreground" />
                           {lead.lastConnected.duration}
                         </p>
                       </div>
 
                       <div className="space-y-1">
-                        <p className="text-xs text-[#666D80] uppercase tracking-wide font-medium">Agent</p>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Agent</p>
                         <div className="flex items-center gap-2">
                           <Avatar className="h-5 w-5">
                             <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${lead.lastConnected.agent}`} />
                             <AvatarFallback className="text-[10px]">{lead.lastConnected.agent.charAt(0)}</AvatarFallback>
                           </Avatar>
-                          <span className="text-sm font-medium text-[#0D0D12] truncate">{lead.lastConnected.agent}</span>
+                          <span className="text-sm font-medium text-foreground truncate">{lead.lastConnected.agent}</span>
                         </div>
                       </div>
                     </div>
 
                     {lead.lastConnected.nextFollowUp && (
                       <div className="mt-4 pt-4 border-t border-[#F1F5F9]">
-                        <div className="flex items-center gap-2 text-sm text-[#F34147] font-medium bg-[#FFF0F3] p-3 rounded-lg border border-[#FFE4E8]">
+                        <div className="flex items-center gap-2 text-sm text-primary font-medium bg-[#FFF0F3] p-3 rounded-lg border border-[#FFE4E8]">
                           <Calendar className="h-4 w-4" />
                           Next: {format(new Date(lead.lastConnected.nextFollowUp), 'MMM d, h:mm a')}
                         </div>
@@ -470,8 +470,8 @@ export default function LeadDetail() {
                   </div>
                  </div>
               ) : (
-                 <div className="bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] p-6 text-center">
-                    <p className="text-sm text-[#666D80]">No connection history available.</p>
+                 <div className="bg-card border rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] p-6 text-center">
+                    <p className="text-sm text-muted-foreground">No connection history available.</p>
                  </div>
               )}
             </div>
@@ -479,24 +479,24 @@ export default function LeadDetail() {
           <div className="lg:col-span-2 flex flex-col h-full overflow-hidden">
             <Tabs defaultValue="activity" className="w-full flex flex-col h-full">
               <div className="flex items-center justify-between mb-4 shrink-0">
-                <TabsList className="bg-white border border-[#DFE1E7] p-1 h-[44px] rounded-[10px]">
-                    <TabsTrigger value="activity" className="rounded-[8px] data-[state=active]:bg-[#F34147] data-[state=active]:text-white text-[#666D80]">Timeline</TabsTrigger>
-                    <TabsTrigger value="notes" className="rounded-[8px] data-[state=active]:bg-[#F34147] data-[state=active]:text-white text-[#666D80]">Notes</TabsTrigger>
-                    <TabsTrigger value="files" className="rounded-[8px] data-[state=active]:bg-[#F34147] data-[state=active]:text-white text-[#666D80]">Attachments</TabsTrigger>
+                <TabsList className="bg-card border p-1 h-[44px] rounded-[10px]">
+                    <TabsTrigger value="activity" className="rounded-[8px] data-[state=active]:bg-primary data-[state=active]:text-white text-muted-foreground">Timeline</TabsTrigger>
+                    <TabsTrigger value="notes" className="rounded-[8px] data-[state=active]:bg-primary data-[state=active]:text-white text-muted-foreground">Notes</TabsTrigger>
+                    <TabsTrigger value="files" className="rounded-[8px] data-[state=active]:bg-primary data-[state=active]:text-white text-muted-foreground">Attachments</TabsTrigger>
                   </TabsList>
                 </div>
                 
               <div className="flex-1 overflow-hidden pb-1">
                 <TabsContent value="activity" className="h-full mt-0 outline-none">
-                    <div className="bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden h-full flex flex-col">
-                      <div className="px-5 py-4 border-b border-[#DFE1E7] shrink-0">
-                        <h3 className="text-[16px] font-semibold text-[#0D0D12]">Activity History</h3>
+                    <div className="bg-card border rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden h-full flex flex-col">
+                      <div className="px-5 py-4 border-b border shrink-0">
+                        <h3 className="text-[16px] font-semibold text-foreground">Activity History</h3>
                       </div>
                       <div className="flex-1 min-h-0">
                         <ScrollArea className="h-full">
                           <div className="p-6 space-y-8">
                             {leadActivities.length === 0 ? (
-                              <div className="text-center py-10 text-[#666D80]">No activities recorded yet.</div>
+                              <div className="text-center py-10 text-muted-foreground">No activities recorded yet.</div>
                             ) : (
                               leadActivities.map((activity, i) => (
                                 <div key={activity.id} className="relative flex gap-4">
@@ -510,7 +510,7 @@ export default function LeadDetail() {
                                       ${activity.type === 'call' ? 'bg-blue-100 text-blue-600' : ''}
                                       ${activity.type === 'email' ? 'bg-orange-100 text-orange-600' : ''}
                                       ${activity.type === 'meeting' ? 'bg-purple-100 text-purple-600' : ''}
-                                      ${activity.type === 'stage_change' ? 'bg-gray-100 text-gray-600' : ''}
+                                      ${activity.type === 'stage_change' ? 'bg-muted text-muted-foreground' : ''}
                                       ${activity.type === 'note' ? 'bg-yellow-100 text-yellow-600' : ''}
                                     `}>
                                       {activity.type === 'call' && <Phone className="h-4 w-4" />}
@@ -523,19 +523,19 @@ export default function LeadDetail() {
                                   
                                   <div className="flex-1 pb-4">
                                     <div className="flex items-center justify-between mb-1">
-                                      <p className="text-sm font-semibold text-[#0D0D12] capitalize">
+                                      <p className="text-sm font-semibold text-foreground capitalize">
                                         {activity.type.replace('_', ' ')}
                                       </p>
-                                      <span className="text-xs text-[#666D80]">
+                                      <span className="text-xs text-muted-foreground">
                                         {format(new Date(activity.createdAt), 'MMM d, h:mm a')}
                                       </span>
                                     </div>
-                                    <div className="bg-[#F8F9FB] rounded-[12px] p-3 border border-[#F1F5F9]">
-                                      <p className="text-sm text-[#0D0D12] leading-relaxed">
+                                    <div className="bg-muted rounded-lg p-3 border">
+                                      <p className="text-sm text-foreground leading-relaxed">
                                         {activity.notes}
                                       </p>
                                       {activity.duration && (
-                                        <Badge variant="outline" className="text-[10px] h-5 mt-2 bg-white border-[#DFE1E7]">
+                                        <Badge variant="outline" className="text-[10px] h-5 mt-2 bg-card border">
                                           {activity.duration} mins
                                         </Badge>
                                       )}
@@ -551,17 +551,17 @@ export default function LeadDetail() {
                   </TabsContent>
 
                   <TabsContent value="notes" className="h-full mt-0 outline-none">
-                     <div className="bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-full flex flex-col overflow-hidden">
+                     <div className="bg-card border rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-full flex flex-col overflow-hidden">
                         <div className="flex-1 overflow-y-auto p-6 space-y-8">
                           {/* Notes Section */}
                           <section>
-                            <h3 className="text-[16px] font-semibold text-[#0D0D12] mb-4 flex items-center gap-2">
-                              <FileText className="h-4 w-4 text-[#F34147]" /> Key Notes
+                            <h3 className="text-[16px] font-semibold text-foreground mb-4 flex items-center gap-2">
+                              <FileText className="h-4 w-4 text-primary" /> Key Notes
                             </h3>
                             <div className="space-y-2">
                               {bulletNotes.map((note, idx) => (
                                 <div key={idx} className="flex items-start gap-2 group">
-                                  <div className="mt-2.5 h-1.5 w-1.5 rounded-full bg-[#F34147] shrink-0" />
+                                  <div className="mt-2.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                                   <Input 
                                     value={note}
                                     onChange={(e) => {
@@ -576,11 +576,11 @@ export default function LeadDetail() {
                                         setBulletNotes(newNotes);
                                       }
                                     }}
-                                    className="border-none shadow-none focus-visible:ring-0 p-0 h-auto min-h-[24px] text-sm bg-transparent resize-none overflow-hidden hover:bg-gray-50 rounded px-2 -ml-2 w-full transition-colors"
+                                    className="border-none shadow-none focus-visible:ring-0 p-0 h-auto min-h-[24px] text-sm bg-transparent resize-none overflow-hidden hover:bg-muted rounded px-2 -ml-2 w-full transition-colors"
                                   />
                                 </div>
                               ))}
-                              <div className="flex items-center gap-2 text-[#666D80] hover:text-[#0D0D12] cursor-pointer transition-colors pl-0.5" onClick={() => setBulletNotes([...bulletNotes, ""])}>
+                              <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground cursor-pointer transition-colors pl-0.5" onClick={() => setBulletNotes([...bulletNotes, ""])}>
                                 <Plus className="h-4 w-4" />
                                 <span className="text-sm">Add note...</span>
                               </div>
@@ -591,19 +591,19 @@ export default function LeadDetail() {
 
                           {/* Tags Section */}
                           <section>
-                            <h3 className="text-[16px] font-semibold text-[#0D0D12] mb-4 flex items-center gap-2">
-                              <Tag className="h-4 w-4 text-[#F34147]" /> Tags
+                            <h3 className="text-[16px] font-semibold text-foreground mb-4 flex items-center gap-2">
+                              <Tag className="h-4 w-4 text-primary" /> Tags
                             </h3>
                             <div className="flex flex-wrap gap-2 mb-3">
                               {leadTags.map(tag => (
-                                <Badge key={tag} variant="secondary" className="bg-[#F8F9FB] text-[#0D0D12] border border-[#DFE1E7] px-2 py-1 flex items-center gap-1 font-normal group">
+                                <Badge key={tag} variant="secondary" className="bg-muted text-foreground border px-2 py-1 flex items-center gap-1 font-normal group">
                                   {tag}
-                                  <button onClick={() => removeTag(tag)} className="text-[#666D80] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <button onClick={() => removeTag(tag)} className="text-muted-foreground hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <X className="h-3 w-3" />
                                   </button>
                                 </Badge>
                               ))}
-                              {leadTags.length === 0 && <span className="text-sm text-[#666D80] italic">No tags added yet.</span>}
+                              {leadTags.length === 0 && <span className="text-sm text-muted-foreground italic">No tags added yet.</span>}
                             </div>
                             <div className="relative max-w-sm">
                               <Input 
@@ -611,9 +611,9 @@ export default function LeadDetail() {
                                 value={newTag}
                                 onChange={(e) => setNewTag(e.target.value)}
                                 onKeyDown={handleAddTag}
-                                className="h-9 text-sm pr-8 bg-[#F8F9FB] border-[#DFE1E7] focus-visible:ring-[#F34147]"
+                                className="h-9 text-sm pr-8 bg-muted border focus-visible:ring-primary"
                               />
-                              <Plus className="h-4 w-4 absolute right-3 top-2.5 text-[#666D80]" />
+                              <Plus className="h-4 w-4 absolute right-3 top-2.5 text-muted-foreground" />
                             </div>
                           </section>
 
@@ -622,19 +622,19 @@ export default function LeadDetail() {
                           {/* Objections Section */}
                           <section>
                             <div className="flex justify-between items-center mb-4">
-                              <h3 className="text-[16px] font-semibold text-[#0D0D12] flex items-center gap-2">
-                                <XCircle className="h-4 w-4 text-[#F34147]" /> Objections
+                              <h3 className="text-[16px] font-semibold text-foreground flex items-center gap-2">
+                                <XCircle className="h-4 w-4 text-primary" /> Objections
                               </h3>
-                              <Button variant="ghost" size="sm" className="h-7 text-xs text-[#666D80]">Add New</Button>
+                              <Button variant="ghost" size="sm" className="h-7 text-xs text-muted-foreground">Add New</Button>
                             </div>
                             <div className="space-y-3">
                                {objections.map((obj) => (
-                                 <div key={obj.id} className="bg-[#F8F9FB] rounded-lg p-3 border border-[#F1F5F9]">
+                                 <div key={obj.id} className="bg-muted rounded-lg p-3 border border-[#F1F5F9]">
                                     <div className="flex items-start gap-3">
                                        <div className={`mt-1.5 h-2 w-2 rounded-full ${obj.type === 'Pricing' ? 'bg-red-500' : 'bg-orange-500'} shrink-0`} />
                                        <div className="flex-1 min-w-0">
-                                          <h4 className="text-sm font-semibold text-[#0D0D12] mb-0.5">{obj.title}</h4>
-                                          <p className="text-xs text-[#666D80] leading-relaxed mb-2">
+                                          <h4 className="text-sm font-semibold text-foreground mb-0.5">{obj.title}</h4>
+                                          <p className="text-xs text-muted-foreground leading-relaxed mb-2">
                                              {obj.desc}
                                           </p>
                                           <div className="flex items-center gap-2">
@@ -652,10 +652,10 @@ export default function LeadDetail() {
                   </TabsContent>
 
                   <TabsContent value="files" className="h-full mt-0 outline-none">
-                      <div className="bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-full flex flex-col items-center justify-center text-[#666D80]">
-                        <FileText className="h-12 w-12 text-[#DFE1E7] mb-3" />
+                      <div className="bg-card border rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-full flex flex-col items-center justify-center text-muted-foreground">
+                        <FileText className="h-12 w-12 text-border mb-3" />
                         <p className="font-medium">No attachments uploaded yet</p>
-                        <Button variant="link" className="text-[#F34147]">Upload Attachment</Button>
+                        <Button variant="link" className="text-primary">Upload Attachment</Button>
                       </div>
                   </TabsContent>
               </div>

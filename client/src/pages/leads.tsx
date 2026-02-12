@@ -168,12 +168,12 @@ export default function Leads() {
   const getStageBadgeStyles = (stageId: string) => {
     const stage = stages.find(s => s.id === stageId);
     switch (stage?.color) {
-      case 'blue': return "bg-white text-blue-500 border-blue-500";
-      case 'yellow': return "bg-white text-orange-500 border-orange-500"; // Using orange for yellow/pending like design
-      case 'purple': return "bg-white text-purple-500 border-purple-500";
-      case 'green': return "bg-white text-emerald-500 border-emerald-500";
-      case 'gray': return "bg-white text-gray-500 border-gray-300";
-      default: return "bg-white text-gray-500 border-gray-300";
+      case 'blue': return "bg-card text-blue-500 border-blue-500";
+      case 'yellow': return "bg-card text-orange-500 border-orange-500";
+      case 'purple': return "bg-card text-purple-500 border-purple-500";
+      case 'green': return "bg-card text-emerald-500 border-emerald-500";
+      case 'gray': return "bg-card text-gray-500 border-gray-300";
+      default: return "bg-card text-gray-500 border-gray-300";
     }
   };
 
@@ -192,18 +192,18 @@ export default function Leads() {
     <div className="flex flex-col gap-6 w-full">
       {/* Page Header */}
       <div className="flex items-center justify-between w-full">
-        <h1 className="text-[20px] font-semibold text-[#0D0D12] leading-[1.35]" data-testid="text-leads-heading">
+        <h1 className="text-xl font-semibold text-foreground leading-[1.35] tracking-tight" data-testid="text-leads-heading">
           {effectiveRole === 'manager' ? "All Leads (Manager View)" : "My Leads"}
         </h1>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="bg-white border-[#DFE1E7] text-[#0D0D12] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold">
+          <Button variant="outline" className="font-semibold">
             <Upload className="mr-2 h-4 w-4" /> Import
           </Button>
-          <Button variant="outline" className="bg-white border-[#DFE1E7] text-[#0D0D12] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold">
+          <Button variant="outline" className="font-semibold">
             <Download className="mr-2 h-4 w-4" /> Export
           </Button>
           <AddLeadDialog trigger={
-            <Button className="bg-[#F34147] hover:bg-[#D93036] text-white shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold border-none">
+            <Button className="font-semibold">
               Add New Lead
             </Button>
           } />
@@ -212,60 +212,60 @@ export default function Leads() {
 
       {/* Stats Cards */}
       <div className="flex gap-5 w-full overflow-x-auto pb-1">
-        <div className="flex-1 min-w-[240px] bg-white border border-[#DFE1E7] rounded-[12px] p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
+        <div className="flex-1 min-w-[240px] bg-card border rounded-lg p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">Total Leads</span>
-            <div className="w-9 h-9 rounded-[8px] border border-[#DFE1E7] flex items-center justify-center">
-              <Users className="w-4 h-4 text-[#F34147]" />
+            <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">Total Leads</span>
+            <div className="w-9 h-9 rounded-lg border flex items-center justify-center">
+              <Users className="w-4 h-4 text-primary" />
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-2xl font-semibold text-[#0D0D12]">
+            <span className="text-2xl font-semibold text-foreground">
               {leads.length}
             </span>
             <div className="flex items-center gap-2">
-              <div className="bg-[#EFFEFA] px-1.5 py-0.5 rounded-full flex items-center justify-center">
-                <span className="text-xs font-medium text-[#40C4AA]">+12%</span>
+              <div className="bg-[#effefa] dark:bg-[#40c4aa]/10 px-1.5 py-0.5 rounded-full flex items-center justify-center">
+                <span className="text-xs font-medium text-[#40c4aa] dark:text-[#40c4aa]">+12%</span>
               </div>
-              <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">from last month</span>
+              <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">from last month</span>
             </div>
           </div>
         </div>
 
-        <div className="flex-1 min-w-[240px] bg-white border border-[#DFE1E7] rounded-[12px] p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
+        <div className="flex-1 min-w-[240px] bg-card border rounded-lg p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">Active Deals</span>
-            <div className="w-9 h-9 rounded-[8px] border border-[#DFE1E7] flex items-center justify-center">
-              <Briefcase className="w-4 h-4 text-[#F34147]" />
+            <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">Active Deals</span>
+            <div className="w-9 h-9 rounded-lg border flex items-center justify-center">
+              <Briefcase className="w-4 h-4 text-primary" />
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-2xl font-semibold text-[#0D0D12]">
+            <span className="text-2xl font-semibold text-foreground">
               {leads.filter(l => ['negotiation', 'proposal'].includes(l.stage)).length}
             </span>
             <div className="flex items-center gap-2">
-              <div className="bg-[#EFFEFA] px-1.5 py-0.5 rounded-full flex items-center justify-center">
-                <span className="text-xs font-medium text-[#40C4AA]">+5%</span>
+              <div className="bg-[#effefa] dark:bg-[#40c4aa]/10 px-1.5 py-0.5 rounded-full flex items-center justify-center">
+                <span className="text-xs font-medium text-[#40c4aa] dark:text-[#40c4aa]">+5%</span>
               </div>
-              <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">from last month</span>
+              <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">from last month</span>
             </div>
           </div>
         </div>
 
-        <div className="flex-1 min-w-[240px] bg-white border border-[#DFE1E7] rounded-[12px] p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
+        <div className="flex-1 min-w-[240px] bg-card border rounded-lg p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">Conversion Rate</span>
-            <div className="w-9 h-9 rounded-[8px] border border-[#DFE1E7] flex items-center justify-center">
-              <Target className="w-4 h-4 text-[#F34147]" />
+            <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">Conversion Rate</span>
+            <div className="w-9 h-9 rounded-lg border flex items-center justify-center">
+              <Target className="w-4 h-4 text-primary" />
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-2xl font-semibold text-[#0D0D12]">24%</span>
+            <span className="text-2xl font-semibold text-foreground">24%</span>
             <div className="flex items-center gap-2">
-              <div className="bg-[#FFF0F3] px-1.5 py-0.5 rounded-full flex items-center justify-center">
-                <span className="text-xs font-medium text-[#DF1C41]">-2%</span>
+              <div className="bg-[#fff0f3] dark:bg-[#df1c41]/10 px-1.5 py-0.5 rounded-full flex items-center justify-center">
+                <span className="text-xs font-medium text-[#df1c41] dark:text-[#df1c41]">-2%</span>
               </div>
-              <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">from last month</span>
+              <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">from last month</span>
             </div>
           </div>
         </div>
@@ -278,8 +278,8 @@ export default function Leads() {
           className={`
             whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors border
             ${statusFilter === "all" 
-              ? "bg-[#0D0D12] text-white border-[#0D0D12]" 
-              : "bg-white text-[#666D80] border-[#DFE1E7] hover:bg-gray-50 hover:text-[#0D0D12]"
+              ? "bg-foreground text-background border-foreground" 
+              : "bg-card text-muted-foreground border hover-elevate"
             }
           `}
         >
@@ -297,8 +297,8 @@ export default function Leads() {
               className={`
                 whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors border
                 ${statusFilter === stage.id
-                  ? "bg-[#0D0D12] text-white border-[#0D0D12]"
-                  : "bg-white text-[#666D80] border-[#DFE1E7] hover:bg-gray-50 hover:text-[#0D0D12]"
+                  ? "bg-foreground text-background border-foreground"
+                  : "bg-card text-muted-foreground border hover-elevate"
                 }
               `}
             >
@@ -312,21 +312,21 @@ export default function Leads() {
       </div>
 
       {/* Main Table Container */}
-      <div className="bg-white border border-[#DFE1E7] rounded-[12px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden flex flex-col">
+      <div className="bg-card border rounded-lg shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none overflow-hidden flex flex-col">
         {/* Table Header Controls */}
-        <div className={`flex items-center justify-between px-5 py-2 border-b border-[#DFE1E7] h-[64px] ${selectedLeads.length > 0 ? 'bg-[#FFF0F3]' : ''}`}>
+        <div className={`flex items-center justify-between px-5 py-2 border-b h-[64px] ${selectedLeads.length > 0 ? 'bg-[#fff0f3] dark:bg-[#df1c41]/10' : ''}`}>
           {selectedLeads.length > 0 ? (
             <div className="flex items-center justify-between w-full">
                <div className="flex items-center gap-4">
-                 <span className="font-semibold text-[#0D0D12]">{selectedLeads.length} selected</span>
-                 <div className="h-4 w-[1px] bg-[#DFE1E7]" />
-                 <Button variant="ghost" size="sm" className="text-[#F34147] hover:text-[#D93036] hover:bg-[#FFE4E8]">
+                 <span className="font-semibold text-foreground">{selectedLeads.length} selected</span>
+                 <div className="h-4 w-[1px] bg-border" />
+                 <Button variant="ghost" size="sm" className="text-primary">
                    <Trash2 className="mr-2 h-4 w-4" /> Delete
                  </Button>
-                 <Button variant="ghost" size="sm" className="text-[#666D80] hover:text-[#0D0D12]">
+                 <Button variant="ghost" size="sm" className="text-muted-foreground">
                    Mark as Lost
                  </Button>
-                 <Button variant="ghost" size="sm" className="text-[#666D80] hover:text-[#0D0D12]">
+                 <Button variant="ghost" size="sm" className="text-muted-foreground">
                    Change Stage
                  </Button>
                </div>
@@ -334,18 +334,18 @@ export default function Leads() {
             </div>
           ) : (
             <>
-              <h2 className="text-[16px] font-semibold text-[#0D0D12] tracking-[0.32px]">Leads Data Table</h2>
+              <h2 className="text-base font-semibold text-foreground tracking-[0.02em]">Leads Data Table</h2>
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666D80]" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input 
                     placeholder="Search" 
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-9 h-[38px] w-[256px] bg-white border-[#DFE1E7] text-sm placeholder:text-[#666D80] focus-visible:ring-1 focus-visible:ring-[#F34147]"
+                    className="pl-9 h-[38px] w-[256px] bg-card text-sm placeholder:text-muted-foreground focus-visible:ring-ring"
                   />
                 </div>
-                <Button variant="outline" className="h-[38px] px-3 border-[#DFE1E7] text-[#666D80] hover:text-[#0D0D12] flex gap-2">
+                <Button variant="outline" className="h-[38px] px-3 flex gap-2">
                   <Filter className="h-4 w-4" />
                   <span className="font-medium text-[14px]">Filter</span>
                 </Button>
@@ -357,22 +357,22 @@ export default function Leads() {
         {/* Table */}
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-[#F6F8FA]">
-              <TableRow className="border-b border-[#DFE1E7] hover:bg-transparent">
+            <TableHeader className="bg-muted">
+              <TableRow className="border-b hover:bg-transparent">
                 <TableHead className="w-[50px] pl-4">
                   <Checkbox 
                     checked={selectedLeads.length === filteredLeads.length && filteredLeads.length > 0}
                     onCheckedChange={toggleSelectAll}
-                    className="border-[#DFE1E7] data-[state=checked]:bg-[#F34147] data-[state=checked]:border-[#F34147] rounded-[4px]" 
+                    className="border data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded" 
                   />
                 </TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Lead Name</TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Company</TableHead>
-                {isAdmin && <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Assignee</TableHead>}
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Value</TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Stage</TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Last Activity</TableHead>
-                <TableHead className="h-[40px] w-[140px] text-right pr-4 text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Actions</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Lead Name</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Company</TableHead>
+                {isAdmin && <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Assignee</TableHead>}
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Value</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Stage</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Last Activity</TableHead>
+                <TableHead className="h-[40px] w-[140px] text-right pr-4 text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -387,40 +387,40 @@ export default function Leads() {
                   const lastActivity = getLastActivity(lead.id);
                   const isSelected = selectedLeads.includes(lead.id);
                   return (
-                    <TableRow key={lead.id} className={`border-b border-[#DFE1E7] hover:bg-[#F8F9FB] transition-colors group h-[64px] ${isSelected ? 'bg-[#FFF0F3]' : ''}`}>
+                    <TableRow key={lead.id} className={`border-b hover-elevate transition-colors group h-[64px] ${isSelected ? 'bg-[#fff0f3] dark:bg-[#df1c41]/10' : ''}`}>
                       <TableCell className="pl-4">
                         <Checkbox 
                           checked={isSelected}
                           onCheckedChange={() => toggleSelectLead(lead.id)}
-                          className="border-[#DFE1E7] data-[state=checked]:bg-[#F34147] data-[state=checked]:border-[#F34147] rounded-[4px]" 
+                          className="border data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded" 
                         />
                       </TableCell>
                       <TableCell>
                         <Link href={`/leads/${lead.id}`}>
-                          <a className="font-medium text-[#0D0D12] text-[14px] hover:text-[#F34147] transition-colors">
+                          <a className="font-medium text-foreground text-[14px] hover:text-primary transition-colors">
                             {lead.name}
                           </a>
                         </Link>
                       </TableCell>
                       <TableCell>
-                        <span className="text-[#0D0D12] text-[14px]">{lead.company}</span>
+                        <span className="text-foreground text-[14px]">{lead.company}</span>
                       </TableCell>
                       {isAdmin && (
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <button className="text-[#0D0D12] text-[14px] flex items-center gap-2 hover:bg-gray-100 p-1.5 rounded-lg transition-colors outline-none group/assign">
+                              <button className="text-foreground text-[14px] flex items-center gap-2 hover-elevate p-1.5 rounded-lg transition-colors outline-none group/assign">
                                 {lead.assignedTo ? (
                                   <>
-                                    <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-xs overflow-hidden">
+                                    <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs overflow-hidden">
                                       <img src={`https://api.dicebear.com/7.x/micah/svg?seed=${lead.assignedTo}`} alt="Assignee" />
                                     </div>
                                     <span>{users.find(u => u.id === lead.assignedTo)?.name || lead.assignedTo}</span>
                                   </>
                                 ) : (
-                                  <span className="text-[#666D80] text-xs italic">Unassigned</span>
+                                  <span className="text-muted-foreground text-xs italic">Unassigned</span>
                                 )}
-                                <ChevronDown className="w-3 h-3 text-gray-400 opacity-0 group-hover/assign:opacity-100 transition-opacity" />
+                                <ChevronDown className="w-3 h-3 text-muted-foreground opacity-0 group-hover/assign:opacity-100 transition-opacity" />
                               </button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start" className="w-[200px]">
@@ -450,10 +450,10 @@ export default function Leads() {
                         </TableCell>
                       )}
                       <TableCell>
-                        <span className="text-[#0D0D12] text-[14px] font-medium">₹{(lead.value).toLocaleString()}</span>
+                        <span className="text-foreground text-[14px] font-medium">₹{(lead.value).toLocaleString()}</span>
                       </TableCell>
                       <TableCell>
-                        <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[16px] border ${getStageBadgeStyles(lead.stage)}`}>
+                        <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-xl border ${getStageBadgeStyles(lead.stage)}`}>
                           <div className={`w-1.5 h-1.5 rounded-full ${getStageDotColor(lead.stage)}`} />
                           <span className="text-[12px] font-medium tracking-[0.12px]">
                             {stages.find(s => s.id === lead.stage)?.label}
@@ -462,7 +462,7 @@ export default function Leads() {
                       </TableCell>
                       <TableCell>
                         {lastActivity ? (
-                          <div className="flex items-center gap-2 text-[#666D80] text-[14px]">
+                          <div className="flex items-center gap-2 text-muted-foreground text-[14px]">
                             {lastActivity.type === 'call' && <Phone className="h-3.5 w-3.5" />}
                             {lastActivity.type === 'email' && <Mail className="h-3.5 w-3.5" />}
                             {lastActivity.type === 'meeting' && <Calendar className="h-3.5 w-3.5" />}
@@ -471,7 +471,7 @@ export default function Leads() {
                             </span>
                           </div>
                         ) : (
-                          <span className="text-[#666D80] text-[14px]">-</span>
+                          <span className="text-muted-foreground text-[14px]">-</span>
                         )}
                       </TableCell>
                       <TableCell className="text-right pr-4">
@@ -480,7 +480,7 @@ export default function Leads() {
                             leadId={lead.id} 
                             defaultType="call"
                             trigger={
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-[#666D80] hover:text-[#0D0D12] hover:bg-gray-100">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
                                 <Phone className="h-4 w-4" />
                               </Button>
                             }
@@ -488,7 +488,7 @@ export default function Leads() {
                           <SendEmailDialog 
                             leadId={lead.id} 
                             trigger={
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-[#666D80] hover:text-[#0D0D12] hover:bg-gray-100">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
                                 <Mail className="h-4 w-4" />
                               </Button>
                             }
@@ -496,7 +496,7 @@ export default function Leads() {
                           
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-[#666D80] hover:text-[#0D0D12]">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -513,7 +513,7 @@ export default function Leads() {
                               <SendWhatsAppDialog leadId={lead.id} trigger={<DropdownMenuItem onSelect={(e) => e.preventDefault()}><MessageSquare className="mr-2 h-4 w-4" /> Send WhatsApp</DropdownMenuItem>} />
                               <DropdownMenuSeparator />
                               <DropdownMenuItem 
-                                className="text-[#DF1C41] hover:text-[#DF1C41] hover:bg-[#FFF0F3]"
+                                className="text-[#df1c41] dark:text-[#df1c41]"
                                 onClick={() => deleteLeadMutation.mutate(lead.id)}
                               >
                                 <Trash2 className="mr-2 h-4 w-4" /> Delete Lead
@@ -531,34 +531,34 @@ export default function Leads() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between px-5 py-4 border-t border-[#DFE1E7] bg-white h-[64px]">
-          <span className="text-[#0D0D12] text-[14px] font-medium tracking-[0.28px]">
+        <div className="flex items-center justify-between px-5 py-4 border-t bg-card h-[64px]">
+          <span className="text-foreground text-[14px] font-medium tracking-[0.28px]">
             Showing 1 to {Math.min(filteredLeads.length, 8)} of, {filteredLeads.length} results
           </span>
           <div className="flex items-center gap-2">
-            <div className="flex items-center h-[32px] border border-[#DFE1E7] rounded-[8px] overflow-hidden">
-              <div className="px-2 border-r border-[#DFE1E7] h-full flex items-center bg-white">
-                <span className="text-[12px] font-medium text-[#0D0D12]">Per page</span>
+            <div className="flex items-center h-[32px] border rounded-lg overflow-hidden">
+              <div className="px-2 border-r h-full flex items-center bg-card">
+                <span className="text-[12px] font-medium text-foreground">Per page</span>
               </div>
-              <div className="flex items-center gap-1 px-2 h-full bg-white cursor-pointer hover:bg-gray-50">
-                <span className="text-[12px] font-medium text-[#0D0D12]">8</span>
-                <ChevronDown className="h-4 w-4 text-[#0D0D12]" />
+              <div className="flex items-center gap-1 px-2 h-full bg-card cursor-pointer hover-elevate">
+                <span className="text-[12px] font-medium text-foreground">8</span>
+                <ChevronDown className="h-4 w-4 text-foreground" />
               </div>
             </div>
             
             <div className="flex items-center gap-2 ml-2">
-              <Button variant="outline" size="icon" className="h-8 w-8 p-0 border-[#DFE1E7] rounded-[8px]">
-                <ChevronLeft className="h-4 w-4 text-[#0D0D12]" />
+              <Button variant="outline" size="icon" className="h-8 w-8 p-0 rounded-lg">
+                <ChevronLeft className="h-4 w-4 text-foreground" />
               </Button>
-              <div className="flex items-center border border-[#DFE1E7] rounded-[8px] overflow-hidden">
-                <button className="h-8 w-8 flex items-center justify-center bg-white border-r border-[#DFE1E7] text-[12px] font-medium text-[#0D0D12] hover:bg-gray-50">1</button>
-                <button className="h-8 w-8 flex items-center justify-center bg-white border-r border-[#DFE1E7] text-[12px] font-medium text-[#0D0D12] hover:bg-gray-50">2</button>
-                <button className="h-8 w-8 flex items-center justify-center bg-[#F34147] border-r border-[#DFE1E7] text-[12px] font-medium text-white">3</button>
-                <button className="h-8 w-8 flex items-center justify-center bg-white border-r border-[#DFE1E7] text-[12px] font-medium text-[#0D0D12] hover:bg-gray-50">...</button>
-                <button className="h-8 w-8 flex items-center justify-center bg-white text-[12px] font-medium text-[#0D0D12] hover:bg-gray-50">5</button>
+              <div className="flex items-center border rounded-lg overflow-hidden">
+                <button className="h-8 w-8 flex items-center justify-center bg-card border-r text-[12px] font-medium text-foreground hover-elevate">1</button>
+                <button className="h-8 w-8 flex items-center justify-center bg-card border-r text-[12px] font-medium text-foreground hover-elevate">2</button>
+                <button className="h-8 w-8 flex items-center justify-center bg-primary border-r text-[12px] font-medium text-white">3</button>
+                <button className="h-8 w-8 flex items-center justify-center bg-card border-r text-[12px] font-medium text-foreground hover-elevate">...</button>
+                <button className="h-8 w-8 flex items-center justify-center bg-card text-[12px] font-medium text-foreground hover-elevate">5</button>
               </div>
-              <Button variant="outline" size="icon" className="h-8 w-8 p-0 border-[#DFE1E7] rounded-[8px]">
-                <ChevronRight className="h-4 w-4 text-[#0D0D12]" />
+              <Button variant="outline" size="icon" className="h-8 w-8 p-0 rounded-lg">
+                <ChevronRight className="h-4 w-4 text-foreground" />
               </Button>
             </div>
           </div>

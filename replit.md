@@ -121,6 +121,17 @@ shared/
 - **All pages use React Query**: No mock data in store; leads, tasks, users fetched from API with team/role filtering
 - **Admin Team Management**: `/team/admin/team` page for superadmin to assign users to teams and set roles
 
+## Design System
+- **Font**: Inter Tight (Google Fonts), loaded via CSS @import
+- **Color Tokens**: All pages use semantic Tailwind tokens (text-foreground, text-muted-foreground, bg-card, bg-muted, border) - no hardcoded hex colors
+- **Dark/Light Mode**: ThemeProvider component at `client/src/components/theme-provider.tsx`, toggle in header
+- **Sidebar**: 272px width, light bg (--sidebar), active items use bg-primary text-primary-foreground
+- **Header**: h-20, bg-card, search bar with Cmd+K shortcut, notification popover, theme toggle, profile dropdown
+- **Shadows**: `shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none` for cards
+- **Typography**: Page headings use `text-xl font-semibold tracking-tight`, descriptions use `text-sm text-muted-foreground`
+- **Spacing**: Content area uses `px-6 py-6 space-y-6`
+- **Status Colors**: Green (#effefa/#40c4aa), Red (#fff0f3/#df1c41), Yellow (#fff8e6/#d39c3d) with dark mode variants
+
 ## Recent Changes
 - January 2026: Imported from GitHub repository (replit-agent branch)
 - January 24, 2026: Added Faire Wholesale management (stores, suppliers, products, orders)
@@ -138,6 +149,13 @@ shared/
   - Updated all frontend pages (leads, pipeline, tasks, dashboard, follow-ups, performance, admin pages)
   - Updated all dialog components to use API mutations
   - Sidebar syncs team memberships to store for role determination
+- February 12, 2026: Design System Overhaul
+  - Inter Tight font, semantic color tokens across all pages
+  - Dark/light theme support with ThemeProvider
+  - Redesigned sidebar (272px, light bg, primary active items)
+  - Redesigned header (h-20, search, notifications, theme toggle)
+  - All pages converted from hardcoded hex colors to semantic tokens
+  - Consistent typography and spacing patterns
 - Database tables expanded to 46+ tables
 - API routes with Zod validation and CRUD operations
 

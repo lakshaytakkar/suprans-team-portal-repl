@@ -72,7 +72,7 @@ export default function FollowUps() {
             <Button size="sm" variant="outline" className="h-9 w-9 p-0 rounded-full">
               <CalendarIcon className="h-4 w-4" />
             </Button>
-            <Button size="sm" className={`h-9 w-9 p-0 rounded-full ${isOverdue ? 'bg-red-600 hover:bg-red-700' : ''}`}>
+            <Button size="sm" className={`h-9 w-9 p-0 rounded-full ${isOverdue ? 'bg-red-600' : ''}`}>
               <CheckCircle2 className="h-4 w-4" />
             </Button>
           </div>

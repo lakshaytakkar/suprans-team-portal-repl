@@ -148,7 +148,7 @@ export default function EventDetailPage() {
   if (eventLoading || !event) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F34147]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
@@ -168,7 +168,7 @@ export default function EventDetailPage() {
         </Link>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">{event.name}</h1>
+            <h1 className="text-2xl font-bold text-foreground">{event.name}</h1>
             <Badge className={cn("text-sm", event.type === "ibs" ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700")}>
               {event.type === "ibs" ? "IBS" : "Seminar"}
             </Badge>
@@ -176,7 +176,7 @@ export default function EventDetailPage() {
               {event.status}
             </Badge>
           </div>
-          <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
+          <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
             <span className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
               {format(new Date(event.date), "EEE, MMM d, yyyy")}
@@ -192,7 +192,7 @@ export default function EventDetailPage() {
           </div>
         </div>
         <Link href={`/team/events/${eventId}/checkin`}>
-          <Button className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-checkin-mode">
+          <Button className="bg-primary text-white" data-testid="button-checkin-mode">
             <QrCode className="w-4 h-4 mr-2" />
             Check-in Mode
           </Button>
@@ -209,8 +209,8 @@ export default function EventDetailPage() {
               </div>
               <div>
                 <p className="text-xl font-bold">{attendees.reduce((sum, a) => sum + (a.ticketCount || 1), 0)}</p>
-                <p className="text-xs text-gray-500">Total Tickets</p>
-                <p className="text-xs text-gray-400">{attendees.length} attendees</p>
+                <p className="text-xs text-muted-foreground">Total Tickets</p>
+                <p className="text-xs text-muted-foreground">{attendees.length} attendees</p>
               </div>
             </div>
           </CardContent>
@@ -223,7 +223,7 @@ export default function EventDetailPage() {
               </div>
               <div>
                 <p className="text-xl font-bold">{checkedInCount}</p>
-                <p className="text-xs text-gray-500">Checked In</p>
+                <p className="text-xs text-muted-foreground">Checked In</p>
               </div>
             </div>
           </CardContent>
@@ -236,7 +236,7 @@ export default function EventDetailPage() {
               </div>
               <div>
                 <p className="text-xl font-bold">{badgesPrinted}</p>
-                <p className="text-xs text-gray-500">Badges Printed</p>
+                <p className="text-xs text-muted-foreground">Badges Printed</p>
               </div>
             </div>
           </CardContent>
@@ -249,7 +249,7 @@ export default function EventDetailPage() {
               </div>
               <div>
                 <p className="text-xl font-bold">{hotels.length}</p>
-                <p className="text-xs text-gray-500">Hotel Bookings</p>
+                <p className="text-xs text-muted-foreground">Hotel Bookings</p>
               </div>
             </div>
           </CardContent>
@@ -262,7 +262,7 @@ export default function EventDetailPage() {
               </div>
               <div>
                 <p className="text-xl font-bold">{flights.length}</p>
-                <p className="text-xs text-gray-500">Flights</p>
+                <p className="text-xs text-muted-foreground">Flights</p>
               </div>
             </div>
           </CardContent>
@@ -271,7 +271,7 @@ export default function EventDetailPage() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-gray-100 p-1">
+        <TabsList className="bg-muted p-1">
           <TabsTrigger value="attendees" className="flex items-center gap-2" data-testid="tab-attendees">
             <Users className="h-4 w-4" />
             Attendees
@@ -743,7 +743,7 @@ www.suprans.com`;
         <CardTitle className="text-lg">Attendees ({attendees.length})</CardTitle>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search by name, phone, email, ticket ID..."
               value={searchQuery}
@@ -782,23 +782,23 @@ www.suprans.com`;
                 <DialogTitle>Send Email to Attendees</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-muted p-4 rounded-lg">
                   <h4 className="font-medium mb-2">Email Template Preview:</h4>
                   <p className="text-sm"><strong>Subject:</strong> Your Ticket for {event.name} - {eventDate}</p>
-                  <div className="mt-3 p-3 bg-white border rounded text-sm">
-                    <p className="text-[#F34147] font-semibold mb-2">Suprans Business Consulting</p>
+                  <div className="mt-3 p-3 bg-card border rounded text-sm">
+                    <p className="text-primary font-semibold mb-2">Suprans Business Consulting</p>
                     <p>Dear [Attendee Name],</p>
                     <p className="mt-2">Your registration for <strong>{event.name}</strong> is confirmed.</p>
-                    <div className="mt-3 bg-gray-100 p-2 rounded">
+                    <div className="mt-3 bg-muted p-2 rounded">
                       <p><strong>Ticket ID:</strong> [TICKET-ID]</p>
                       <p><strong>Event Date:</strong> {eventDate}</p>
                     </div>
-                    <div className="mt-3 bg-gray-100 p-2 rounded">
+                    <div className="mt-3 bg-muted p-2 rounded">
                       <p><strong>Venue:</strong> {venue}</p>
                       <p>{venueAddress}</p>
                       <p>Phone: {venuePhone}</p>
                     </div>
-                    <div className="mt-3 bg-gray-100 p-2 rounded">
+                    <div className="mt-3 bg-muted p-2 rounded">
                       <p><strong>Schedule:</strong></p>
                       <p>8:30 AM - Registration & Breakfast</p>
                       <p>10:30 AM - Event Begins</p>
@@ -826,7 +826,7 @@ www.suprans.com`;
                   </div>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     {attendees.filter(a => a.email).length} attendees have email addresses
                   </p>
                   <div className="flex gap-3">
@@ -856,9 +856,9 @@ www.suprans.com`;
                 <DialogTitle>Send SMS to Attendees</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-muted p-4 rounded-lg">
                   <h4 className="font-medium mb-2">SMS Template Preview:</h4>
-                  <div className="mt-3 p-3 bg-white border rounded text-sm whitespace-pre-line">
+                  <div className="mt-3 p-3 bg-card border rounded text-sm whitespace-pre-line">
 {`Dear [Attendee Name],
 
 Your registration for ${event.name} is confirmed.
@@ -897,7 +897,7 @@ Team Suprans Business Consulting`}
                   </div>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     {attendees.filter(a => a.phone).length} attendees have phone numbers
                   </p>
                   <div className="flex gap-3">
@@ -927,7 +927,7 @@ Team Suprans Business Consulting`}
                 <DialogTitle>Send WhatsApp to Attendees</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 pt-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-muted p-4 rounded-lg">
                   <h4 className="font-medium mb-2">WhatsApp Template Preview:</h4>
                   <div className="mt-3 p-3 bg-[#DCF8C6] border border-green-200 rounded text-sm whitespace-pre-line">
 {`Hello [Attendee Name]!
@@ -972,7 +972,7 @@ Team Suprans Business Consulting`}
                   </div>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     {attendees.filter(a => a.phone).length} attendees have phone numbers
                   </p>
                   <div className="flex gap-3">
@@ -992,7 +992,7 @@ Team Suprans Business Consulting`}
           </Dialog>
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-add-attendee">
+              <Button size="sm" className="bg-primary text-white" data-testid="button-add-attendee">
                 <Plus className="h-4 w-4 mr-2" />
                 Add Attendee
               </Button>
@@ -1056,7 +1056,7 @@ Team Suprans Business Consulting`}
                 </div>
                 <div className="flex justify-end gap-3">
                   <Button variant="outline" onClick={() => setIsAddOpen(false)}>Cancel</Button>
-                  <Button onClick={handleAddAttendee} className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-submit-attendee">Add Attendee</Button>
+                  <Button onClick={handleAddAttendee} className="bg-primary text-white" data-testid="button-submit-attendee">Add Attendee</Button>
                 </div>
               </div>
             </DialogContent>
@@ -1091,7 +1091,7 @@ Team Suprans Business Consulting`}
                     <ChevronDown className={cn("h-4 w-4 transition-transform", expandedAttendee === attendee.id && "rotate-180")} />
                     <div>
                       <p className="font-medium">{attendee.name}</p>
-                      {attendee.designation && <p className="text-xs text-gray-500">{attendee.designation}</p>}
+                      {attendee.designation && <p className="text-xs text-muted-foreground">{attendee.designation}</p>}
                     </div>
                   </div>
                 </TableCell>
@@ -1099,13 +1099,13 @@ Team Suprans Business Consulting`}
                   {(attendee.ticketCount || 1) > 1 ? (
                     <Badge className="bg-amber-100 text-amber-700 font-bold">{attendee.ticketCount || 1}</Badge>
                   ) : (
-                    <span className="text-gray-400">1</span>
+                    <span className="text-muted-foreground">1</span>
                   )}
                 </TableCell>
                 <TableCell>
                   <div className="text-sm">
                     <p className="flex items-center gap-1"><Phone className="h-3 w-3" /> {attendee.phone}</p>
-                    {attendee.email && <p className="flex items-center gap-1 text-gray-500"><Mail className="h-3 w-3" /> {attendee.email}</p>}
+                    {attendee.email && <p className="flex items-center gap-1 text-muted-foreground"><Mail className="h-3 w-3" /> {attendee.email}</p>}
                   </div>
                 </TableCell>
                 <TableCell>{attendee.company || "-"}</TableCell>
@@ -1121,15 +1121,15 @@ Team Suprans Business Consulting`}
                           data-testid={`img-qr-${attendee.id}`}
                         />
                       )}
-                      <span className="text-xs font-mono text-gray-600">{attendee.ticketId}</span>
+                      <span className="text-xs font-mono text-muted-foreground">{attendee.ticketId}</span>
                     </div>
                   ) : (
-                    <span className="text-xs text-gray-400">No ticket</span>
+                    <span className="text-xs text-muted-foreground">No ticket</span>
                   )}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className={cn(
-                    attendee.ticketStatus === "issued" || attendee.ticketStatus === "sent" ? "bg-green-50 text-green-700" : "bg-gray-50 text-gray-600"
+                    attendee.ticketStatus === "issued" || attendee.ticketStatus === "sent" ? "bg-green-50 text-green-700" : "bg-muted text-muted-foreground"
                   )}>
                     {attendee.ticketStatus}
                   </Badge>
@@ -1138,7 +1138,7 @@ Team Suprans Business Consulting`}
                   {attendee.checkedIn ? (
                     <Badge className="bg-green-100 text-green-700"><CheckCircle2 className="h-3 w-3 mr-1" /> Yes</Badge>
                   ) : (
-                    <Badge variant="outline" className="text-gray-500">No</Badge>
+                    <Badge variant="outline" className="text-muted-foreground">No</Badge>
                   )}
                 </TableCell>
                 <TableCell>
@@ -1182,7 +1182,7 @@ Team Suprans Business Consulting`}
                           <Edit2 className="h-4 w-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-primary">
                           <Trash2 className="h-4 w-4 mr-2" />
                           Delete
                         </DropdownMenuItem>
@@ -1247,7 +1247,7 @@ Team Suprans Business Consulting`}
           </TableBody>
         </Table>
         {filteredAttendees.length === 0 && (
-          <div className="text-center py-8 text-gray-500">No attendees found</div>
+          <div className="text-center py-8 text-muted-foreground">No attendees found</div>
         )}
       </CardContent>
     </Card>
@@ -1298,7 +1298,7 @@ function LogisticsTab({ eventId, hotels, flights }: { eventId: string; hotels: E
           <CardTitle className="text-lg flex items-center gap-2"><Hotel className="h-5 w-5" /> Hotels ({hotels.length})</CardTitle>
           <Dialog open={isHotelOpen} onOpenChange={setIsHotelOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-add-hotel">
+              <Button size="sm" className="bg-primary text-white" data-testid="button-add-hotel">
                 <Plus className="h-4 w-4 mr-1" /> Add
               </Button>
             </DialogTrigger>
@@ -1334,7 +1334,7 @@ function LogisticsTab({ eventId, hotels, flights }: { eventId: string; hotels: E
                 </div>
                 <div className="flex justify-end gap-3">
                   <Button variant="outline" onClick={() => setIsHotelOpen(false)}>Cancel</Button>
-                  <Button onClick={handleAddHotel} className="bg-[#F34147] hover:bg-[#D93036] text-white">Add Booking</Button>
+                  <Button onClick={handleAddHotel} className="bg-primary text-white">Add Booking</Button>
                 </div>
               </div>
             </DialogContent>
@@ -1354,12 +1354,12 @@ function LogisticsTab({ eventId, hotels, flights }: { eventId: string; hotels: E
                         </a>
                       )}
                     </div>
-                    <p className="text-sm text-gray-500">{hotel.guestName} • {hotel.roomType} ({hotel.roomCount || 1} room{(hotel.roomCount || 1) > 1 ? 's' : ''})</p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-sm text-muted-foreground">{hotel.guestName} • {hotel.roomType} ({hotel.roomCount || 1} room{(hotel.roomCount || 1) > 1 ? 's' : ''})</p>
+                    <p className="text-xs text-muted-foreground mt-1">
                       {format(new Date(hotel.checkIn), "MMM d")} - {format(new Date(hotel.checkOut), "MMM d")}
                     </p>
                     {hotel.distanceFromVenue && (
-                      <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
+                      <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                         <MapPinIcon className="h-3 w-3" /> {hotel.distanceFromVenue}
                       </p>
                     )}
@@ -1373,7 +1373,7 @@ function LogisticsTab({ eventId, hotels, flights }: { eventId: string; hotels: E
                 </div>
               </div>
             ))}
-            {hotels.length === 0 && <p className="text-center text-gray-500 py-4">No hotel bookings yet</p>}
+            {hotels.length === 0 && <p className="text-center text-muted-foreground py-4">No hotel bookings yet</p>}
           </div>
         </CardContent>
       </Card>
@@ -1383,7 +1383,7 @@ function LogisticsTab({ eventId, hotels, flights }: { eventId: string; hotels: E
           <CardTitle className="text-lg flex items-center gap-2"><Plane className="h-5 w-5" /> Flights ({flights.length})</CardTitle>
           <Dialog open={isFlightOpen} onOpenChange={setIsFlightOpen}>
             <DialogTrigger asChild>
-              <Button size="sm" className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-add-flight">
+              <Button size="sm" className="bg-primary text-white" data-testid="button-add-flight">
                 <Plus className="h-4 w-4 mr-1" /> Add
               </Button>
             </DialogTrigger>
@@ -1412,7 +1412,7 @@ function LogisticsTab({ eventId, hotels, flights }: { eventId: string; hotels: E
                 </div>
                 <div className="flex justify-end gap-3">
                   <Button variant="outline" onClick={() => setIsFlightOpen(false)}>Cancel</Button>
-                  <Button onClick={handleAddFlight} className="bg-[#F34147] hover:bg-[#D93036] text-white">Add Flight</Button>
+                  <Button onClick={handleAddFlight} className="bg-primary text-white">Add Flight</Button>
                 </div>
               </div>
             </DialogContent>
@@ -1432,12 +1432,12 @@ function LogisticsTab({ eventId, hotels, flights }: { eventId: string; hotels: E
                         </a>
                       )}
                     </div>
-                    <p className="text-sm text-gray-500">{flight.passengerName}</p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-sm text-muted-foreground">{flight.passengerName}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
                       {flight.airline || 'TBD'} {flight.flightNumber !== 'TBD' ? flight.flightNumber : ''} • {format(new Date(flight.departureTime), "MMM d, h:mm a")}
                     </p>
-                    {flight.pnr && <p className="text-xs text-gray-400">PNR: {flight.pnr}</p>}
-                    {flight.notes && <p className="text-xs text-gray-400 mt-1">{flight.notes}</p>}
+                    {flight.pnr && <p className="text-xs text-muted-foreground">PNR: {flight.pnr}</p>}
+                    {flight.notes && <p className="text-xs text-muted-foreground mt-1">{flight.notes}</p>}
                   </div>
                   <div className="flex flex-col items-end gap-1">
                     <Badge variant={flight.status === 'pending' ? 'secondary' : flight.status === 'booked' || flight.status === 'confirmed' ? 'default' : 'outline'}>
@@ -1448,7 +1448,7 @@ function LogisticsTab({ eventId, hotels, flights }: { eventId: string; hotels: E
                 </div>
               </div>
             ))}
-            {flights.length === 0 && <p className="text-center text-gray-500 py-4">No flights yet</p>}
+            {flights.length === 0 && <p className="text-center text-muted-foreground py-4">No flights yet</p>}
           </div>
         </CardContent>
       </Card>
@@ -1543,7 +1543,7 @@ function BadgesTab({ eventId, attendees }: { eventId: string; attendees: EventAt
                   <Badge className={cn(
                     attendee.ticketStatus === "issued" ? "bg-green-100 text-green-700" :
                     attendee.ticketStatus === "sent" ? "bg-blue-100 text-blue-700" :
-                    "bg-gray-100 text-gray-600"
+                    "bg-muted text-muted-foreground"
                   )}>
                     {attendee.ticketStatus}
                   </Badge>
@@ -1581,7 +1581,7 @@ function CreativesTab({ eventId, creatives }: { eventId: string; creatives: Even
   };
 
   const statusColors: Record<string, string> = {
-    pending: "bg-gray-100 text-gray-600",
+    pending: "bg-muted text-muted-foreground",
     designing: "bg-yellow-100 text-yellow-700",
     approved: "bg-blue-100 text-blue-700",
     printing: "bg-purple-100 text-purple-700",
@@ -1595,7 +1595,7 @@ function CreativesTab({ eventId, creatives }: { eventId: string; creatives: Even
         <CardTitle className="text-lg">Creatives & Assets</CardTitle>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-add-creative">
+            <Button size="sm" className="bg-primary text-white" data-testid="button-add-creative">
               <Plus className="h-4 w-4 mr-2" /> Add Creative
             </Button>
           </DialogTrigger>
@@ -1623,7 +1623,7 @@ function CreativesTab({ eventId, creatives }: { eventId: string; creatives: Even
               </div>
               <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button onClick={handleAdd} className="bg-[#F34147] hover:bg-[#D93036] text-white">Add</Button>
+                <Button onClick={handleAdd} className="bg-primary text-white">Add</Button>
               </div>
             </div>
           </DialogContent>
@@ -1637,9 +1637,9 @@ function CreativesTab({ eventId, creatives }: { eventId: string; creatives: Even
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="font-medium">{creative.name}</p>
-                    <p className="text-sm text-gray-500 capitalize">{creative.type}</p>
-                    {creative.dimensions && <p className="text-xs text-gray-400">{creative.dimensions}</p>}
-                    <p className="text-xs text-gray-400">Qty: {creative.quantity}</p>
+                    <p className="text-sm text-muted-foreground capitalize">{creative.type}</p>
+                    {creative.dimensions && <p className="text-xs text-muted-foreground">{creative.dimensions}</p>}
+                    <p className="text-xs text-muted-foreground">Qty: {creative.quantity}</p>
                   </div>
                   <Badge className={statusColors[creative.status] || statusColors.pending}>{creative.status}</Badge>
                 </div>
@@ -1647,7 +1647,7 @@ function CreativesTab({ eventId, creatives }: { eventId: string; creatives: Even
             </Card>
           ))}
         </div>
-        {creatives.length === 0 && <p className="text-center text-gray-500 py-8">No creatives added yet</p>}
+        {creatives.length === 0 && <p className="text-center text-muted-foreground py-8">No creatives added yet</p>}
       </CardContent>
     </Card>
   );
@@ -1680,7 +1680,7 @@ function PackingTab({ eventId, items }: { eventId: string; items: EventPackingIt
 
   const categories = ["banners", "tech", "stationery", "badges", "gifts", "documents", "other"];
   const statusColors: Record<string, string> = {
-    pending: "bg-gray-100 text-gray-600",
+    pending: "bg-muted text-muted-foreground",
     packed: "bg-yellow-100 text-yellow-700",
     shipped: "bg-blue-100 text-blue-700",
     received: "bg-green-100 text-green-700",
@@ -1698,7 +1698,7 @@ function PackingTab({ eventId, items }: { eventId: string; items: EventPackingIt
         <CardTitle className="text-lg">Packing Checklist</CardTitle>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-add-packing">
+            <Button size="sm" className="bg-primary text-white" data-testid="button-add-packing">
               <Plus className="h-4 w-4 mr-2" /> Add Item
             </Button>
           </DialogTrigger>
@@ -1720,7 +1720,7 @@ function PackingTab({ eventId, items }: { eventId: string; items: EventPackingIt
               </div>
               <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button onClick={handleAdd} className="bg-[#F34147] hover:bg-[#D93036] text-white">Add</Button>
+                <Button onClick={handleAdd} className="bg-primary text-white">Add</Button>
               </div>
             </div>
           </DialogContent>
@@ -1733,15 +1733,15 @@ function PackingTab({ eventId, items }: { eventId: string; items: EventPackingIt
             if (catItems.length === 0) return null;
             return (
               <div key={cat}>
-                <h3 className="font-medium text-gray-900 capitalize mb-2">{cat}</h3>
+                <h3 className="font-medium text-foreground capitalize mb-2">{cat}</h3>
                 <div className="space-y-2">
                   {catItems.map((item) => (
                     <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg" data-testid={`item-packing-${item.id}`}>
                       <div className="flex items-center gap-3">
                         <Checkbox checked={item.status === "setup"} onCheckedChange={(checked) => handleStatusChange(item.id, checked ? "setup" : "pending")} />
                         <div>
-                          <p className={cn("font-medium", item.status === "setup" && "line-through text-gray-400")}>{item.itemName}</p>
-                          <p className="text-xs text-gray-500">Qty: {item.quantity} {item.assignedTo && `• ${item.assignedTo}`}</p>
+                          <p className={cn("font-medium", item.status === "setup" && "line-through text-muted-foreground")}>{item.itemName}</p>
+                          <p className="text-xs text-muted-foreground">Qty: {item.quantity} {item.assignedTo && `• ${item.assignedTo}`}</p>
                         </div>
                       </div>
                       <Select value={item.status} onValueChange={(v) => handleStatusChange(item.id, v)}>
@@ -1763,7 +1763,7 @@ function PackingTab({ eventId, items }: { eventId: string; items: EventPackingIt
             );
           })}
         </div>
-        {items.length === 0 && <p className="text-center text-gray-500 py-8">No packing items yet</p>}
+        {items.length === 0 && <p className="text-center text-muted-foreground py-8">No packing items yet</p>}
       </CardContent>
     </Card>
   );
@@ -1814,7 +1814,7 @@ function CommunicationsTab({ eventId, communications }: { eventId: string; commu
         <CardTitle className="text-lg">Communications</CardTitle>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-add-communication">
+            <Button size="sm" className="bg-primary text-white" data-testid="button-add-communication">
               <Plus className="h-4 w-4 mr-2" /> New Communication
             </Button>
           </DialogTrigger>
@@ -1862,7 +1862,7 @@ function CommunicationsTab({ eventId, communications }: { eventId: string; commu
               </div>
               <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button onClick={handleSend} className="bg-[#F34147] hover:bg-[#D93036] text-white" disabled={addMutation.isPending}>
+                <Button onClick={handleSend} className="bg-primary text-white" disabled={addMutation.isPending}>
                   <Send className="h-4 w-4 mr-2" /> Send
                 </Button>
               </div>
@@ -1875,7 +1875,7 @@ function CommunicationsTab({ eventId, communications }: { eventId: string; commu
           {communications.map((comm) => (
             <div key={comm.id} className="flex items-start justify-between p-4 border rounded-lg" data-testid={`item-communication-${comm.id}`}>
               <div className="flex items-start gap-3">
-                <div className="p-2 bg-gray-100 rounded-lg">
+                <div className="p-2 bg-muted rounded-lg">
                   {getTypeIcon(comm.type)}
                 </div>
                 <div>
@@ -1884,15 +1884,15 @@ function CommunicationsTab({ eventId, communications }: { eventId: string; commu
                     <Badge variant="outline" className="text-xs">{comm.targetAudience}</Badge>
                     <Badge variant={comm.status === "sent" ? "default" : "secondary"} className="text-xs">{comm.status}</Badge>
                   </div>
-                  {comm.subject && <p className="text-sm text-gray-600 mt-1">{comm.subject}</p>}
-                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">{comm.content}</p>
-                  {comm.createdAt && <p className="text-xs text-gray-400 mt-2">{format(new Date(comm.createdAt), "MMM d, yyyy h:mm a")}</p>}
+                  {comm.subject && <p className="text-sm text-muted-foreground mt-1">{comm.subject}</p>}
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{comm.content}</p>
+                  {comm.createdAt && <p className="text-xs text-muted-foreground mt-2">{format(new Date(comm.createdAt), "MMM d, yyyy h:mm a")}</p>}
                 </div>
               </div>
             </div>
           ))}
         </div>
-        {communications.length === 0 && <p className="text-center text-gray-500 py-8">No communications sent yet</p>}
+        {communications.length === 0 && <p className="text-center text-muted-foreground py-8">No communications sent yet</p>}
       </CardContent>
     </Card>
   );
@@ -1935,7 +1935,7 @@ function PresentationsTab({ eventId, presentations }: { eventId: string; present
       case "panel": return "bg-blue-100 text-blue-700";
       case "workshop": return "bg-green-100 text-green-700";
       case "demo": return "bg-orange-100 text-orange-700";
-      default: return "bg-gray-100 text-gray-700";
+      default: return "bg-muted text-gray-700";
     }
   };
 
@@ -1945,7 +1945,7 @@ function PresentationsTab({ eventId, presentations }: { eventId: string; present
         <CardTitle className="text-lg">Presentations</CardTitle>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-add-presentation">
+            <Button size="sm" className="bg-primary text-white" data-testid="button-add-presentation">
               <Plus className="h-4 w-4 mr-2" /> Add Presentation
             </Button>
           </DialogTrigger>
@@ -1984,7 +1984,7 @@ function PresentationsTab({ eventId, presentations }: { eventId: string; present
               </div>
               <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button onClick={handleAdd} className="bg-[#F34147] hover:bg-[#D93036] text-white">Add</Button>
+                <Button onClick={handleAdd} className="bg-primary text-white">Add</Button>
               </div>
             </div>
           </DialogContent>
@@ -1995,7 +1995,7 @@ function PresentationsTab({ eventId, presentations }: { eventId: string; present
           {presentations.map((pres, index) => (
             <div key={pres.id} className="flex items-center justify-between p-4 border rounded-lg" data-testid={`item-presentation-${pres.id}`}>
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg font-bold text-gray-500">
+                <div className="flex items-center justify-center w-10 h-10 bg-muted rounded-lg font-bold text-muted-foreground">
                   {index + 1}
                 </div>
                 <div>
@@ -2003,7 +2003,7 @@ function PresentationsTab({ eventId, presentations }: { eventId: string; present
                     <span className="font-medium">{pres.title}</span>
                     <Badge className={cn("text-xs", getTypeColor(pres.type))}>{pres.type}</Badge>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-500 mt-1">
+                  <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                     <span>{pres.presenter}</span>
                     <span>•</span>
                     <span>{pres.duration} mins</span>
@@ -2023,7 +2023,7 @@ function PresentationsTab({ eventId, presentations }: { eventId: string; present
             </div>
           ))}
         </div>
-        {presentations.length === 0 && <p className="text-center text-gray-500 py-8">No presentations added yet</p>}
+        {presentations.length === 0 && <p className="text-center text-muted-foreground py-8">No presentations added yet</p>}
       </CardContent>
     </Card>
   );
@@ -2109,11 +2109,11 @@ function TeamContactsTab({ eventId, contacts }: { eventId: string; contacts: Eve
       <CardHeader className="flex flex-row items-center justify-between gap-2">
         <div>
           <CardTitle className="text-lg">Event Day Team & Contacts</CardTitle>
-          <p className="text-sm text-gray-500 mt-1">Team members, exhibitors, vendors, and venue staff</p>
+          <p className="text-sm text-muted-foreground mt-1">Team members, exhibitors, vendors, and venue staff</p>
         </div>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button size="sm" className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-add-team-contact">
+            <Button size="sm" className="bg-primary text-white" data-testid="button-add-team-contact">
               <Plus className="h-4 w-4 mr-2" /> Add Contact
             </Button>
           </DialogTrigger>
@@ -2165,7 +2165,7 @@ function TeamContactsTab({ eventId, contacts }: { eventId: string; contacts: Eve
               </div>
               <div className="flex justify-end gap-3">
                 <Button variant="outline" onClick={() => setIsOpen(false)}>Cancel</Button>
-                <Button onClick={handleAdd} className="bg-[#F34147] hover:bg-[#D93036] text-white" disabled={addMutation.isPending}>Add</Button>
+                <Button onClick={handleAdd} className="bg-primary text-white" disabled={addMutation.isPending}>Add</Button>
               </div>
             </div>
           </DialogContent>
@@ -2180,7 +2180,7 @@ function TeamContactsTab({ eventId, contacts }: { eventId: string; contacts: Eve
               <div key={role}>
                 <div className="flex items-center gap-2 mb-3">
                   {getRoleIcon(role)}
-                  <h3 className="font-medium text-gray-900">{roleLabels[role]}</h3>
+                  <h3 className="font-medium text-foreground">{roleLabels[role]}</h3>
                   <Badge variant="secondary" className="text-xs">{roleContacts.length}</Badge>
                 </div>
                 <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -2192,15 +2192,15 @@ function TeamContactsTab({ eventId, contacts }: { eventId: string; contacts: Eve
                             <span className="font-medium">{contact.name}</span>
                             {contact.isEmergencyContact && <Badge variant="destructive" className="text-xs">Emergency</Badge>}
                           </div>
-                          {contact.company && <p className="text-sm text-gray-600">{contact.company}</p>}
-                          {contact.department && <p className="text-xs text-gray-500">{contact.department}</p>}
+                          {contact.company && <p className="text-sm text-muted-foreground">{contact.company}</p>}
+                          {contact.department && <p className="text-xs text-muted-foreground">{contact.department}</p>}
                         </div>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-400 hover:text-red-500" onClick={() => deleteMutation.mutate(contact.id)}>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-red-500" onClick={() => deleteMutation.mutate(contact.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                       <div className="mt-3 space-y-1">
-                        <a href={`tel:${contact.phone}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#F34147]">
+                        <a href={`tel:${contact.phone}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
                           <Phone className="h-3 w-3" /> {contact.phone}
                         </a>
                         {contact.whatsapp && (
@@ -2209,12 +2209,12 @@ function TeamContactsTab({ eventId, contacts }: { eventId: string; contacts: Eve
                           </a>
                         )}
                         {contact.email && (
-                          <a href={`mailto:${contact.email}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#F34147]">
+                          <a href={`mailto:${contact.email}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
                             <Mail className="h-3 w-3" /> {contact.email}
                           </a>
                         )}
                       </div>
-                      {contact.notes && <p className="mt-2 text-xs text-gray-500 line-clamp-2">{contact.notes}</p>}
+                      {contact.notes && <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>}
                     </div>
                   ))}
                 </div>
@@ -2222,7 +2222,7 @@ function TeamContactsTab({ eventId, contacts }: { eventId: string; contacts: Eve
             );
           })}
         </div>
-        {contacts.length === 0 && <p className="text-center text-gray-500 py-8">No team contacts added yet</p>}
+        {contacts.length === 0 && <p className="text-center text-muted-foreground py-8">No team contacts added yet</p>}
       </CardContent>
     </Card>
   );
@@ -2299,7 +2299,7 @@ function VendorsTab({ eventId, vendors }: { eventId: string; vendors: EventVendo
             <Store className="h-5 w-5" />
             Event Vendors
           </CardTitle>
-          <p className="text-sm text-gray-500 mt-1">Total: ₹{totalVendorCost.toLocaleString()}</p>
+          <p className="text-sm text-muted-foreground mt-1">Total: ₹{totalVendorCost.toLocaleString()}</p>
         </div>
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
@@ -2395,33 +2395,33 @@ function VendorsTab({ eventId, vendors }: { eventId: string; vendors: EventVendo
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
-                      <div className="p-2 bg-gray-100 rounded-lg">
-                        <CategoryIcon className="h-5 w-5 text-gray-600" />
+                      <div className="p-2 bg-muted rounded-lg">
+                        <CategoryIcon className="h-5 w-5 text-muted-foreground" />
                       </div>
                       <div>
                         <h4 className="font-semibold">{vendor.vendorName}</h4>
-                        {vendor.companyName && <p className="text-sm text-gray-600">{vendor.companyName}</p>}
+                        {vendor.companyName && <p className="text-sm text-muted-foreground">{vendor.companyName}</p>}
                         <Badge variant="outline" className="mt-1 text-xs">{getCategoryLabel(vendor.category)}</Badge>
                       </div>
                     </div>
-                    <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-400 hover:text-red-500" onClick={() => deleteMutation.mutate(vendor.id)}>
+                    <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-red-500" onClick={() => deleteMutation.mutate(vendor.id)}>
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
 
                   <div className="mt-4 flex items-center justify-between">
-                    <div className="text-lg font-bold text-[#F34147]">₹{(vendor.totalAmount || 0).toLocaleString()}</div>
+                    <div className="text-lg font-bold text-primary">₹{(vendor.totalAmount || 0).toLocaleString()}</div>
                     <Badge className={cn(
                       vendor.paymentStatus === "paid" ? "bg-green-100 text-green-700" :
                       vendor.paymentStatus === "partial" ? "bg-amber-100 text-amber-700" :
-                      "bg-gray-100 text-gray-700"
+                      "bg-muted text-gray-700"
                     )}>
                       {vendor.paymentStatus === "paid" ? "Paid" : vendor.paymentStatus === "partial" ? "Partial" : "Pending"}
                     </Badge>
                   </div>
 
                   {vendor.rating && (
-                    <div className="mt-2 flex items-center gap-1 text-sm text-gray-600">
+                    <div className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
                       <Star className="h-4 w-4 text-amber-500 fill-amber-500" />
                       {vendor.rating}
                     </div>
@@ -2429,29 +2429,29 @@ function VendorsTab({ eventId, vendors }: { eventId: string; vendors: EventVendo
 
                   <div className="mt-3 space-y-1">
                     {vendor.contactPhone && (
-                      <a href={`tel:${vendor.contactPhone}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#F34147]">
+                      <a href={`tel:${vendor.contactPhone}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
                         <Phone className="h-3 w-3" /> {vendor.contactPhone}
                       </a>
                     )}
                     {vendor.email && (
-                      <a href={`mailto:${vendor.email}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#F34147]">
+                      <a href={`mailto:${vendor.email}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary">
                         <Mail className="h-3 w-3" /> {vendor.email}
                       </a>
                     )}
                     {vendor.location && (
-                      <p className="flex items-center gap-2 text-sm text-gray-500">
+                      <p className="flex items-center gap-2 text-sm text-muted-foreground">
                         <MapPin className="h-3 w-3" /> {vendor.location}
                       </p>
                     )}
                   </div>
 
-                  {vendor.notes && <p className="mt-3 text-xs text-gray-500 bg-gray-50 p-2 rounded">{vendor.notes}</p>}
+                  {vendor.notes && <p className="mt-3 text-xs text-muted-foreground bg-muted p-2 rounded">{vendor.notes}</p>}
                 </CardContent>
               </Card>
             );
           })}
         </div>
-        {vendors.length === 0 && <p className="text-center text-gray-500 py-8">No vendors added yet</p>}
+        {vendors.length === 0 && <p className="text-center text-muted-foreground py-8">No vendors added yet</p>}
       </CardContent>
     </Card>
   );

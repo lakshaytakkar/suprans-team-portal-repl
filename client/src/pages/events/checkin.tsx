@@ -204,15 +204,15 @@ export default function CheckinPage() {
   if (!event) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F34147]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
+      <div className="bg-card border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -222,8 +222,8 @@ export default function CheckinPage() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Check-in: {event.name}</h1>
-                <p className="text-sm text-gray-500">
+                <h1 className="text-xl font-bold text-foreground">Check-in: {event.name}</h1>
+                <p className="text-sm text-muted-foreground">
                   {format(new Date(event.date), "EEE, MMM d, yyyy")} • {event.city}
                 </p>
               </div>
@@ -231,15 +231,15 @@ export default function CheckinPage() {
             <div className="flex items-center gap-6">
               <div className="text-center">
                 <p className="text-3xl font-bold text-green-600">{checkedInCount}</p>
-                <p className="text-xs text-gray-500">Checked In</p>
+                <p className="text-xs text-muted-foreground">Checked In</p>
               </div>
               <div className="text-center">
                 <p className="text-3xl font-bold text-gray-400">{pendingCount}</p>
-                <p className="text-xs text-gray-500">Pending</p>
+                <p className="text-xs text-muted-foreground">Pending</p>
               </div>
               <div className="text-center">
-                <p className="text-3xl font-bold text-gray-900">{attendees.length}</p>
-                <p className="text-xs text-gray-500">Total</p>
+                <p className="text-3xl font-bold text-foreground">{attendees.length}</p>
+                <p className="text-xs text-muted-foreground">Total</p>
               </div>
               <Button variant="outline" size="sm" onClick={() => refetch()} data-testid="button-refresh">
                 <RefreshCw className="h-4 w-4 mr-2" />
@@ -259,7 +259,7 @@ export default function CheckinPage() {
                 <Button 
                   size="sm" 
                   onClick={startScanner}
-                  className="bg-[#F34147] text-white"
+                  className="bg-primary text-white"
                   data-testid="button-start-scanner"
                 >
                   <QrCode className="h-4 w-4 mr-2" />
@@ -279,7 +279,7 @@ export default function CheckinPage() {
               <Card>
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Camera className="h-5 w-5 text-[#F34147]" />
+                    <Camera className="h-5 w-5 text-primary" />
                     QR Code Scanner
                   </CardTitle>
                 </CardHeader>
@@ -302,7 +302,7 @@ export default function CheckinPage() {
                         {lastScannedResult.success ? (
                           <CheckCircle2 className="h-8 w-8 text-green-600 mx-auto mb-2" />
                         ) : (
-                          <XCircle className="h-8 w-8 text-red-600 mx-auto mb-2" />
+                          <XCircle className="h-8 w-8 text-primary mx-auto mb-2" />
                         )}
                         <p className={cn(
                           "font-semibold",
@@ -311,14 +311,14 @@ export default function CheckinPage() {
                           {lastScannedResult.message}
                         </p>
                         {lastScannedResult.attendee && (
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-muted-foreground mt-1">
                             {lastScannedResult.attendee.company || lastScannedResult.attendee.phone}
                           </p>
                         )}
                       </div>
                     )}
                     
-                    <p className="text-sm text-gray-500 mt-4">
+                    <p className="text-sm text-muted-foreground mt-4">
                       Point your camera at an attendee's QR code ticket
                     </p>
                   </div>
@@ -331,7 +331,7 @@ export default function CheckinPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="relative mb-4">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       ref={searchInputRef}
                       placeholder="Search by name, phone, or company..."
@@ -347,17 +347,17 @@ export default function CheckinPage() {
                     {filteredAttendees.slice(0, 10).map((attendee) => (
                       <div
                         key={attendee.id}
-                        className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                        className="flex items-center justify-between p-4 border rounded-lg hover-elevate cursor-pointer transition-colors"
                         onClick={() => handleCheckIn(attendee)}
                         data-testid={`card-checkin-attendee-${attendee.id}`}
                       >
                         <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-lg font-semibold text-gray-600">
+                          <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center text-lg font-semibold text-muted-foreground">
                             {attendee.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
                             <p className="font-semibold text-lg">{attendee.name}</p>
-                            <div className="flex items-center gap-3 text-sm text-gray-500">
+                            <div className="flex items-center gap-3 text-sm text-muted-foreground">
                               {attendee.company && (
                                 <span className="flex items-center gap-1">
                                   <Building2 className="h-3 w-3" />
@@ -377,7 +377,7 @@ export default function CheckinPage() {
                             </div>
                           </div>
                         </div>
-                        <Button className="bg-green-600 hover:bg-green-700 text-white h-12 px-6">
+                        <Button className="bg-green-600 text-white h-12 px-6">
                           <UserCheck className="h-5 w-5 mr-2" />
                           Check In
                         </Button>
@@ -389,16 +389,16 @@ export default function CheckinPage() {
                 {searchQuery && filteredAttendees.length === 0 && (
                   <div className="text-center py-8">
                     <XCircle className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-500">No matching attendee found</p>
-                    <p className="text-sm text-gray-400 mt-1">Try searching by name, phone, or company</p>
+                    <p className="text-muted-foreground">No matching attendee found</p>
+                    <p className="text-sm text-muted-foreground mt-1">Try searching by name, phone, or company</p>
                   </div>
                 )}
 
                 {!searchQuery && (
                   <div className="text-center py-12">
                     <Search className="h-16 w-16 text-gray-200 mx-auto mb-4" />
-                    <p className="text-xl text-gray-400">Start typing to search attendees</p>
-                    <p className="text-sm text-gray-300 mt-2">Search by name, phone number, or company</p>
+                    <p className="text-xl text-muted-foreground">Start typing to search attendees</p>
+                    <p className="text-sm text-muted-foreground mt-2">Search by name, phone number, or company</p>
                   </div>
                 )}
               </CardContent>
@@ -423,7 +423,7 @@ export default function CheckinPage() {
                         key={`${attendee.id}-${index}`}
                         className={cn(
                           "flex items-center gap-3 p-3 rounded-lg",
-                          index === 0 ? "bg-green-50 border border-green-200" : "bg-gray-50"
+                          index === 0 ? "bg-green-50 border border-green-200" : "bg-muted"
                         )}
                       >
                         <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-sm font-semibold text-green-700">
@@ -431,7 +431,7 @@ export default function CheckinPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">{attendee.name}</p>
-                          <p className="text-xs text-gray-500 truncate">{attendee.company || attendee.phone}</p>
+                          <p className="text-xs text-muted-foreground truncate">{attendee.company || attendee.phone}</p>
                         </div>
                         {index === 0 && (
                           <Badge className="bg-green-100 text-green-700">Just now</Badge>
@@ -442,7 +442,7 @@ export default function CheckinPage() {
                 ) : (
                   <div className="text-center py-8">
                     <Users className="h-10 w-10 text-gray-200 mx-auto mb-3" />
-                    <p className="text-gray-400">No check-ins yet</p>
+                    <p className="text-muted-foreground">No check-ins yet</p>
                   </div>
                 )}
               </CardContent>
@@ -467,7 +467,7 @@ export default function CheckinPage() {
                           key={attendee.id}
                           className={cn(
                             "flex items-center gap-3 p-3 rounded-lg",
-                            index === 0 ? "bg-blue-50 border border-blue-200" : "bg-gray-50"
+                            index === 0 ? "bg-blue-50 border border-blue-200" : "bg-muted"
                           )}
                         >
                           <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-sm font-bold text-blue-700">
@@ -475,7 +475,7 @@ export default function CheckinPage() {
                           </div>
                           <div className="flex-1">
                             <p className="font-medium text-sm">{attendee.name}</p>
-                            <p className="text-xs text-gray-500">{attendee.slotTime}</p>
+                            <p className="text-xs text-muted-foreground">{attendee.slotTime}</p>
                           </div>
                           {index === 0 && (
                             <Badge className="bg-blue-100 text-blue-700">Now</Badge>
@@ -483,7 +483,7 @@ export default function CheckinPage() {
                         </div>
                       ))}
                   </div>
-                  <p className="text-xs text-gray-400 mt-4 text-center">
+                  <p className="text-xs text-muted-foreground mt-4 text-center">
                     Groups of 3-4 • {event.slotDuration} min slots
                   </p>
                 </CardContent>

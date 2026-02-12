@@ -32,55 +32,55 @@ export function SearchDialog({ open, onOpenChange }: SearchDialogProps) {
           <CommandItem className="py-3 px-3 cursor-pointer">
             <div className="flex items-center gap-3 w-full">
               <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-[#FEECED]">
-                <Package className="h-4 w-4 text-[#F34147]" />
+                <Package className="h-4 w-4 text-primary" />
               </div>
-              <span className="text-[16px] font-medium text-[#0D0D12]">Shipments</span>
+              <span className="text-[16px] font-medium text-foreground">Shipments</span>
             </div>
           </CommandItem>
           <CommandItem className="py-3 px-3 cursor-pointer">
             <div className="flex items-center gap-3 w-full">
               <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-[#FEECED]">
-                <Truck className="h-4 w-4 text-[#F34147]" />
+                <Truck className="h-4 w-4 text-primary" />
               </div>
-              <span className="text-[16px] font-medium text-[#0D0D12]">Carriers</span>
+              <span className="text-[16px] font-medium text-foreground">Carriers</span>
             </div>
           </CommandItem>
           <CommandItem className="py-3 px-3 cursor-pointer">
             <div className="flex items-center gap-3 w-full">
               <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-[#FEECED]">
-                <Landmark className="h-4 w-4 text-[#F34147]" />
+                <Landmark className="h-4 w-4 text-primary" />
               </div>
-              <span className="text-[16px] font-medium text-[#0D0D12]">Warehouses</span>
+              <span className="text-[16px] font-medium text-foreground">Warehouses</span>
             </div>
           </CommandItem>
         </CommandGroup>
       </CommandList>
       
-      <div className="flex items-center justify-end px-4 py-3 bg-[#F6F8FA] border-t border-[#DFE1E7] gap-5">
+      <div className="flex items-center justify-end px-4 py-3 bg-muted border-t gap-5">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
-            <div className="flex items-center justify-center w-[22px] h-[22px] bg-white border border-[#ECEFF3] rounded-[6px]">
-              <ArrowUp className="h-3 w-3 text-[#666D80]" />
+            <div className="flex items-center justify-center w-[22px] h-[22px] bg-card border rounded-[6px]">
+              <ArrowUp className="h-3 w-3 text-muted-foreground" />
             </div>
-            <div className="flex items-center justify-center w-[22px] h-[22px] bg-white border border-[#ECEFF3] rounded-[6px]">
-              <ArrowDown className="h-3 w-3 text-[#666D80]" />
+            <div className="flex items-center justify-center w-[22px] h-[22px] bg-card border rounded-[6px]">
+              <ArrowDown className="h-3 w-3 text-muted-foreground" />
             </div>
           </div>
-          <span className="text-[12px] font-medium text-[#666D80]">Navigate</span>
+          <span className="text-[12px] font-medium text-muted-foreground">Navigate</span>
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center px-2 py-1 bg-white border border-[#ECEFF3] rounded-[6px]">
-            <span className="text-[10px] font-medium text-[#666D80]">Enter</span>
+          <div className="flex items-center justify-center px-2 py-1 bg-card border rounded-[6px]">
+            <span className="text-[10px] font-medium text-muted-foreground">Enter</span>
           </div>
-          <span className="text-[12px] font-medium text-[#666D80]">Select</span>
+          <span className="text-[12px] font-medium text-muted-foreground">Select</span>
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center px-2 py-1 bg-white border border-[#ECEFF3] rounded-[6px]">
-            <span className="text-[10px] font-medium text-[#666D80]">Esc</span>
+          <div className="flex items-center justify-center px-2 py-1 bg-card border rounded-[6px]">
+            <span className="text-[10px] font-medium text-muted-foreground">Esc</span>
           </div>
-          <span className="text-[12px] font-medium text-[#666D80]">Quit</span>
+          <span className="text-[12px] font-medium text-muted-foreground">Quit</span>
         </div>
       </div>
     </CommandDialog>

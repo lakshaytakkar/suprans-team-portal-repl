@@ -195,30 +195,30 @@ export default function ChatPage() {
   return (
     <div className="flex h-[calc(100vh-140px)] gap-6 w-full max-w-[1600px] mx-auto">
       {/* Left Sidebar: Contact List */}
-      <div className="w-[380px] flex flex-col bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden shrink-0">
+      <div className="w-[380px] flex flex-col bg-card border rounded-xl shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none overflow-hidden shrink-0">
         
         {/* Header */}
-        <div className="p-5 border-b border-[#DFE1E7] space-y-4">
+        <div className="p-5 border-b space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-[18px] font-semibold text-[#0D0D12]">Internal Chat</h2>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-[#666D80]" data-testid="button-chat-menu">
+            <h2 className="text-base font-semibold text-foreground">Internal Chat</h2>
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" data-testid="button-chat-menu">
               <MoreHorizontal className="h-5 w-5" />
             </Button>
           </div>
           
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#808897]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
               placeholder="Search..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-white border-[#DFE1E7] h-[40px] text-sm focus-visible:ring-1 focus-visible:ring-[#F34147]"
+              className="pl-9 bg-card h-[40px] text-sm focus-visible:ring-1 focus-visible:ring-primary"
               data-testid="input-chat-search"
             />
           </div>
 
           {/* Tab Switcher */}
-          <div className="flex p-1 bg-[#F8F9FB] rounded-lg border border-[#DFE1E7]">
+          <div className="flex p-1 bg-muted rounded-lg border">
             <button
               onClick={() => {
                 setActiveTab('teams');
@@ -226,8 +226,8 @@ export default function ChatPage() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-1.5 text-sm font-medium rounded-md transition-all",
                 activeTab === 'teams' 
-                  ? "bg-white text-[#0D0D12] shadow-sm" 
-                  : "text-[#666D80] hover:text-[#0D0D12]"
+                  ? "bg-card text-foreground shadow-sm" 
+                  : "text-muted-foreground hover:text-foreground"
               )}
               data-testid="button-tab-teams"
             >
@@ -241,8 +241,8 @@ export default function ChatPage() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-1.5 text-sm font-medium rounded-md transition-all",
                 activeTab === 'individuals' 
-                  ? "bg-white text-[#0D0D12] shadow-sm" 
-                  : "text-[#666D80] hover:text-[#0D0D12]"
+                  ? "bg-card text-foreground shadow-sm" 
+                  : "text-muted-foreground hover:text-foreground"
               )}
               data-testid="button-tab-individuals"
             >
@@ -262,25 +262,25 @@ export default function ChatPage() {
               <div 
                 onClick={() => setSelectedChannel(teamChannel)}
                 className={cn(
-                  "flex items-center gap-3 p-4 cursor-pointer transition-colors border-b border-[#F6F8FA] hover:bg-[#F8F9FB]",
-                  selectedChannel?.id === teamChannel.id ? "bg-[#F8F9FB]" : "bg-white"
+                  "flex items-center gap-3 p-4 cursor-pointer transition-colors border-b border-muted hover-elevate",
+                  selectedChannel?.id === teamChannel.id ? "bg-muted" : "bg-card"
                 )}
                 data-testid={`channel-${teamChannel.id}`}
               >
                 <div className="relative shrink-0">
-                  <div className="h-[48px] w-[48px] border border-[#DFE1E7] rounded-lg bg-[#F34147]/10 flex items-center justify-center text-[#F34147]">
+                  <div className="h-[48px] w-[48px] border rounded-lg bg-primary/10 flex items-center justify-center text-primary">
                     <Hash className="h-6 w-6" />
                   </div>
                 </div>
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="text-[14px] font-semibold text-[#0D0D12] truncate flex items-center gap-1.5">
-                      <Hash className="h-3.5 w-3.5 text-[#666D80]" />
+                    <h3 className="text-[14px] font-semibold text-foreground truncate flex items-center gap-1.5">
+                      <Hash className="h-3.5 w-3.5 text-muted-foreground" />
                       {teamChannel.name}
                     </h3>
                   </div>
-                  <p className="text-[13px] text-[#666D80] truncate flex-1 leading-relaxed">
+                  <p className="text-[13px] text-muted-foreground truncate flex-1 leading-relaxed">
                     {selectedTeam?.subtitle || "Team Channel"}
                   </p>
                 </div>
@@ -293,13 +293,13 @@ export default function ChatPage() {
                 key={user.id}
                 onClick={() => handleUserClick(user)}
                 className={cn(
-                  "flex items-center gap-3 p-4 cursor-pointer transition-colors border-b border-[#F6F8FA] last:border-none hover:bg-[#F8F9FB]",
-                  selectedConversation?.otherUser?.id === user.id ? "bg-[#F8F9FB]" : "bg-white"
+                  "flex items-center gap-3 p-4 cursor-pointer transition-colors border-b border-muted last:border-none hover-elevate",
+                  selectedConversation?.otherUser?.id === user.id ? "bg-muted" : "bg-card"
                 )}
                 data-testid={`user-${user.id}`}
               >
                 <div className="relative shrink-0">
-                  <Avatar className="h-[48px] w-[48px] border border-[#DFE1E7]">
+                  <Avatar className="h-[48px] w-[48px] border">
                     <AvatarImage src={user.avatar || ""} />
                     <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                   </Avatar>
@@ -307,19 +307,19 @@ export default function ChatPage() {
                 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <h3 className="text-[14px] font-semibold text-[#0D0D12] truncate">
+                    <h3 className="text-[14px] font-semibold text-foreground truncate">
                       {user.name}
                     </h3>
                     {user.time && (
-                      <span className="text-[12px] text-[#666D80]">{user.time}</span>
+                      <span className="text-[12px] text-muted-foreground">{user.time}</span>
                     )}
                   </div>
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-[13px] text-[#666D80] truncate flex-1 leading-relaxed">
+                    <p className="text-[13px] text-muted-foreground truncate flex-1 leading-relaxed">
                       {user.lastMessage || user.role || "Click to start chatting"}
                     </p>
                     {user.unread > 0 && (
-                      <span className="h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-[#F34147] text-[10px] font-bold text-white px-1">
+                      <span className="h-[18px] min-w-[18px] flex items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white px-1">
                         {user.unread}
                       </span>
                     )}
@@ -330,65 +330,65 @@ export default function ChatPage() {
           )}
 
           {activeTab === 'teams' && channelLoading && (
-            <div className="p-4 text-center text-[#666D80]">Loading channel...</div>
+            <div className="p-4 text-center text-muted-foreground">Loading channel...</div>
           )}
           
           {activeTab === 'individuals' && userListWithConversations.length === 0 && (
-            <div className="p-4 text-center text-[#666D80]">No users found</div>
+            <div className="p-4 text-center text-muted-foreground">No users found</div>
           )}
         </div>
       </div>
 
       {/* Right Area: Chat Window */}
-      <div className="flex-1 flex flex-col bg-white border border-[#DFE1E7] rounded-[16px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden">
+      <div className="flex-1 flex flex-col bg-card border rounded-xl shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none overflow-hidden">
         
         {/* Chat Header */}
-        <div className="h-[72px] px-6 border-b border-[#DFE1E7] flex items-center justify-between shrink-0">
+        <div className="h-[72px] px-6 border-b flex items-center justify-between shrink-0">
           <div className="flex items-center gap-4">
             {activeTab === 'teams' ? (
-               <div className="h-[44px] w-[44px] border border-[#DFE1E7] rounded-lg bg-[#F34147]/10 flex items-center justify-center text-[#F34147]">
+               <div className="h-[44px] w-[44px] border rounded-lg bg-primary/10 flex items-center justify-center text-primary">
                  <Hash className="h-5 w-5" />
                </div>
             ) : (
-              <Avatar className="h-[44px] w-[44px] border border-[#DFE1E7]">
+              <Avatar className="h-[44px] w-[44px] border">
                 <AvatarImage src={selectedConversation?.otherUser?.avatar || ""} />
                 <AvatarFallback>{activeChatName.charAt(0)}</AvatarFallback>
               </Avatar>
             )}
             <div>
-              <h3 className="text-[16px] font-semibold text-[#0D0D12] leading-tight flex items-center gap-2" data-testid="text-active-chat-name">
-                 {activeTab === 'teams' && <Hash className="h-4 w-4 text-[#666D80]" />}
+              <h3 className="text-[16px] font-semibold text-foreground leading-tight flex items-center gap-2" data-testid="text-active-chat-name">
+                 {activeTab === 'teams' && <Hash className="h-4 w-4 text-muted-foreground" />}
                  {activeChatName}
               </h3>
               <div className="flex items-center gap-2 mt-0.5">
                 {activeTab === 'teams' ? (
-                   <span className="text-[12px] text-[#666D80]">{selectedTeam?.subtitle || "Team Channel"}</span>
+                   <span className="text-[12px] text-muted-foreground">{selectedTeam?.subtitle || "Team Channel"}</span>
                 ) : activeChatRole && (
-                  <span className="text-[12px] text-[#666D80]">{activeChatRole}</span>
+                  <span className="text-[12px] text-muted-foreground">{activeChatRole}</span>
                 )}
               </div>
             </div>
           </div>
           
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" className="h-9 w-9 border-[#DFE1E7] text-[#666D80]" data-testid="button-call">
+            <Button variant="outline" size="icon" data-testid="button-call">
               <Phone className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="icon" className="h-9 w-9 border-[#DFE1E7] text-[#666D80]" data-testid="button-video">
+            <Button variant="outline" size="icon" data-testid="button-video">
               <Video className="h-4 w-4" />
             </Button>
-            <div className="w-px h-6 bg-[#DFE1E7] mx-2" />
-            <Button variant="ghost" size="icon" className="h-9 w-9 text-[#666D80]" data-testid="button-chat-options">
+            <div className="w-px h-6 bg-border mx-2" />
+            <Button variant="ghost" size="icon" data-testid="button-chat-options">
               <MoreVertical className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto p-6 bg-[#F8F9FB] space-y-6">
+        <div className="flex-1 overflow-y-auto p-6 bg-muted space-y-6">
           {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-[#666D80]">
-              <Hash className="h-12 w-12 mb-4 text-[#DFE1E7]" />
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+              <Hash className="h-12 w-12 mb-4 text-border" />
               <p className="text-lg font-medium">No messages yet</p>
               <p className="text-sm">Start a conversation by sending a message below</p>
             </div>
@@ -425,7 +425,7 @@ export default function ChatPage() {
                 data-testid={`message-${msg.id}`}
               >
                 {/* Avatar */}
-                <Avatar className="h-[32px] w-[32px] border border-[#DFE1E7] shrink-0">
+                <Avatar className="h-[32px] w-[32px] border shrink-0">
                   <AvatarImage src={isMe ? currentUser?.avatar || "" : senderAvatar} />
                   <AvatarFallback>{(isMe ? currentUser?.name : senderName)?.charAt(0) || "U"}</AvatarFallback>
                 </Avatar>
@@ -434,20 +434,20 @@ export default function ChatPage() {
                 <div className="flex flex-col gap-1">
                   {/* Name & Time */}
                   <div className={cn("flex items-center gap-2", isMe ? "flex-row-reverse" : "")}>
-                    <span className="text-[12px] font-medium text-[#666D80]">
+                    <span className="text-[12px] font-medium text-muted-foreground">
                       {isMe ? "You" : senderName}
                     </span>
-                    <span className="h-1 w-1 rounded-full bg-[#D1D5DB]" />
-                    <span className="text-[12px] text-[#9CA3AF]">{msgTime}</span>
+                    <span className="h-1 w-1 rounded-full bg-border" />
+                    <span className="text-[12px] text-muted-foreground">{msgTime}</span>
                   </div>
 
                   {/* Bubble */}
                   <div 
                     className={cn(
-                      "p-3 rounded-[12px] text-[14px] leading-relaxed relative shadow-sm",
+                      "p-3 rounded-lg text-[14px] leading-relaxed relative shadow-sm",
                       isMe 
-                        ? "bg-[#F34147] text-white rounded-tr-none" 
-                        : "bg-[#F3F4F6] border border-[#DFE1E7] text-[#0D0D12] rounded-tl-none"
+                        ? "bg-primary text-white rounded-tr-none" 
+                        : "bg-card border text-foreground rounded-tl-none"
                     )}
                   >
                      {msgContent}
@@ -456,7 +456,7 @@ export default function ChatPage() {
                      {attachment && (
                        <div className={cn(
                          "mt-2 pt-2 border-t",
-                         isMe ? "border-white/30" : "border-[#DFE1E7]"
+                         isMe ? "border-white/30" : "border-border"
                        )}>
                          {attachment.type === 'image' ? (
                            <img 
@@ -471,7 +471,7 @@ export default function ChatPage() {
                              rel="noopener noreferrer"
                              className={cn(
                                "flex items-center gap-2 hover:underline",
-                               isMe ? "text-white" : "text-[#F34147]"
+                               isMe ? "text-white" : "text-primary"
                              )}
                            >
                              <FileText className="h-4 w-4" />
@@ -489,15 +489,15 @@ export default function ChatPage() {
         </div>
 
         {/* Input Area */}
-        <div className="p-5 bg-white border-t border-[#DFE1E7]">
-          <div className="flex items-center gap-3 bg-[#F8F9FB] rounded-[12px] p-2 border border-[#DFE1E7] focus-within:ring-1 focus-within:ring-[#F34147] focus-within:border-[#F34147] transition-all">
-            <Button variant="ghost" size="icon" className="h-9 w-9 text-[#666D80] shrink-0" data-testid="button-emoji">
+        <div className="p-5 bg-card border-t">
+          <div className="flex items-center gap-3 bg-muted rounded-lg p-2 border focus-within:ring-1 focus-within:ring-primary focus-within:border-primary transition-all">
+            <Button variant="ghost" size="icon" className="h-9 w-9 text-muted-foreground shrink-0" data-testid="button-emoji">
               <Smile className="h-5 w-5" />
             </Button>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-9 w-9 text-[#666D80] shrink-0"
+              className="h-9 w-9 text-muted-foreground shrink-0"
               onClick={() => fileInputRef.current?.click()}
               data-testid="button-attach-file"
             >
@@ -506,7 +506,7 @@ export default function ChatPage() {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-9 w-9 text-[#666D80] shrink-0"
+              className="h-9 w-9 text-muted-foreground shrink-0"
               data-testid="button-attach-image"
             >
               <ImageIcon className="h-5 w-5" />
@@ -522,7 +522,7 @@ export default function ChatPage() {
               }}
             />
             
-            <div className="h-6 w-px bg-[#DFE1E7] mx-1" />
+            <div className="h-6 w-px bg-border mx-1" />
             
             <input 
               type="text"
@@ -530,7 +530,7 @@ export default function ChatPage() {
               onChange={(e) => setMessageInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder={`Message ${activeTab === 'teams' ? `#${activeChatName}` : activeChatName}...`}
-              className="flex-1 bg-transparent border-none outline-none text-sm text-[#0D0D12] placeholder:text-[#9CA3AF] min-w-0"
+              className="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground min-w-0"
               disabled={
                 (activeTab === 'teams' && !teamChannel) || 
                 (activeTab === 'individuals' && !selectedConversation)
@@ -547,7 +547,7 @@ export default function ChatPage() {
                 (activeTab === 'teams' && !teamChannel) ||
                 (activeTab === 'individuals' && !selectedConversation)
               }
-              className="bg-[#F34147] hover:bg-[#D93036] text-white h-9 px-4 rounded-[8px] font-medium shadow-sm transition-all disabled:opacity-50"
+              className="h-9 px-4 rounded-lg font-medium shadow-sm transition-all disabled:opacity-50"
               data-testid="button-send-message"
             >
               <Send className="h-4 w-4 mr-2" />

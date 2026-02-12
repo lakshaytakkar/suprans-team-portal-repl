@@ -114,12 +114,12 @@ export default function AdminLeads() {
   const getStageBadgeStyles = (stageId: string) => {
     const stage = stages.find(s => s.id === stageId);
     switch (stage?.color) {
-      case 'blue': return "bg-white text-blue-500 border-blue-500";
-      case 'yellow': return "bg-white text-orange-500 border-orange-500";
-      case 'purple': return "bg-white text-purple-500 border-purple-500";
-      case 'green': return "bg-white text-emerald-500 border-emerald-500";
-      case 'gray': return "bg-white text-gray-500 border-gray-300";
-      default: return "bg-white text-gray-500 border-gray-300";
+      case 'blue': return "bg-card text-blue-500 border-blue-500";
+      case 'yellow': return "bg-card text-orange-500 border-orange-500";
+      case 'purple': return "bg-card text-purple-500 border-purple-500";
+      case 'green': return "bg-card text-emerald-500 border-emerald-500";
+      case 'gray': return "bg-card text-muted-foreground border";
+      default: return "bg-card text-muted-foreground border";
     }
   };
 
@@ -130,7 +130,7 @@ export default function AdminLeads() {
       case 'yellow': return "bg-orange-500";
       case 'purple': return "bg-purple-500";
       case 'green': return "bg-emerald-500";
-      default: return "bg-gray-500";
+      default: return "bg-muted-foreground";
     }
   };
 
@@ -143,14 +143,14 @@ export default function AdminLeads() {
     <div className="flex flex-col gap-6 w-full">
       {/* Page Header */}
       <div className="flex items-center justify-between w-full">
-        <h1 className="text-[20px] font-semibold text-[#0D0D12] leading-[1.35]">All Leads</h1>
+        <h1 className="text-[20px] font-semibold text-foreground leading-[1.35]">All Leads</h1>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="bg-white border-[#DFE1E7] text-[#0D0D12] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold">
+          <Button variant="outline" className="bg-card border text-foreground shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold">
             <Download className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
           <AddLeadDialog trigger={
-            <Button className="bg-[#F34147] hover:bg-[#D93036] text-white shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold border-none">
+            <Button className="bg-primary text-white shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold border-none">
               Add New Lead
             </Button>
           } />
@@ -159,79 +159,79 @@ export default function AdminLeads() {
 
       {/* Stats Cards for Admin */}
       <div className="flex gap-5 w-full overflow-x-auto pb-1">
-        <div className="flex-1 min-w-[240px] bg-white border border-[#DFE1E7] rounded-[12px] p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
+        <div className="flex-1 min-w-[240px] bg-card border rounded-lg p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">Total Pipeline</span>
-            <div className="w-9 h-9 rounded-[8px] border border-[#DFE1E7] flex items-center justify-center">
-              <Target className="w-4 h-4 text-[#F34147]" />
+            <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">Total Pipeline</span>
+            <div className="w-9 h-9 rounded-[8px] border flex items-center justify-center">
+              <Target className="w-4 h-4 text-primary" />
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-2xl font-semibold text-[#0D0D12]">{leads.length}</span>
+            <span className="text-2xl font-semibold text-foreground">{leads.length}</span>
             <div className="flex items-center gap-2">
               <div className="bg-[#EFFEFA] px-1.5 py-0.5 rounded-full flex items-center justify-center">
                 <span className="text-xs font-medium text-[#40C4AA]">+8%</span>
               </div>
-              <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">vs last week</span>
+              <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">vs last week</span>
             </div>
           </div>
         </div>
 
-        <div className="flex-1 min-w-[240px] bg-white border border-[#DFE1E7] rounded-[12px] p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
+        <div className="flex-1 min-w-[240px] bg-card border rounded-lg p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">Avg Deal Size</span>
-            <div className="w-9 h-9 rounded-[8px] border border-[#DFE1E7] flex items-center justify-center">
-              <Briefcase className="w-4 h-4 text-[#F34147]" />
+            <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">Avg Deal Size</span>
+            <div className="w-9 h-9 rounded-[8px] border flex items-center justify-center">
+              <Briefcase className="w-4 h-4 text-primary" />
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-2xl font-semibold text-[#0D0D12]">₹45.2k</span>
+            <span className="text-2xl font-semibold text-foreground">₹45.2k</span>
             <div className="flex items-center gap-2">
               <div className="bg-[#FFF0F3] px-1.5 py-0.5 rounded-full flex items-center justify-center">
                 <span className="text-xs font-medium text-[#DF1C41]">-1.2%</span>
               </div>
-              <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">vs last week</span>
+              <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">vs last week</span>
             </div>
           </div>
         </div>
 
-        <div className="flex-1 min-w-[240px] bg-white border border-[#DFE1E7] rounded-[12px] p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
+        <div className="flex-1 min-w-[240px] bg-card border rounded-lg p-4 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">Active Agents</span>
-            <div className="w-9 h-9 rounded-[8px] border border-[#DFE1E7] flex items-center justify-center">
-              <Users className="w-4 h-4 text-[#F34147]" />
+            <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">Active Agents</span>
+            <div className="w-9 h-9 rounded-[8px] border flex items-center justify-center">
+              <Users className="w-4 h-4 text-primary" />
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-2xl font-semibold text-[#0D0D12]">{users.length}</span>
+            <span className="text-2xl font-semibold text-foreground">{users.length}</span>
             <div className="flex items-center gap-2">
               <div className="bg-[#EFFEFA] px-1.5 py-0.5 rounded-full flex items-center justify-center">
                 <span className="text-xs font-medium text-[#40C4AA]">+2</span>
               </div>
-              <span className="text-sm font-medium text-[#666D80] tracking-[0.28px]">new this month</span>
+              <span className="text-sm font-medium text-muted-foreground tracking-[0.28px]">new this month</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Table Container */}
-      <div className="bg-white border border-[#DFE1E7] rounded-[12px] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden flex flex-col">
+      <div className="bg-card border rounded-lg shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden flex flex-col">
         {/* Table Header Controls */}
-        <div className="flex items-center justify-between px-5 py-2 border-b border-[#DFE1E7] h-[64px]">
-          <h2 className="text-[16px] font-semibold text-[#0D0D12] tracking-[0.32px]">All Leads Data</h2>
+        <div className="flex items-center justify-between px-5 py-2 border-b h-[64px]">
+          <h2 className="text-[16px] font-semibold text-foreground tracking-[0.32px]">All Leads Data</h2>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666D80]" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
                 placeholder="Search" 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 h-[38px] w-[200px] bg-white border-[#DFE1E7] text-sm placeholder:text-[#666D80] focus-visible:ring-1 focus-visible:ring-[#F34147]"
+                className="pl-9 h-[38px] w-[200px] bg-card border text-sm placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary"
               />
             </div>
             
             <Select value={assigneeFilter} onValueChange={setAssigneeFilter}>
-              <SelectTrigger className="w-[160px] h-[38px] bg-white border-[#DFE1E7] text-[#666D80]">
+              <SelectTrigger className="w-[160px] h-[38px] bg-card border text-muted-foreground">
                 <SelectValue placeholder="Assignee" />
               </SelectTrigger>
               <SelectContent>
@@ -245,7 +245,7 @@ export default function AdminLeads() {
             </Select>
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[160px] h-[38px] bg-white border-[#DFE1E7] text-[#666D80]">
+              <SelectTrigger className="w-[160px] h-[38px] bg-card border text-muted-foreground">
                 <SelectValue placeholder="Stage" />
               </SelectTrigger>
               <SelectContent>
@@ -258,7 +258,7 @@ export default function AdminLeads() {
               </SelectContent>
             </Select>
 
-            <Button variant="outline" className="h-[38px] px-3 border-[#DFE1E7] text-[#666D80] hover:text-[#0D0D12] flex gap-2">
+            <Button variant="outline" className="h-[38px] px-3 border text-muted-foreground hover:text-foreground flex gap-2">
               <Filter className="h-4 w-4" />
             </Button>
           </div>
@@ -267,16 +267,16 @@ export default function AdminLeads() {
         {/* Table */}
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-[#F6F8FA]">
-              <TableRow className="border-b border-[#DFE1E7] hover:bg-transparent">
+            <TableHeader className="bg-muted">
+              <TableRow className="border-b hover:bg-transparent">
                 <TableHead className="w-[50px] pl-4">
-                  <Checkbox className="border-[#DFE1E7] data-[state=checked]:bg-[#F34147] data-[state=checked]:border-[#F34147] rounded-[4px]" />
+                  <Checkbox className="border data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-[4px]" />
                 </TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Lead Name</TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Assigned To</TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Value</TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Stage</TableHead>
-                <TableHead className="h-[40px] text-[#666D80] font-medium text-[14px] tracking-[0.28px]">Created</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Lead Name</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Assigned To</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Value</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Stage</TableHead>
+                <TableHead className="h-[40px] text-muted-foreground font-medium text-[14px] tracking-[0.28px]">Created</TableHead>
                 <TableHead className="h-[40px] w-[60px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -289,17 +289,17 @@ export default function AdminLeads() {
                 </TableRow>
               ) : (
                 filteredLeads.map((lead) => (
-                  <TableRow key={lead.id} className="border-b border-[#DFE1E7] hover:bg-[#F8F9FB] transition-colors group h-[64px]">
+                  <TableRow key={lead.id} className="border-b hover:bg-muted transition-colors group h-[64px]">
                     <TableCell className="pl-4">
-                      <Checkbox className="border-[#DFE1E7] data-[state=checked]:bg-[#F34147] data-[state=checked]:border-[#F34147] rounded-[4px]" />
+                      <Checkbox className="border data-[state=checked]:bg-primary data-[state=checked]:border-primary rounded-[4px]" />
                     </TableCell>
                     <TableCell>
                       <Link href={`/leads/${lead.id}`}>
-                        <a className="font-medium text-[#0D0D12] text-[14px] hover:text-[#F34147] transition-colors">
+                        <a className="font-medium text-foreground text-[14px] hover:text-primary transition-colors">
                           {lead.name}
                         </a>
                       </Link>
-                      <div className="text-xs text-[#666D80]">{lead.company}</div>
+                      <div className="text-xs text-muted-foreground">{lead.company}</div>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -309,11 +309,11 @@ export default function AdminLeads() {
                             {getUserName(lead.assignedTo).charAt(0)}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm text-[#0D0D12]">{getUserName(lead.assignedTo)}</span>
+                        <span className="text-sm text-foreground">{getUserName(lead.assignedTo)}</span>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className="font-medium text-[#0D0D12] text-[14px]">₹{(lead.value).toLocaleString()}</span>
+                      <span className="font-medium text-foreground text-[14px]">₹{(lead.value).toLocaleString()}</span>
                     </TableCell>
                     <TableCell>
                       <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[16px] border ${getStageBadgeStyles(lead.stage)}`}>
@@ -323,13 +323,13 @@ export default function AdminLeads() {
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-[#666D80] text-[14px]">
+                    <TableCell className="text-muted-foreground text-[14px]">
                       {format(new Date(lead.createdAt), 'MMM d, yyyy')}
                     </TableCell>
                     <TableCell className="text-right pr-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-[#666D80] hover:text-[#0D0D12] opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                             <MoreHorizontal className="h-4 w-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -360,34 +360,34 @@ export default function AdminLeads() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between px-5 py-4 border-t border-[#DFE1E7] bg-white h-[64px]">
-          <span className="text-[#0D0D12] text-[14px] font-medium tracking-[0.28px]">
+        <div className="flex items-center justify-between px-5 py-4 border-t bg-card h-[64px]">
+          <span className="text-foreground text-[14px] font-medium tracking-[0.28px]">
             Showing 1 to {Math.min(filteredLeads.length, 8)} of, {filteredLeads.length} results
           </span>
           <div className="flex items-center gap-2">
-            <div className="flex items-center h-[32px] border border-[#DFE1E7] rounded-[8px] overflow-hidden">
-              <div className="px-2 border-r border-[#DFE1E7] h-full flex items-center bg-white">
-                <span className="text-[12px] font-medium text-[#0D0D12]">Per page</span>
+            <div className="flex items-center h-[32px] border rounded-[8px] overflow-hidden">
+              <div className="px-2 border-r h-full flex items-center bg-card">
+                <span className="text-[12px] font-medium text-foreground">Per page</span>
               </div>
-              <div className="flex items-center gap-1 px-2 h-full bg-white cursor-pointer hover:bg-gray-50">
-                <span className="text-[12px] font-medium text-[#0D0D12]">8</span>
-                <ChevronDown className="h-4 w-4 text-[#0D0D12]" />
+              <div className="flex items-center gap-1 px-2 h-full bg-card cursor-pointer">
+                <span className="text-[12px] font-medium text-foreground">8</span>
+                <ChevronDown className="h-4 w-4 text-foreground" />
               </div>
             </div>
             
             <div className="flex items-center gap-2 ml-2">
-              <Button variant="outline" size="icon" className="h-8 w-8 p-0 border-[#DFE1E7] rounded-[8px]">
-                <ChevronLeft className="h-4 w-4 text-[#0D0D12]" />
+              <Button variant="outline" size="icon" className="h-8 w-8 p-0 border rounded-[8px]">
+                <ChevronLeft className="h-4 w-4 text-foreground" />
               </Button>
-              <div className="flex items-center border border-[#DFE1E7] rounded-[8px] overflow-hidden">
-                <button className="h-8 w-8 flex items-center justify-center bg-white border-r border-[#DFE1E7] text-[12px] font-medium text-[#0D0D12] hover:bg-gray-50">1</button>
-                <button className="h-8 w-8 flex items-center justify-center bg-white border-r border-[#DFE1E7] text-[12px] font-medium text-[#0D0D12] hover:bg-gray-50">2</button>
-                <button className="h-8 w-8 flex items-center justify-center bg-[#F34147] border-r border-[#DFE1E7] text-[12px] font-medium text-white">3</button>
-                <button className="h-8 w-8 flex items-center justify-center bg-white border-r border-[#DFE1E7] text-[12px] font-medium text-[#0D0D12] hover:bg-gray-50">...</button>
-                <button className="h-8 w-8 flex items-center justify-center bg-white text-[12px] font-medium text-[#0D0D12] hover:bg-gray-50">5</button>
+              <div className="flex items-center border rounded-[8px] overflow-hidden">
+                <button className="h-8 w-8 flex items-center justify-center bg-card border-r text-[12px] font-medium text-foreground">1</button>
+                <button className="h-8 w-8 flex items-center justify-center bg-card border-r text-[12px] font-medium text-foreground">2</button>
+                <button className="h-8 w-8 flex items-center justify-center bg-primary border-r text-[12px] font-medium text-white">3</button>
+                <button className="h-8 w-8 flex items-center justify-center bg-card border-r text-[12px] font-medium text-foreground">...</button>
+                <button className="h-8 w-8 flex items-center justify-center bg-card text-[12px] font-medium text-foreground">5</button>
               </div>
-              <Button variant="outline" size="icon" className="h-8 w-8 p-0 border-[#DFE1E7] rounded-[8px]">
-                <ChevronRight className="h-4 w-4 text-[#0D0D12]" />
+              <Button variant="outline" size="icon" className="h-8 w-8 p-0 border rounded-[8px]">
+                <ChevronRight className="h-4 w-4 text-foreground" />
               </Button>
             </div>
           </div>

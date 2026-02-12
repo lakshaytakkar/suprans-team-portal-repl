@@ -60,7 +60,7 @@ export default function EventsDashboard() {
   if (eventsLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F34147]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
@@ -69,15 +69,15 @@ export default function EventsDashboard() {
     <div className="space-y-8 max-w-[1600px] mx-auto">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-bold text-[#0D0D12]">Events Dashboard</h1>
-          <p className="text-[14px] text-[#666D80] mt-1">
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">Events Dashboard</h1>
+          <p className="text-[14px] text-muted-foreground mt-1">
             Overview of all IBS seminars and investor meets
           </p>
         </div>
         <div className="flex items-center gap-3">
           <Link href="/team/events">
-            <Button variant="outline" className="bg-white border-[#DFE1E7] text-[#0D0D12]">
-              <CalendarDays className="mr-2 h-4 w-4 text-[#666D80]" />
+            <Button variant="outline">
+              <CalendarDays className="mr-2 h-4 w-4 text-muted-foreground" />
               View All Events
             </Button>
           </Link>
@@ -86,67 +86,67 @@ export default function EventsDashboard() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white border border-[#DFE1E7] rounded-[12px] p-4 flex flex-col gap-2 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)]">
+        <div className="bg-card border rounded-lg p-4 flex flex-col gap-2 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none">
           <div className="flex items-center justify-between w-full">
-            <p className="text-[#666D80] text-[14px] font-medium">Total Events</p>
-            <div className="w-[36px] h-[36px] bg-white border border-[#DFE1E7] rounded-[8px] flex items-center justify-center">
-              <CalendarDays className="h-[18px] w-[18px] text-[#F34147]" />
+            <p className="text-muted-foreground text-[14px] font-medium">Total Events</p>
+            <div className="w-[36px] h-[36px] bg-card border rounded-lg flex items-center justify-center">
+              <CalendarDays className="h-[18px] w-[18px] text-primary" />
             </div>
           </div>
-          <p className="text-[#0D0D12] text-[24px] font-semibold">{events.length}</p>
-          <p className="text-[#666D80] text-[14px]">{upcomingEvents.length} upcoming</p>
+          <p className="text-foreground text-xl font-semibold tracking-tight">{events.length}</p>
+          <p className="text-muted-foreground text-[14px]">{upcomingEvents.length} upcoming</p>
         </div>
 
-        <div className="bg-white border border-[#DFE1E7] rounded-[12px] p-4 flex flex-col gap-2 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)]">
+        <div className="bg-card border rounded-lg p-4 flex flex-col gap-2 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none">
           <div className="flex items-center justify-between w-full">
-            <p className="text-[#666D80] text-[14px] font-medium">Total Attendees</p>
-            <div className="w-[36px] h-[36px] bg-white border border-[#DFE1E7] rounded-[8px] flex items-center justify-center">
-              <Users className="h-[18px] w-[18px] text-[#F34147]" />
+            <p className="text-muted-foreground text-[14px] font-medium">Total Attendees</p>
+            <div className="w-[36px] h-[36px] bg-card border rounded-lg flex items-center justify-center">
+              <Users className="h-[18px] w-[18px] text-primary" />
             </div>
           </div>
-          <p className="text-[#0D0D12] text-[24px] font-semibold">{totalAttendees}</p>
-          <p className="text-[#666D80] text-[14px]">Registered across all events</p>
+          <p className="text-foreground text-xl font-semibold tracking-tight">{totalAttendees}</p>
+          <p className="text-muted-foreground text-[14px]">Registered across all events</p>
         </div>
 
-        <div className="bg-white border border-[#DFE1E7] rounded-[12px] p-4 flex flex-col gap-2 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)]">
+        <div className="bg-card border rounded-lg p-4 flex flex-col gap-2 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none">
           <div className="flex items-center justify-between w-full">
-            <p className="text-[#666D80] text-[14px] font-medium">Sold Out Events</p>
-            <div className="w-[36px] h-[36px] bg-white border border-[#DFE1E7] rounded-[8px] flex items-center justify-center">
-              <Ticket className="h-[18px] w-[18px] text-[#F34147]" />
+            <p className="text-muted-foreground text-[14px] font-medium">Sold Out Events</p>
+            <div className="w-[36px] h-[36px] bg-card border rounded-lg flex items-center justify-center">
+              <Ticket className="h-[18px] w-[18px] text-primary" />
             </div>
           </div>
-          <p className="text-[#0D0D12] text-[24px] font-semibold">{soldOutEvents.length}</p>
-          <p className="text-[#666D80] text-[14px]">100% capacity reached</p>
+          <p className="text-foreground text-xl font-semibold tracking-tight">{soldOutEvents.length}</p>
+          <p className="text-muted-foreground text-[14px]">100% capacity reached</p>
         </div>
 
-        <div className="bg-white border border-[#DFE1E7] rounded-[12px] p-4 flex flex-col gap-2 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)]">
+        <div className="bg-card border rounded-lg p-4 flex flex-col gap-2 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none">
           <div className="flex items-center justify-between w-full">
-            <p className="text-[#666D80] text-[14px] font-medium">Total Capacity</p>
-            <div className="w-[36px] h-[36px] bg-white border border-[#DFE1E7] rounded-[8px] flex items-center justify-center">
-              <Building2 className="h-[18px] w-[18px] text-[#F34147]" />
+            <p className="text-muted-foreground text-[14px] font-medium">Total Capacity</p>
+            <div className="w-[36px] h-[36px] bg-card border rounded-lg flex items-center justify-center">
+              <Building2 className="h-[18px] w-[18px] text-primary" />
             </div>
           </div>
-          <p className="text-[#0D0D12] text-[24px] font-semibold">{totalCapacity}</p>
-          <p className="text-[#666D80] text-[14px]">Seats across all events</p>
+          <p className="text-foreground text-xl font-semibold tracking-tight">{totalCapacity}</p>
+          <p className="text-muted-foreground text-[14px]">Seats across all events</p>
         </div>
       </div>
 
       {/* Next Event Highlight */}
       {nextEvent && (
-        <div className="bg-gradient-to-r from-[#F34147]/10 to-[#F34147]/5 border border-[#F34147]/20 rounded-xl p-6">
+        <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 bg-[#F34147] rounded-xl flex flex-col items-center justify-center text-white">
+              <div className="w-16 h-16 bg-primary rounded-xl flex flex-col items-center justify-center text-white">
                 <span className="text-2xl font-bold">{format(new Date(nextEvent.date!), 'd')}</span>
                 <span className="text-xs uppercase">{format(new Date(nextEvent.date!), 'MMM')}</span>
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Badge className={getStatusColor(nextEvent.status)}>{nextEvent.status.replace('_', ' ')}</Badge>
-                  <span className="text-sm text-[#F34147] font-medium">{getDaysUntil(new Date(nextEvent.date!))}</span>
+                  <span className="text-sm text-primary font-medium">{getDaysUntil(new Date(nextEvent.date!))}</span>
                 </div>
-                <h3 className="text-xl font-bold text-[#0D0D12]">{nextEvent.name}</h3>
-                <div className="flex items-center gap-4 mt-2 text-[#666D80] text-sm">
+                <h3 className="text-xl font-bold text-foreground">{nextEvent.name}</h3>
+                <div className="flex items-center gap-4 mt-2 text-muted-foreground text-sm">
                   <span className="flex items-center gap-1">
                     <MapPin className="w-4 h-4" />
                     {nextEvent.city}
@@ -163,7 +163,7 @@ export default function EventsDashboard() {
               </div>
             </div>
             <Link href={`/team/events/${nextEvent.id}`}>
-              <Button className="bg-[#F34147] hover:bg-[#D93036] text-white">
+              <Button>
                 View Details
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -175,34 +175,34 @@ export default function EventsDashboard() {
       {/* Events List & Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Upcoming Events List */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-[#DFE1E7] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] overflow-hidden">
-          <div className="p-6 border-b border-[#DFE1E7]">
-            <h3 className="text-lg font-bold text-[#0D0D12]">All Events</h3>
-            <p className="text-sm text-[#666D80]">Upcoming seminars and IBS events</p>
+        <div className="lg:col-span-2 bg-card rounded-xl border shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none overflow-hidden">
+          <div className="p-6 border-b">
+            <h3 className="text-lg font-bold text-foreground">All Events</h3>
+            <p className="text-sm text-muted-foreground">Upcoming seminars and IBS events</p>
           </div>
-          <div className="divide-y divide-[#DFE1E7]">
+          <div className="divide-y divide-border">
             {events.length === 0 ? (
-              <div className="p-8 text-center text-[#666D80]">
+              <div className="p-8 text-center text-muted-foreground">
                 <CalendarDays className="w-12 h-12 mx-auto mb-3 opacity-50" />
                 <p>No events scheduled</p>
               </div>
             ) : (
               events.slice(0, 6).map((event) => (
                 <Link key={event.id} href={`/team/events/${event.id}`}>
-                  <div className="p-4 hover:bg-[#F8F9FB] transition-colors cursor-pointer" data-testid={`event-row-${event.id}`}>
+                  <div className="p-4 hover-elevate transition-colors cursor-pointer" data-testid={`event-row-${event.id}`}>
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-[#F34147]/10 rounded-lg flex flex-col items-center justify-center text-[#F34147]">
+                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex flex-col items-center justify-center text-primary">
                         <span className="text-lg font-bold">{format(new Date(event.date!), 'd')}</span>
                         <span className="text-[10px] uppercase">{format(new Date(event.date!), 'MMM')}</span>
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <h4 className="font-semibold text-[#0D0D12] truncate">{event.name}</h4>
+                          <h4 className="font-semibold text-foreground truncate">{event.name}</h4>
                           <Badge className={getStatusColor(event.status)} variant="secondary">
                             {event.status.replace('_', ' ')}
                           </Badge>
                         </div>
-                        <div className="flex items-center gap-3 mt-1 text-sm text-[#666D80]">
+                        <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <MapPin className="w-3 h-3" />
                             {event.city}
@@ -213,7 +213,7 @@ export default function EventsDashboard() {
                           </span>
                         </div>
                       </div>
-                      <ArrowRight className="w-5 h-5 text-[#666D80]" />
+                      <ArrowRight className="w-5 h-5 text-muted-foreground" />
                     </div>
                   </div>
                 </Link>
@@ -221,9 +221,9 @@ export default function EventsDashboard() {
             )}
           </div>
           {events.length > 6 && (
-            <div className="p-4 border-t border-[#DFE1E7]">
+            <div className="p-4 border-t">
               <Link href="/team/events">
-                <Button variant="outline" className="w-full justify-between text-[#0D0D12] border-[#DFE1E7]">
+                <Button variant="outline" className="w-full justify-between">
                   View All Events
                   <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -234,30 +234,30 @@ export default function EventsDashboard() {
 
         {/* Quick Actions */}
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-[#DFE1E7] p-6 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)]">
-            <h3 className="text-lg font-bold text-[#0D0D12] mb-4">Quick Actions</h3>
+          <div className="bg-card rounded-xl border p-6 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none">
+            <h3 className="text-lg font-bold text-foreground mb-4">Quick Actions</h3>
             <div className="space-y-3">
               <Link href="/team/events/attendees">
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 text-[#0D0D12] border-[#DFE1E7]">
-                  <Users className="h-5 w-5 text-[#F34147]" />
+                <Button variant="outline" className="w-full justify-start gap-3 h-12">
+                  <Users className="h-5 w-5 text-primary" />
                   Attendee Database
                 </Button>
               </Link>
               <Link href="/team/venues">
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 text-[#0D0D12] border-[#DFE1E7]">
-                  <Building2 className="h-5 w-5 text-[#F34147]" />
+                <Button variant="outline" className="w-full justify-start gap-3 h-12">
+                  <Building2 className="h-5 w-5 text-primary" />
                   Venue Comparison
                 </Button>
               </Link>
               <Link href="/team/events/cities">
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 text-[#0D0D12] border-[#DFE1E7]">
-                  <MapPin className="h-5 w-5 text-[#F34147]" />
+                <Button variant="outline" className="w-full justify-start gap-3 h-12">
+                  <MapPin className="h-5 w-5 text-primary" />
                   City Management
                 </Button>
               </Link>
               <Link href="/team/events/vendors">
-                <Button variant="outline" className="w-full justify-start gap-3 h-12 text-[#0D0D12] border-[#DFE1E7]">
-                  <TrendingUp className="h-5 w-5 text-[#F34147]" />
+                <Button variant="outline" className="w-full justify-start gap-3 h-12">
+                  <TrendingUp className="h-5 w-5 text-primary" />
                   Vendor Management
                 </Button>
               </Link>
@@ -265,8 +265,8 @@ export default function EventsDashboard() {
           </div>
 
           {/* Event Stats by City */}
-          <div className="bg-white rounded-xl border border-[#DFE1E7] p-6 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)]">
-            <h3 className="text-lg font-bold text-[#0D0D12] mb-4">Events by City</h3>
+          <div className="bg-card rounded-xl border p-6 shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] dark:shadow-none">
+            <h3 className="text-lg font-bold text-foreground mb-4">Events by City</h3>
             <div className="space-y-3">
               {Object.entries(
                 events.reduce((acc, event) => {
@@ -275,8 +275,8 @@ export default function EventsDashboard() {
                 }, {} as Record<string, number>)
               ).map(([city, count]) => (
                 <div key={city} className="flex items-center justify-between">
-                  <span className="text-[#0D0D12] font-medium">{city}</span>
-                  <Badge variant="secondary" className="bg-[#F34147]/10 text-[#F34147]">
+                  <span className="text-foreground font-medium">{city}</span>
+                  <Badge variant="secondary" className="bg-primary/10 text-primary">
                     {count} {count === 1 ? 'event' : 'events'}
                   </Badge>
                 </div>

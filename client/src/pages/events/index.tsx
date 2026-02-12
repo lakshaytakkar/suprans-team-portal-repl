@@ -137,7 +137,7 @@ export default function EventsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#F34147]" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
   }
@@ -146,14 +146,14 @@ export default function EventsPage() {
     <div className="space-y-6 max-w-[1600px] mx-auto">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Event Management</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">Event Management</h1>
+          <p className="text-sm text-muted-foreground mt-1">
             Manage IBS investor meets and seminars across cities
           </p>
         </div>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-[#F34147] hover:bg-[#D93036] text-white" data-testid="button-create-event">
+            <Button data-testid="button-create-event">
               <Plus className="w-4 h-4 mr-2" />
               Create Event
             </Button>
@@ -273,7 +273,6 @@ export default function EventsPage() {
                 </Button>
                 <Button
                   onClick={handleCreateEvent}
-                  className="bg-[#F34147] hover:bg-[#D93036] text-white"
                   data-testid="button-submit-event"
                 >
                   Create Event
@@ -294,7 +293,7 @@ export default function EventsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.total}</p>
-                <p className="text-sm text-gray-500">Total Events</p>
+                <p className="text-sm text-muted-foreground">Total Events</p>
               </div>
             </div>
           </CardContent>
@@ -307,7 +306,7 @@ export default function EventsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.upcoming}</p>
-                <p className="text-sm text-gray-500">Upcoming</p>
+                <p className="text-sm text-muted-foreground">Upcoming</p>
               </div>
             </div>
           </CardContent>
@@ -320,7 +319,7 @@ export default function EventsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.ibs}</p>
-                <p className="text-sm text-gray-500">IBS Events</p>
+                <p className="text-sm text-muted-foreground">IBS Events</p>
               </div>
             </div>
           </CardContent>
@@ -333,7 +332,7 @@ export default function EventsPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats.seminar}</p>
-                <p className="text-sm text-gray-500">Seminars</p>
+                <p className="text-sm text-muted-foreground">Seminars</p>
               </div>
             </div>
           </CardContent>
@@ -343,7 +342,7 @@ export default function EventsPage() {
       {/* Filters */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search events..."
             value={searchQuery}
@@ -378,7 +377,7 @@ export default function EventsPage() {
       {/* Upcoming Events */}
       {upcomingEvents.length > 0 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Upcoming Events</h2>
+          <h2 className="text-lg font-semibold text-foreground">Upcoming Events</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {upcomingEvents.map((event) => (
               <EventCard key={event.id} event={event} />
@@ -390,7 +389,7 @@ export default function EventsPage() {
       {/* Past Events */}
       {pastEvents.length > 0 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-gray-900">Past Events</h2>
+          <h2 className="text-lg font-semibold text-foreground">Past Events</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {pastEvents.map((event) => (
               <EventCard key={event.id} event={event} />
@@ -401,9 +400,9 @@ export default function EventsPage() {
 
       {filteredEvents.length === 0 && (
         <div className="text-center py-12">
-          <CalendarDays className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">No events found</h3>
-          <p className="text-gray-500 mt-1">Create your first event to get started</p>
+          <CalendarDays className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-foreground">No events found</h3>
+          <p className="text-muted-foreground mt-1">Create your first event to get started</p>
         </div>
       )}
     </div>
@@ -431,11 +430,11 @@ function EventCard({ event }: { event: Event }) {
             <Badge className={cn("text-xs", statusConf.color)}>{statusConf.label}</Badge>
           </div>
 
-          <h3 className="font-semibold text-gray-900 mb-2">{event.name}</h3>
+          <h3 className="font-semibold text-foreground mb-2">{event.name}</h3>
 
-          <div className="space-y-2 text-sm text-gray-600">
+          <div className="space-y-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-gray-400" />
+              <Calendar className="h-4 w-4 text-muted-foreground" />
               <span>{format(eventDate, "EEE, MMM d, yyyy")}</span>
               {daysUntil >= 0 && daysUntil <= 7 && (
                 <Badge variant="outline" className="text-xs ml-auto">
@@ -444,21 +443,21 @@ function EventCard({ event }: { event: Event }) {
               )}
             </div>
             <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-gray-400" />
+              <MapPin className="h-4 w-4 text-muted-foreground" />
               <span>{event.city}</span>
-              {event.venue && <span className="text-gray-400">• {event.venue}</span>}
+              {event.venue && <span className="text-muted-foreground">• {event.venue}</span>}
             </div>
             <div className="flex items-center gap-2">
-              <Users className="h-4 w-4 text-gray-400" />
+              <Users className="h-4 w-4 text-muted-foreground" />
               <span>Capacity: {event.capacity}</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between mt-4 pt-4 border-t">
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-muted-foreground">
               {event.type === "ibs" ? `${event.slotDuration}min slots` : "Theatre seating"}
             </span>
-            <span className="text-xs text-[#F34147] font-medium flex items-center gap-1">
+            <span className="text-xs text-primary font-medium flex items-center gap-1">
               Manage <ArrowRight className="h-3 w-3" />
             </span>
           </div>
