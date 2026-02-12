@@ -109,11 +109,11 @@ export function Header() {
 
         <div className="flex items-center gap-2.5">
           {isSuperadmin && (
-            <div className="flex items-center gap-1.5 mr-2 bg-gray-100 p-1 rounded-lg" data-testid="role-switcher">
+            <div className="flex items-center gap-1.5 mr-2 bg-muted p-1 rounded-lg" data-testid="role-switcher">
               <Button 
                 variant={effectiveRole === 'manager' ? 'default' : 'ghost'} 
                 size="sm" 
-                className={`h-7 text-xs gap-1.5 ${effectiveRole === 'manager' ? 'bg-[#F34147] text-white' : 'text-[#666D80]'}`}
+                className="text-xs gap-1.5 toggle-elevate"
                 onClick={() => setSimulatedRole('manager')}
                 data-testid="button-role-manager"
               >
@@ -123,7 +123,7 @@ export function Header() {
               <Button 
                 variant={effectiveRole === 'executive' ? 'default' : 'ghost'} 
                 size="sm" 
-                className={`h-7 text-xs gap-1.5 ${effectiveRole === 'executive' ? 'bg-[#F34147] text-white' : 'text-[#666D80]'}`}
+                className="text-xs gap-1.5 toggle-elevate"
                 onClick={() => setSimulatedRole('executive')}
                 data-testid="button-role-executive"
               >

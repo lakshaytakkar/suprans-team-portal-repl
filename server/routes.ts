@@ -244,10 +244,29 @@ export async function registerRoutes(
   app.get("/api/leads", requireAuth, async (req, res, next) => {
     try {
       const user = req.user as User;
-      const leads = await storage.getLeads(
-        user.role === 'superadmin' ? undefined : user.id,
-        user.role
-      );
+      if (user.role === 'superadmin') {
+        const leads = await storage.getLeads(undefined, 'superadmin');
+        return res.json(leads);
+      }
+      
+      const userTeams = await storage.getUserTeams(user.id);
+      const isManagerOfAnyTeam = userTeams.some(t => t.role === 'manager');
+      
+      if (isManagerOfAnyTeam) {
+        const managerTeamIds = userTeams.filter(t => t.role === 'manager').map(t => t.teamId);
+        const teamMemberIds: string[] = [user.id];
+        for (const teamId of managerTeamIds) {
+          const members = await storage.getTeamMembers(teamId);
+          members.forEach(m => {
+            if (!teamMemberIds.includes(m.userId)) teamMemberIds.push(m.userId);
+          });
+        }
+        const allLeads = await storage.getLeads(undefined, 'superadmin');
+        const filteredLeads = allLeads.filter(l => !l.assignedTo || teamMemberIds.includes(l.assignedTo));
+        return res.json(filteredLeads);
+      }
+      
+      const leads = await storage.getLeads(user.id, user.role);
       res.json(leads);
     } catch (error) {
       next(error);

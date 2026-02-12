@@ -68,7 +68,7 @@ export default function Leads() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
   
-  const isAdmin = currentUser.role === 'superadmin';
+  const isAdmin = currentUser?.role === 'superadmin';
   const effectiveManager = isAdmin && simulatedRole !== 'executive';
 
   const baseLeads = leads.filter(lead => 
