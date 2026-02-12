@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   DndContext, 
   closestCorners, 
@@ -18,7 +20,7 @@ import {
   useSortable
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { taskStages, Task, mockUsers } from "@/lib/mock-data";
+import { taskStages } from "@/lib/mock-data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -53,7 +55,7 @@ import { AddTaskDialog } from "@/components/dialogs/AddTaskDialog";
 import { TaskDetailDialog } from "@/components/dialogs/TaskDetailDialog";
 
 // Kanban Column Component
-function KanbanColumn({ id, title, tasks, color, onTaskClick }: { id: string, title: string, tasks: Task[], color: string, onTaskClick?: (task: Task) => void }) {
+function KanbanColumn({ id, title, tasks, color, onTaskClick }: { id: string, title: string, tasks: any[], color: string, onTaskClick?: (task: any) => void }) {
   const { setNodeRef } = useSortable({ id });
 
   return (
@@ -83,7 +85,7 @@ function KanbanColumn({ id, title, tasks, color, onTaskClick }: { id: string, ti
 }
 
 // Draggable Card Component
-function SortableTaskCard({ task, onClick }: { task: Task, onClick?: (task: Task) => void }) {
+function SortableTaskCard({ task, onClick }: { task: any, onClick?: (task: any) => void }) {
   const {
     attributes,
     listeners,
@@ -107,7 +109,7 @@ function SortableTaskCard({ task, onClick }: { task: Task, onClick?: (task: Task
 }
 
 // Actual Card UI
-function TaskCard({ task }: { task: Task }) {
+function TaskCard({ task }: { task: any }) {
   const priorityColor = {
     low: "text-blue-500 bg-blue-50",
     medium: "text-orange-500 bg-orange-50",
@@ -118,7 +120,7 @@ function TaskCard({ task }: { task: Task }) {
     <Card className="cursor-grab active:cursor-grabbing hover:shadow-md transition-all border-[#DFE1E7] bg-white group">
       <CardContent className="p-4 space-y-3">
         <div className="flex justify-between items-start">
-          <Badge className={`text-[10px] px-2 py-0.5 border-0 font-medium ${priorityColor[task.priority]} capitalize`}>
+          <Badge className={`text-[10px] px-2 py-0.5 border-0 font-medium ${priorityColor[task.priority as keyof typeof priorityColor]} capitalize`}>
             {task.priority}
           </Badge>
           <button className="text-[#666D80] hover:text-[#0D0D12] opacity-0 group-hover:opacity-100 transition-opacity">
@@ -132,7 +134,7 @@ function TaskCard({ task }: { task: Task }) {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
-          {task.tags?.map(tag => (
+          {task.tags?.map((tag: string) => (
             <span key={tag} className="text-[10px] font-medium text-[#666D80] bg-[#F8F9FB] px-2 py-0.5 rounded-full border border-[#DFE1E7]">
               {tag}
             </span>
@@ -154,7 +156,7 @@ function TaskCard({ task }: { task: Task }) {
   );
 }
 
-function TasksListView({ tasks, onTaskClick }: { tasks: Task[], onTaskClick: (task: Task) => void }) {
+function TasksListView({ tasks, onTaskClick }: { tasks: any[], onTaskClick: (task: any) => void }) {
   const priorityColor = {
     low: "text-blue-500 bg-blue-50 border-blue-100",
     medium: "text-orange-500 bg-orange-50 border-orange-100",
@@ -212,14 +214,14 @@ function TasksListView({ tasks, onTaskClick }: { tasks: Task[], onTaskClick: (ta
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-3">
-                  <Progress value={task.status === 'done' ? 100 : task.status === 'in_progress' ? 50 : 0} className="h-1.5" indicatorClassName="bg-[#F34147]" />
+                  <Progress value={task.status === 'done' ? 100 : task.status === 'in_progress' ? 50 : 0} className="h-1.5" />
                   <span className="text-[12px] font-medium text-[#0D0D12]">
                     {task.status === 'done' ? '100%' : task.status === 'in_progress' ? '50%' : '0%'}
                   </span>
                 </div>
               </TableCell>
               <TableCell>
-                <Badge variant="outline" className={`border ${priorityColor[task.priority]} font-medium`}>
+                <Badge variant="outline" className={`border ${priorityColor[task.priority as keyof typeof priorityColor]} font-medium`}>
                   {task.priority}
                 </Badge>
               </TableCell>
@@ -237,22 +239,50 @@ function TasksListView({ tasks, onTaskClick }: { tasks: Task[], onTaskClick: (ta
 }
 
 export default function Tasks() {
-  const { tasks, updateTaskStatus, currentUser, simulatedRole } = useStore();
+  const { currentUser, currentTeamId, simulatedRole } = useStore();
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [activeTask, setActiveTask] = useState<any | null>(null);
+  const [selectedTask, setSelectedTask] = useState<any | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   
   const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const isAdmin = currentUser?.role === 'superadmin';
-  const effectiveManager = isAdmin && simulatedRole !== 'executive';
 
-  const myTasks = tasks.filter(t => 
-    (effectiveManager ? true : (t.assignedTo === currentUser?.id || t.assignedTo === 'u1')) &&
-    (t.title.toLowerCase().includes(searchQuery.toLowerCase()) || t.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  const effectiveRole = useStore.getState().getEffectiveRole();
+
+  const { data: tasks = [], isLoading: tasksLoading } = useQuery<any[]>({
+    queryKey: ['/api/tasks', currentTeamId, effectiveRole],
+    queryFn: async () => {
+      const res = await fetch(`/api/tasks?teamId=${currentTeamId}&effectiveRole=${effectiveRole}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ['/api/users'],
+    queryFn: async () => {
+      const res = await fetch('/api/users', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const updateTaskMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
+      const res = await apiRequest('PATCH', `/api/tasks/${id}`, updates);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string)?.startsWith('/api/tasks') });
+    },
+  });
+
+  const myTasks = tasks.filter((t: any) => 
+    (t.title?.toLowerCase().includes(searchQuery.toLowerCase()) || t.description?.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const sensors = useSensors(
@@ -262,7 +292,7 @@ export default function Tasks() {
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
-    setActiveTask(event.active.data.current?.task as Task);
+    setActiveTask(event.active.data.current?.task as any);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -285,14 +315,14 @@ export default function Tasks() {
     const validStage = taskStages.find(s => s.id === targetStageId);
     
     if (validStage && activeTask && activeTask.status !== targetStageId) {
-      updateTaskStatus(taskId, targetStageId as any);
+      updateTaskMutation.mutate({ id: taskId, updates: { status: targetStageId } });
     }
     
     setActiveId(null);
     setActiveTask(null);
   };
 
-  const handleTaskClick = (task: Task) => {
+  const handleTaskClick = (task: any) => {
     if (!activeId) {
       setSelectedTask(task);
       setDetailOpen(true);
@@ -305,9 +335,9 @@ export default function Tasks() {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-[24px] font-bold text-[#0D0D12]">{currentUser.role === 'superadmin' ? 'Team Tasks' : 'My Tasks'}</h1>
+            <h1 className="text-[24px] font-bold text-[#0D0D12]">{currentUser?.role === 'superadmin' ? 'Team Tasks' : 'My Tasks'}</h1>
             <p className="text-[14px] text-[#666D80] mt-1">
-              {currentUser.role === 'superadmin' ? 'Manage and track tasks across the team.' : 'Manage your daily tasks and priorities.'}
+              {currentUser?.role === 'superadmin' ? 'Manage and track tasks across the team.' : 'Manage your daily tasks and priorities.'}
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -361,7 +391,11 @@ export default function Tasks() {
       </div>
 
       {/* Content Area */}
-      {viewMode === 'board' ? (
+      {tasksLoading ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-[#666D80] text-sm">Loading tasks...</div>
+        </div>
+      ) : viewMode === 'board' ? (
         <DndContext
           sensors={sensors}
           collisionDetection={closestCorners}

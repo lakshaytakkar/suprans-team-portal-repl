@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Dialog, 
   DialogContent, 
@@ -21,7 +23,6 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Mail, BookOpen, Loader2, Check } from "lucide-react";
-import { mockTemplates } from "@/lib/mock-data";
 
 interface SendEmailDialogProps {
   leadId: string;
@@ -31,14 +32,33 @@ interface SendEmailDialogProps {
 }
 
 export function SendEmailDialog({ leadId, trigger, open, onOpenChange }: SendEmailDialogProps) {
-  const { leads, addActivity, currentUser } = useStore();
+  const { currentUser } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<'compose' | 'sending' | 'success'>('compose');
   
   const show = open !== undefined ? open : isOpen;
   const setShow = onOpenChange || setIsOpen;
 
-  const lead = leads.find(l => l.id === leadId);
+  const { data: lead } = useQuery<any>({
+    queryKey: ["/api/leads", leadId],
+    enabled: !!leadId,
+  });
+
+  const { data: templates } = useQuery<any>({
+    queryKey: ["/api/templates"],
+  });
+
+  const addActivityMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/activities", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/activities"] });
+    }
+  });
+
+  const mockTemplates = templates || { scripts: [], emails: [], messages: [], objections: [] };
   
   const [subject, setSubject] = useState("");
   const [content, setContent] = useState("");
@@ -50,27 +70,25 @@ export function SendEmailDialog({ leadId, trigger, open, onOpenChange }: SendEma
     setSelectedTemplate(val);
     if (val === "none") return;
     
-    const template = mockTemplates.emails.find(t => t.id === val);
+    const template = (mockTemplates.emails || []).find((t: any) => t.id === val);
     if (template) {
       setSubject(template.subject.replace('[Company]', lead.company));
       setContent(template.content
         .replace('[Name]', lead.name)
         .replace('[Company]', lead.company)
-        .replace('[Your Name]', currentUser.name)
+        .replace('[Your Name]', currentUser?.name || '')
       );
     }
   };
 
   const handleSend = () => {
     setStep('sending');
-    // Simulate API call
     setTimeout(() => {
       setStep('success');
       
-      // Log the activity
-      addActivity({
+      addActivityMutation.mutate({
         leadId,
-        userId: currentUser.id,
+        userId: currentUser?.id,
         type: 'email',
         notes: `Sent Email: ${subject}`,
         outcome: 'sent'
@@ -113,7 +131,7 @@ export function SendEmailDialog({ leadId, trigger, open, onOpenChange }: SendEma
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">No Template</SelectItem>
-                    {mockTemplates.emails.map(t => (
+                    {(mockTemplates.emails || []).map((t: any) => (
                       <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>
                     ))}
                   </SelectContent>

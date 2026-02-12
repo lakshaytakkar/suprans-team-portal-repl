@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useStore } from "@/lib/store";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Dialog, 
   DialogContent, 
@@ -19,25 +20,37 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { services, stages } from "@/lib/mock-data";
-import { Lead } from "@/lib/mock-data";
 
 interface EditLeadDialogProps {
   leadId: string;
   trigger?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onSubmit?: (leadId: string, data: any) => void;
 }
 
-export function EditLeadDialog({ leadId, trigger, open, onOpenChange }: EditLeadDialogProps) {
-  const { leads, updateLead } = useStore();
+export function EditLeadDialog({ leadId, trigger, open, onOpenChange, onSubmit }: EditLeadDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   
   const show = open !== undefined ? open : isOpen;
   const setShow = onOpenChange || setIsOpen;
 
-  const lead = leads.find(l => l.id === leadId);
+  const { data: lead } = useQuery<any>({
+    queryKey: ["/api/leads", leadId],
+    enabled: !!leadId && show,
+  });
 
-  const [formData, setFormData] = useState<Partial<Lead>>({});
+  const [formData, setFormData] = useState<any>({});
+
+  const updateLeadMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const res = await apiRequest("PATCH", `/api/leads/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+    }
+  });
 
   useEffect(() => {
     if (lead) {
@@ -56,7 +69,11 @@ export function EditLeadDialog({ leadId, trigger, open, onOpenChange }: EditLead
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (leadId) {
-      updateLead(leadId, formData);
+      if (onSubmit) {
+        onSubmit(leadId, formData);
+      } else {
+        updateLeadMutation.mutate({ id: leadId, data: formData });
+      }
       setShow(false);
     }
   };

@@ -41,7 +41,7 @@ export default function Login() {
     setError("");
     
     try {
-      const user = await api.login(email, password);
+      const user = await api.login(email, password) as any;
       setCurrentUser(user);
       setLocation("/team");
     } catch (err: any) {

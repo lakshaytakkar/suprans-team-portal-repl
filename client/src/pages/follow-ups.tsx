@@ -1,4 +1,5 @@
 import { useStore } from "@/lib/store";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,12 +8,25 @@ import { format, isToday, isTomorrow, isPast, addDays } from "date-fns";
 import { Link } from "wouter";
 
 export default function FollowUps() {
-  const { leads, currentUser } = useStore();
-  const isAdmin = currentUser.role === 'superadmin';
+  const { currentUser, currentTeamId, simulatedRole, getEffectiveRole } = useStore();
+  const effectiveRole = getEffectiveRole();
+
+  const { data: allLeads = [] } = useQuery<any[]>({
+    queryKey: ['/api/leads', currentTeamId, effectiveRole],
+    queryFn: async () => {
+      const res = await fetch(`/api/leads?teamId=${currentTeamId}&effectiveRole=${effectiveRole}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const leads = allLeads;
+  const isAdmin = currentUser?.role === 'superadmin';
   
   // Admin sees all scheduled follow-ups, Exec sees only theirs
   const myLeads = leads
-    .filter(l => (isAdmin || l.assignedTo === currentUser.id) && l.nextFollowUp)
+    .filter(l => (isAdmin || l.assignedTo === currentUser?.id) && l.nextFollowUp)
     .sort((a, b) => new Date(a.nextFollowUp!).getTime() - new Date(b.nextFollowUp!).getTime());
 
   const overdue = myLeads.filter(l => isPast(new Date(l.nextFollowUp!)) && !isToday(new Date(l.nextFollowUp!)));

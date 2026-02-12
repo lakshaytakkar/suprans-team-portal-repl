@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   DndContext, 
   closestCorners, 
@@ -25,11 +27,10 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import { GripVertical, DollarSign, Phone, Mail, Calendar, Clock, FileText } from "lucide-react";
-import { Lead, Activity } from "@/lib/mock-data";
+import { GripVertical, DollarSign, Phone, Mail, Calendar, Clock, FileText, Loader2 } from "lucide-react";
 
 // Kanban Column Component
-function KanbanColumn({ id, title, leads, color, activities }: { id: string, title: string, leads: Lead[], color: string, activities: Activity[] }) {
+function KanbanColumn({ id, title, leads, color, activities }: { id: string, title: string, leads: any[], color: string, activities: any[] }) {
   const { setNodeRef } = useSortable({ id });
 
   return (
@@ -63,7 +64,7 @@ function KanbanColumn({ id, title, leads, color, activities }: { id: string, tit
 }
 
 // Draggable Card Component
-function SortableLeadCard({ lead, lastActivity }: { lead: Lead, lastActivity?: Activity }) {
+function SortableLeadCard({ lead, lastActivity }: { lead: any, lastActivity?: any }) {
   const {
     attributes,
     listeners,
@@ -87,7 +88,7 @@ function SortableLeadCard({ lead, lastActivity }: { lead: Lead, lastActivity?: A
 }
 
 // Actual Card UI
-function LeadCard({ lead, lastActivity }: { lead: Lead, lastActivity?: Activity }) {
+function LeadCard({ lead, lastActivity }: { lead: any, lastActivity?: any }) {
   return (
     <Card className="cursor-grab active:cursor-grabbing hover-elevate transition-all border-l-4 border-l-primary/20 hover:border-l-primary">
       <CardContent className="p-3 space-y-2">
@@ -129,13 +130,41 @@ function LeadCard({ lead, lastActivity }: { lead: Lead, lastActivity?: Activity 
 }
 
 export default function Pipeline() {
-  const { leads, activities, updateLeadStage, currentUser, simulatedRole } = useStore();
+  const { currentUser, currentTeamId, simulatedRole } = useStore();
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [activeLead, setActiveLead] = useState<Lead | null>(null);
+  const [activeLead, setActiveLead] = useState<any | null>(null);
   
-  const isAdmin = currentUser?.role === 'superadmin';
-  const effectiveManager = isAdmin && simulatedRole !== 'executive';
-  const myLeads = effectiveManager ? leads : leads.filter(l => l.assignedTo === currentUser?.id);
+  const effectiveRole = useStore.getState().getEffectiveRole();
+
+  const { data: leads = [], isLoading: leadsLoading } = useQuery<any[]>({
+    queryKey: ['/api/leads', currentTeamId, effectiveRole],
+    queryFn: async () => {
+      const res = await fetch(`/api/leads?teamId=${currentTeamId}&effectiveRole=${effectiveRole}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const { data: activities = [] } = useQuery<any[]>({
+    queryKey: ['/api/activities'],
+    queryFn: async () => {
+      const res = await fetch('/api/activities', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const updateStageMutation = useMutation({
+    mutationFn: async ({ leadId, newStage }: { leadId: string; newStage: string }) => {
+      await apiRequest('PATCH', `/api/leads/${leadId}`, { stage: newStage });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string)?.startsWith('/api/leads') });
+      queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string)?.startsWith('/api/activities') });
+    },
+  });
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -144,7 +173,7 @@ export default function Pipeline() {
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
-    setActiveLead(event.active.data.current?.lead as Lead);
+    setActiveLead(event.active.data.current?.lead as any);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -167,7 +196,7 @@ export default function Pipeline() {
     const validStage = stages.find(s => s.id === targetStageId);
     
     if (validStage && activeLead && activeLead.stage !== targetStageId) {
-      updateLeadStage(leadId, targetStageId as any);
+      updateStageMutation.mutate({ leadId, newStage: targetStageId });
     }
     
     setActiveId(null);
@@ -177,6 +206,14 @@ export default function Pipeline() {
   const handleDragOver = (event: DragOverEvent) => {
     // Optional: Implement real-time list updates for smoother UX
   };
+
+  if (leadsLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="h-[calc(100vh-140px)] flex flex-col space-y-4">
@@ -203,7 +240,7 @@ export default function Pipeline() {
               id={stage.id}
               title={stage.label}
               color={stage.color}
-              leads={myLeads.filter(l => l.stage === stage.id)}
+              leads={leads.filter(l => l.stage === stage.id)}
               activities={activities}
             />
           ))}

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Table, 
   TableBody, 
@@ -52,7 +54,49 @@ import { AddLeadDialog } from "@/components/dialogs/AddLeadDialog";
 import { EditLeadDialog } from "@/components/dialogs/EditLeadDialog";
 
 export default function AdminLeads() {
-  const { leads, users, updateLead, deleteLead } = useStore();
+  const { currentUser } = useStore();
+
+  const { data: leads = [] } = useQuery<any[]>({
+    queryKey: ['/api/leads'],
+    queryFn: async () => {
+      const res = await fetch('/api/leads', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ['/api/users'],
+    queryFn: async () => {
+      const res = await fetch('/api/users', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const updateLeadMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const res = await apiRequest('PATCH', `/api/leads/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/leads'] });
+    },
+  });
+
+  const deleteLeadMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest('DELETE', `/api/leads/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/leads'] });
+    },
+  });
+
+  const updateLead = (id: string, data: any) => updateLeadMutation.mutate({ id, data });
+  const deleteLead = (id: string) => deleteLeadMutation.mutate(id);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [assigneeFilter, setAssigneeFilter] = useState("all");

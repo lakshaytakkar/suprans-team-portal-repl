@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
+import { useQuery } from "@tanstack/react-query";
 import { 
   BarChart, 
   Bar, 
@@ -29,7 +30,28 @@ import {
 import { useState } from "react";
 
 export default function Reports() {
-  const { leads, users } = useStore();
+  const { currentUser } = useStore();
+
+  const { data: leads = [] } = useQuery<any[]>({
+    queryKey: ['/api/leads'],
+    queryFn: async () => {
+      const res = await fetch('/api/leads', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ['/api/users'],
+    queryFn: async () => {
+      const res = await fetch('/api/users', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
   const [timeRange, setTimeRange] = useState("this_month");
 
   // Mock Data Generators for Charts

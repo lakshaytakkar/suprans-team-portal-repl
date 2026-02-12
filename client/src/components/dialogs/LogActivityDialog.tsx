@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Dialog, 
   DialogContent, 
@@ -20,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Phone, Mail, Calendar, Clock, BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { mockTemplates } from "@/lib/mock-data";
 
 interface LogActivityDialogProps {
   leadId: string;
@@ -28,71 +29,98 @@ interface LogActivityDialogProps {
   defaultType?: 'call' | 'email' | 'meeting';
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onSubmit?: (data: any) => void;
 }
 
-export function LogActivityDialog({ leadId, trigger, defaultType = 'call', open, onOpenChange }: LogActivityDialogProps) {
-  const { addActivity, updateLead, currentUser } = useStore();
+export function LogActivityDialog({ leadId, trigger, defaultType = 'call', open, onOpenChange, onSubmit }: LogActivityDialogProps) {
+  const { currentUser } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   
   const show = open !== undefined ? open : isOpen;
   const setShow = onOpenChange || setIsOpen;
+
+  const { data: templates } = useQuery<any>({
+    queryKey: ["/api/templates"],
+  });
+
+  const addActivityMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/activities", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/activities"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+    }
+  });
+
+  const updateLeadMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const res = await apiRequest("PATCH", `/api/leads/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+    }
+  });
 
   const [type, setType] = useState(defaultType);
   const [notes, setNotes] = useState("");
   const [duration, setDuration] = useState("");
   const [outcome, setOutcome] = useState("connected");
   
-  // Follow up state
   const [scheduleFollowUp, setScheduleFollowUp] = useState(false);
   const [followUpDate, setFollowUpDate] = useState("");
   const [followUpTime, setFollowUpTime] = useState("");
   
   const [selectedTemplate, setSelectedTemplate] = useState("none");
 
+  const mockTemplates = templates || { scripts: [], emails: [], messages: [], objections: [] };
+
   const handleTemplateChange = (val: string) => {
     setSelectedTemplate(val);
     if (val === "none") return;
     
-    // Find in all templates
     const allTemplates = [
-      ...mockTemplates.scripts, 
-      ...mockTemplates.emails, 
-      ...mockTemplates.messages, 
-      ...mockTemplates.objections
+      ...(mockTemplates.scripts || []), 
+      ...(mockTemplates.emails || []), 
+      ...(mockTemplates.messages || []), 
+      ...(mockTemplates.objections || [])
     ];
     
-    const template = allTemplates.find(t => t.id === val);
+    const template = allTemplates.find((t: any) => t.id === val);
     if (template) {
       if ('content' in template) {
         setNotes((prev) => prev ? prev + "\n\n" + template.content : template.content);
       } else if ('response' in template) {
-         // for objections
         setNotes((prev) => prev ? prev + "\n\n" + template.response : template.response);
       }
     }
   };
 
   const handleSubmit = () => {
-    // Log the activity
-    addActivity({
+    const activityData = {
       leadId,
-      userId: currentUser.id,
+      userId: currentUser?.id,
       type,
       notes,
       duration: Number(duration),
       outcome
-    });
+    };
 
-    // Schedule follow up if requested
+    if (onSubmit) {
+      onSubmit(activityData);
+    } else {
+      addActivityMutation.mutate(activityData);
+    }
+
     if (scheduleFollowUp && followUpDate) {
       const scheduledTime = followUpTime ? new Date(`${followUpDate}T${followUpTime}`) : new Date(followUpDate);
       
-      updateLead(leadId, {
-        nextFollowUp: scheduledTime.toISOString()
+      updateLeadMutation.mutate({
+        id: leadId,
+        data: { nextFollowUp: scheduledTime.toISOString() }
       });
-      
-      // Optionally add a separate activity for the scheduled task? 
-      // For now, updating the lead's nextFollowUp field is enough as it shows in the table.
     }
 
     setNotes("");
@@ -189,17 +217,17 @@ export function LogActivityDialog({ leadId, trigger, defaultType = 'call', open,
                   {type === 'call' && (
                     <>
                       <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Scripts</div>
-                      {mockTemplates.scripts.map(t => <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>)}
+                      {(mockTemplates.scripts || []).map((t: any) => <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>)}
                     </>
                   )}
                   {type === 'email' && (
                     <>
                       <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Emails</div>
-                      {mockTemplates.emails.map(t => <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>)}
+                      {(mockTemplates.emails || []).map((t: any) => <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>)}
                     </>
                   )}
                   <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Objection Handlers</div>
-                  {mockTemplates.objections.map(t => <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>)}
+                  {(mockTemplates.objections || []).map((t: any) => <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>)}
                 </SelectContent>
               </Select>
             </Label>

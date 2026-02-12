@@ -34,9 +34,10 @@ import {
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { mockLeads, mockTasks, stages } from "@/lib/mock-data";
+import { stages } from "@/lib/mock-data";
 import { format } from "date-fns";
 import { useStore } from "@/lib/store";
+import { useQuery } from "@tanstack/react-query";
 import EventsDashboard from "@/pages/events/events-dashboard";
 
 // Mock Revenue Data
@@ -56,7 +57,7 @@ const revenueData = [
 ];
 
 export default function Dashboard() {
-  const { leads, tasks, currentUser, currentTeamId, simulatedRole } = useStore();
+  const { currentUser, currentTeamId, simulatedRole } = useStore();
   const [activeStage, setActiveStage] = useState('all');
 
   if (currentTeamId === 'events') {
@@ -64,23 +65,48 @@ export default function Dashboard() {
   }
 
   const isAdmin = currentUser?.role === 'superadmin';
-  const effectiveManager = isAdmin && simulatedRole !== 'executive';
+  const effectiveRole = useStore.getState().getEffectiveRole();
 
-  const relevantLeads = effectiveManager ? leads : leads.filter(l => l.assignedTo === currentUser?.id);
-  
-  const totalLeads = relevantLeads.length;
-  const activeLeads = relevantLeads.filter(l => !['won', 'lost'].includes(l.stage)).length;
-  const wonLeads = relevantLeads.filter(l => l.stage === 'won').length;
-  const totalPipelineValue = relevantLeads
-    .filter(l => !['won', 'lost'].includes(l.stage))
-    .reduce((acc, curr) => acc + curr.value, 0);
+  const { data: leads = [], isLoading: leadsLoading } = useQuery<any[]>({
+    queryKey: ['/api/leads', currentTeamId, effectiveRole],
+    queryFn: async () => {
+      const res = await fetch(`/api/leads?teamId=${currentTeamId}&effectiveRole=${effectiveRole}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
 
-  // Pipeline distribution for chart
+  const { data: tasks = [], isLoading: tasksLoading } = useQuery<any[]>({
+    queryKey: ['/api/tasks', currentTeamId, effectiveRole],
+    queryFn: async () => {
+      const res = await fetch(`/api/tasks?teamId=${currentTeamId}&effectiveRole=${effectiveRole}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const totalLeads = leads.length;
+  const activeLeads = leads.filter((l: any) => !['won', 'lost'].includes(l.stage)).length;
+  const wonLeads = leads.filter((l: any) => l.stage === 'won').length;
+  const totalPipelineValue = leads
+    .filter((l: any) => !['won', 'lost'].includes(l.stage))
+    .reduce((acc: number, curr: any) => acc + (curr.value || 0), 0);
+
   const pipelineData = stages.map(stage => ({
     name: stage.label,
-    count: relevantLeads.filter(l => l.stage === stage.id).length,
+    count: leads.filter((l: any) => l.stage === stage.id).length,
     color: stage.color
   })).filter(s => s.count > 0);
+
+  if (leadsLoading || tasksLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-[#666D80] text-sm">Loading dashboard...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto">
@@ -389,7 +415,7 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#DFE1E7]">
-              {relevantLeads
+              {leads
                 .filter(lead => activeStage === 'all' || lead.stage === activeStage)
                 .slice(0, 5)
                 .map((lead) => {

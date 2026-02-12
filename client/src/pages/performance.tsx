@@ -1,4 +1,5 @@
 import { useStore } from "@/lib/store";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
   BarChart, 
@@ -15,12 +16,24 @@ import {
 import { TrendingUp, Trophy, Timer, Target } from "lucide-react";
 
 export default function Performance() {
-  const { leads, currentUser } = useStore();
-  const isAdmin = currentUser.role === 'superadmin';
+  const { currentUser, currentTeamId, getEffectiveRole } = useStore();
+  const effectiveRole = getEffectiveRole();
+
+  const { data: leads = [] } = useQuery<any[]>({
+    queryKey: ['/api/leads', currentTeamId, effectiveRole],
+    queryFn: async () => {
+      const res = await fetch(`/api/leads?teamId=${currentTeamId}&effectiveRole=${effectiveRole}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const isAdmin = currentUser?.role === 'superadmin';
   
   // Admin sees company-wide stats, Exec sees personal stats
   // For now, we'll just toggle the data source. In a real app, Admin might want to filter by team member.
-  const myLeads = isAdmin ? leads : leads.filter(l => l.assignedTo === currentUser.id);
+  const myLeads = isAdmin ? leads : leads.filter(l => l.assignedTo === currentUser?.id);
   const wonLeads = myLeads.filter(l => l.stage === 'won');
   
   // Stats

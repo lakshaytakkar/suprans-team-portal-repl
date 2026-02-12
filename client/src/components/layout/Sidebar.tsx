@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Check, Settings } from "lucide-react";
@@ -115,7 +116,7 @@ function TeamMemberAvatars({ teamId }: { teamId: string }) {
 
 export function Sidebar({ className }: SidebarProps) {
   const [location] = useLocation();
-  const { currentUser, currentTeamId, setCurrentTeamId, simulatedRole } = useStore();
+  const { currentUser, currentTeamId, setCurrentTeamId, simulatedRole, setMyTeamMemberships } = useStore();
   const userRole = currentUser?.role || 'sales_executive';
   const isSuperadmin = userRole === 'superadmin';
 
@@ -126,6 +127,12 @@ export function Sidebar({ className }: SidebarProps) {
     enabled: !!currentUser,
     staleTime: 30000,
   });
+
+  useEffect(() => {
+    if (myTeamMemberships.length > 0) {
+      setMyTeamMemberships(myTeamMemberships);
+    }
+  }, [myTeamMemberships, setMyTeamMemberships]);
 
   const myTeamIds = new Set(myTeamMemberships.map(m => m.teamId));
   

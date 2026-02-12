@@ -1,5 +1,7 @@
 import { useParams, useLocation } from "wouter";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -58,11 +60,53 @@ import { SendWhatsAppDialog } from "@/components/dialogs/SendWhatsAppDialog";
 export default function LeadDetail() {
   const params = useParams();
   const [, setLocation] = useLocation();
-  const { leads, activities, currentUser, addActivity, updateLeadStage } = useStore();
+  const { currentUser } = useStore();
   const [note, setNote] = useState("");
   const [newTag, setNewTag] = useState("");
-  
-  const lead = leads.find(l => l.id === params.id);
+
+  const { data: lead } = useQuery<any>({
+    queryKey: ['/api/leads', params.id],
+    queryFn: async () => {
+      const res = await fetch(`/api/leads/${params.id}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser && !!params.id,
+  });
+
+  const { data: activities = [] } = useQuery<any[]>({
+    queryKey: ['/api/activities', params.id],
+    queryFn: async () => {
+      const res = await fetch(`/api/activities?leadId=${params.id}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser && !!params.id,
+  });
+
+  const addActivityMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest('POST', '/api/activities', data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/activities', params.id] });
+    },
+  });
+
+  const updateLeadStageMutation = useMutation({
+    mutationFn: async ({ leadId, stage }: { leadId: string; stage: string }) => {
+      const res = await apiRequest('PATCH', `/api/leads/${leadId}`, { stage });
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/leads', params.id] });
+    },
+  });
+
+  const updateLeadStage = (leadId: string, stage: string) => {
+    updateLeadStageMutation.mutate({ leadId, stage });
+  };
   
   // Local state for UI interactivity (mocking updates)
   const [rating, setRating] = useState(lead?.rating || 0);
@@ -75,17 +119,15 @@ export default function LeadDetail() {
   ]);
 
   const leadActivities = activities
-    .filter(a => a.leadId === lead?.id)
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    .filter((a: any) => a.leadId === lead?.id)
+    .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   if (!lead) {
     return <div className="p-8">Lead not found</div>;
   }
 
-  // Navigation Logic
-  const currentIndex = leads.findIndex(l => l.id === lead.id);
-  const prevLeadId = currentIndex > 0 ? leads[currentIndex - 1].id : null;
-  const nextLeadId = currentIndex < leads.length - 1 ? leads[currentIndex + 1].id : null;
+  const prevLeadId: string | null = null;
+  const nextLeadId: string | null = null;
 
   const navigateToLead = (id: string | null) => {
     if (id) setLocation(`/leads/${id}`);
@@ -106,9 +148,9 @@ export default function LeadDetail() {
 
   const handleAddNote = () => {
     if (!note.trim()) return;
-    addActivity({
+    addActivityMutation.mutate({
       leadId: lead.id,
-      userId: currentUser.id,
+      userId: currentUser?.id,
       type: 'note',
       notes: note
     });

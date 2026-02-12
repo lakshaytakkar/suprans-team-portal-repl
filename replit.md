@@ -109,6 +109,18 @@ shared/
 - `GET/POST /api/llc/clients/:clientId/documents` - List/create documents
 - `GET /api/llc/clients/:clientId/timeline` - Get client timeline
 
+## RBAC System (Role-Based Access Control)
+- **Team Membership**: Users are assigned to teams via `team_members` table with roles (manager/executive)
+- **Team Switching**: Sidebar top shows team switcher, filtering data to the selected team
+- **Role-Based Views**:
+  - Executive: sees only items assigned to them within the team
+  - Manager: sees all items within the team
+  - Superadmin: can simulate either role via header toggle; member of all teams
+- **Data Scoping**: `leads` and `tasks` tables have `teamId` column; API routes accept `teamId` and `effectiveRole` query params
+- **Store**: `client/src/lib/store.ts` holds UI state only (currentUser, currentTeamId, simulatedRole, myTeamMemberships) with `getEffectiveRole()` and `getRoleInTeam()` helper methods
+- **All pages use React Query**: No mock data in store; leads, tasks, users fetched from API with team/role filtering
+- **Admin Team Management**: `/team/admin/team` page for superadmin to assign users to teams and set roles
+
 ## Recent Changes
 - January 2026: Imported from GitHub repository (replit-agent branch)
 - January 24, 2026: Added Faire Wholesale management (stores, suppliers, products, orders)
@@ -119,6 +131,13 @@ shared/
   - Sections: Homepage hero/stats/FAQs/videos, About page, Contact info, Footer links, Site banner
   - Public pages fetch content dynamically with static fallbacks
   - API: GET /api/public/website-content, PATCH /api/website-content (superadmin only)
+- February 12, 2026: RBAC System Refactor
+  - Added `teamId` to leads and tasks schema
+  - Refactored store to remove mock data, use React Query for all data fetching
+  - Updated all backend routes with team-scoped filtering
+  - Updated all frontend pages (leads, pipeline, tasks, dashboard, follow-ups, performance, admin pages)
+  - Updated all dialog components to use API mutations
+  - Sidebar syncs team memberships to store for role determination
 - Database tables expanded to 46+ tables
 - API routes with Zod validation and CRUD operations
 

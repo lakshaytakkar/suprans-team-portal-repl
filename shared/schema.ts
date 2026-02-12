@@ -53,6 +53,7 @@ export const leads = pgTable("leads", {
   value: integer("value").notNull().default(0),
   stage: text("stage").notNull().default('new'), // 'new' | 'contacted' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost'
   assignedTo: varchar("assigned_to").references(() => users.id),
+  teamId: text("team_id"),
   source: text("source").notNull(),
   address: text("address"),
   avatar: text("avatar"),
@@ -112,6 +113,7 @@ export const tasks = pgTable("tasks", {
   priority: text("priority").notNull().default('medium'), // 'low' | 'medium' | 'high'
   dueDate: timestamp("due_date").notNull(),
   assignedTo: varchar("assigned_to").notNull().references(() => users.id),
+  teamId: text("team_id"),
   tags: jsonb("tags").$type<string[]>().default([]),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

@@ -1,4 +1,5 @@
 import { useStore } from "@/lib/store";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { 
   BarChart, 
@@ -31,10 +32,28 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { mockUsers } from "@/lib/mock-data";
-
 export default function AdminDashboard() {
-  const { leads, users } = useStore();
+  const { currentUser } = useStore();
+
+  const { data: leads = [] } = useQuery<any[]>({
+    queryKey: ['/api/leads'],
+    queryFn: async () => {
+      const res = await fetch('/api/leads', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ['/api/users'],
+    queryFn: async () => {
+      const res = await fetch('/api/users', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
 
   // Aggregate Stats
   const totalLeads = leads.length;
@@ -45,8 +64,8 @@ export default function AdminDashboard() {
   // Chart Data Preparation
   
   // Team Performance (Leads per user)
-  const teamPerformanceData = mockUsers
-    .filter(u => u.role === 'sales_executive')
+  const teamPerformanceData = users
+    .filter((u: any) => u.role === 'sales_executive')
     .map(user => {
       const userLeads = leads.filter(l => l.assignedTo === user.id);
       const userWon = userLeads.filter(l => l.stage === 'won');

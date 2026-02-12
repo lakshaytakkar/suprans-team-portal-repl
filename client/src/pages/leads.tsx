@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Table, 
   TableBody, 
@@ -15,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { stages } from "@/lib/mock-data";
 import { format, formatDistanceToNow } from "date-fns";
 import { Link } from "wouter";
+import { Loader2 } from "lucide-react";
 import { 
   Search, 
   Filter, 
@@ -63,19 +66,72 @@ import { SendEmailDialog } from "@/components/dialogs/SendEmailDialog";
 import { SendWhatsAppDialog } from "@/components/dialogs/SendWhatsAppDialog";
 
 export default function Leads() {
-  const { leads, activities, currentUser, updateLead, users, deleteLead, simulatedRole } = useStore();
+  const { currentUser, currentTeamId, simulatedRole } = useStore();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
   
   const isAdmin = currentUser?.role === 'superadmin';
-  const effectiveManager = isAdmin && simulatedRole !== 'executive';
+  const effectiveRole = useStore.getState().getEffectiveRole();
 
-  const baseLeads = leads.filter(lead => 
-    effectiveManager ? true : lead.assignedTo === currentUser?.id
-  );
+  const { data: leads = [], isLoading: leadsLoading } = useQuery<any[]>({
+    queryKey: ['/api/leads', currentTeamId, effectiveRole],
+    queryFn: async () => {
+      const res = await fetch(`/api/leads?teamId=${currentTeamId}&effectiveRole=${effectiveRole}`, { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
 
-  const filteredLeads = baseLeads
+  const { data: activities = [] } = useQuery<any[]>({
+    queryKey: ['/api/activities'],
+    queryFn: async () => {
+      const res = await fetch('/api/activities', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ['/api/users'],
+    queryFn: async () => {
+      const res = await fetch('/api/users', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const updateLeadMutation = useMutation({
+    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
+      const res = await apiRequest('PATCH', `/api/leads/${id}`, updates);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string)?.startsWith('/api/leads') });
+    },
+  });
+
+  const deleteLeadMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest('DELETE', `/api/leads/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ predicate: (q) => (q.queryKey[0] as string)?.startsWith('/api/leads') });
+    },
+  });
+
+  if (leadsLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  const filteredLeads = leads
     .filter(lead => {
       const matchesSearch = 
         lead.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -137,7 +193,7 @@ export default function Leads() {
       {/* Page Header */}
       <div className="flex items-center justify-between w-full">
         <h1 className="text-[20px] font-semibold text-[#0D0D12] leading-[1.35]" data-testid="text-leads-heading">
-          {effectiveManager ? "All Leads (Manager View)" : "My Leads"}
+          {effectiveRole === 'manager' ? "All Leads (Manager View)" : "My Leads"}
         </h1>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="bg-white border-[#DFE1E7] text-[#0D0D12] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold">
@@ -165,7 +221,7 @@ export default function Leads() {
           </div>
           <div className="flex flex-col gap-2">
             <span className="text-2xl font-semibold text-[#0D0D12]">
-              {baseLeads.length}
+              {leads.length}
             </span>
             <div className="flex items-center gap-2">
               <div className="bg-[#EFFEFA] px-1.5 py-0.5 rounded-full flex items-center justify-center">
@@ -185,7 +241,7 @@ export default function Leads() {
           </div>
           <div className="flex flex-col gap-2">
             <span className="text-2xl font-semibold text-[#0D0D12]">
-              {baseLeads.filter(l => ['negotiation', 'proposal'].includes(l.stage)).length}
+              {leads.filter(l => ['negotiation', 'proposal'].includes(l.stage)).length}
             </span>
             <div className="flex items-center gap-2">
               <div className="bg-[#EFFEFA] px-1.5 py-0.5 rounded-full flex items-center justify-center">
@@ -229,11 +285,11 @@ export default function Leads() {
         >
           All Leads
           <span className={`ml-2 text-xs ${statusFilter === "all" ? "text-gray-400" : "text-gray-400"}`}>
-            {baseLeads.length}
+            {leads.length}
           </span>
         </button>
         {stages.map((stage) => {
-          const count = baseLeads.filter(l => l.stage === stage.id).length;
+          const count = leads.filter(l => l.stage === stage.id).length;
           return (
             <button
               key={stage.id}
@@ -371,7 +427,7 @@ export default function Leads() {
                               {users.filter(u => u.role === 'sales_executive').map(user => (
                                 <DropdownMenuItem 
                                   key={user.id}
-                                  onClick={() => updateLead(lead.id, { assignedTo: user.id })}
+                                  onClick={() => updateLeadMutation.mutate({ id: lead.id, updates: { assignedTo: user.id } })}
                                   className="flex items-center gap-2"
                                 >
                                   <Avatar className="h-6 w-6">
@@ -384,7 +440,7 @@ export default function Leads() {
                               ))}
                               <DropdownMenuSeparator />
                               <DropdownMenuItem 
-                                onClick={() => updateLead(lead.id, { assignedTo: undefined })}
+                                onClick={() => updateLeadMutation.mutate({ id: lead.id, updates: { assignedTo: null } })}
                                 className="text-red-500 focus:text-red-500"
                               >
                                 Unassign
@@ -458,7 +514,7 @@ export default function Leads() {
                               <DropdownMenuSeparator />
                               <DropdownMenuItem 
                                 className="text-[#DF1C41] hover:text-[#DF1C41] hover:bg-[#FFF0F3]"
-                                onClick={() => deleteLead(lead.id)}
+                                onClick={() => deleteLeadMutation.mutate(lead.id)}
                               >
                                 <Trash2 className="mr-2 h-4 w-4" /> Delete Lead
                               </DropdownMenuItem>

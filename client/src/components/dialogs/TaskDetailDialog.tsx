@@ -8,7 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { Task, taskStages, mockUsers } from "@/lib/mock-data";
+import { taskStages } from "@/lib/mock-data";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useStore } from "@/lib/store";
 import { format } from "date-fns";
 import { 
   Calendar, 
@@ -31,29 +34,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 
 interface TaskDetailDialogProps {
-  task: Task | null;
+  task: any | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onStatusChange?: (taskId: string, status: string) => void;
 }
 
-export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogProps) {
-  const { updateTaskStatus, currentUser } = useStore();
+export function TaskDetailDialog({ task, open, onOpenChange, onStatusChange }: TaskDetailDialogProps) {
+  const { currentUser } = useStore();
   const [activeTab, setActiveTab] = useState<'subtask' | 'attachment' | 'comments'>('subtask');
   const [comment, setComment] = useState("");
+
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ["/api/users"],
+  });
+
+  const updateTaskMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const res = await apiRequest("PATCH", `/api/tasks/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
+    }
+  });
+
+  const defaultUser = { name: "User", avatar: "" };
+  const commentsUser = users.length > 1 ? users[1] : defaultUser;
+
   const [comments, setComments] = useState([
-    { id: 1, user: mockUsers[1], text: "Can you please update the numbers for Q3?", time: "2 hours ago" },
-    { id: 2, user: currentUser, text: "Sure, working on it right now.", time: "1 hour ago" }
+    { id: 1, user: commentsUser, text: "Can you please update the numbers for Q3?", time: "2 hours ago" },
+    { id: 2, user: currentUser || defaultUser, text: "Sure, working on it right now.", time: "1 hour ago" }
   ]);
 
   if (!task) return null;
 
-  const assignedUser = mockUsers.find(u => u.id === task.assignedTo);
+  const assignedUser = users.find((u: any) => u.id === task.assignedTo);
   const currentStage = taskStages.find(s => s.id === task.status);
 
   const priorityColors = {
@@ -62,13 +83,21 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
     high: "text-red-700 bg-red-50"
   };
 
+  const handleStatusChange = (val: string) => {
+    if (onStatusChange) {
+      onStatusChange(task.id, val);
+    } else {
+      updateTaskMutation.mutate({ id: task.id, data: { status: val } });
+    }
+  };
+
   const handleAddComment = () => {
     if (!comment.trim()) return;
     setComments([
       ...comments, 
       { 
         id: Date.now(), 
-        user: currentUser, 
+        user: currentUser || defaultUser, 
         text: comment, 
         time: "Just now" 
       }
@@ -108,7 +137,7 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
         <div className="flex flex-1 overflow-hidden">
           {/* Left Column (Main) */}
           <div className="flex-1 overflow-y-auto border-r border-[#DFE1E7]">
-            <div className="p-8 pb-32"> {/* Added padding bottom for scrolling space */}
+            <div className="p-8 pb-32">
               {/* Title & Desc */}
               <div className="mb-8">
                 <h2 className="text-[24px] font-semibold text-[#15161E] mb-2 leading-tight">{task.title}</h2>
@@ -123,7 +152,7 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
                   <span className="text-sm font-medium text-[#666D80] w-[100px]">Status</span>
                   <Select 
                     defaultValue={task.status} 
-                    onValueChange={(val) => updateTaskStatus(task.id, val as any)}
+                    onValueChange={handleStatusChange}
                   >
                     <SelectTrigger className="h-8 border-none bg-[#FEEFE4] text-[#FA7319] font-medium text-xs px-3 rounded-md w-fit focus:ring-0 shadow-none">
                       <SelectValue />
@@ -161,7 +190,7 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
 
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-medium text-[#666D80] w-[100px]">Priority</span>
-                  <Badge variant="secondary" className={cn("rounded-md px-2 py-0.5 font-medium border-0 capitalize", priorityColors[task.priority])}>
+                  <Badge variant="secondary" className={cn("rounded-md px-2 py-0.5 font-medium border-0 capitalize", priorityColors[task.priority as keyof typeof priorityColors])}>
                     {task.priority}
                   </Badge>
                 </div>
@@ -221,7 +250,7 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
                          <Checkbox className="rounded-md border-[#DFE1E7]" checked />
                          <span className="text-sm text-[#666D80] line-through flex-1">Review requirements</span>
                          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                           <Avatar className="h-5 w-5"><AvatarImage src={mockUsers[1].avatar}/></Avatar>
+                           <Avatar className="h-5 w-5"><AvatarImage src={users[1]?.avatar}/></Avatar>
                            <Button variant="ghost" size="icon" className="h-6 w-6"><MoreHorizontal className="h-3 w-3"/></Button>
                          </div>
                        </div>
@@ -249,12 +278,12 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
                         {comments.map((c) => (
                           <div key={c.id} className="flex gap-4">
                             <Avatar className="h-8 w-8">
-                              <AvatarImage src={c.user.avatar} />
-                              <AvatarFallback>{c.user.name.charAt(0)}</AvatarFallback>
+                              <AvatarImage src={(c.user as any)?.avatar} />
+                              <AvatarFallback>{(c.user as any)?.name?.charAt(0) || "U"}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1">
                               <div className="flex items-baseline gap-2 mb-1">
-                                <span className="text-sm font-medium text-[#15161E]">{c.user.name}</span>
+                                <span className="text-sm font-medium text-[#15161E]">{(c.user as any)?.name || "User"}</span>
                                 <span className="text-xs text-[#666D80]">{c.time}</span>
                               </div>
                               <p className="text-sm text-[#15161E] leading-relaxed">{c.text}</p>
@@ -265,7 +294,7 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
                       
                       <div className="flex gap-4 pt-4 border-t border-[#DFE1E7]">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={currentUser.avatar} />
+                          <AvatarImage src={currentUser?.avatar || ""} />
                         </Avatar>
                         <div className="flex-1 gap-2 flex flex-col">
                           <Textarea 
@@ -343,7 +372,7 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
                  <div className="relative">
                     <div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 border-white bg-[#DFE1E7] ring-1 ring-[#DFE1E7]" />
                     <div className="flex gap-3 mb-2">
-                      <Avatar className="h-6 w-6"><AvatarImage src={mockUsers[1].avatar}/></Avatar>
+                      <Avatar className="h-6 w-6"><AvatarImage src={users[1]?.avatar}/></Avatar>
                       <div>
                         <p className="text-xs text-[#15161E]"><span className="font-medium">Dea Ananda</span> checklist subtask</p>
                         <p className="text-[10px] text-[#666D80] mt-0.5">Jan 8, 2024 at 10:30 AM</p>
@@ -380,7 +409,7 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
                  <div className="relative">
                     <div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 border-white bg-[#DFE1E7] ring-1 ring-[#DFE1E7]" />
                     <div className="flex gap-3">
-                      <Avatar className="h-6 w-6"><AvatarImage src={mockUsers[0].avatar}/></Avatar>
+                      <Avatar className="h-6 w-6"><AvatarImage src={users[0]?.avatar}/></Avatar>
                       <div>
                         <p className="text-xs text-[#15161E]"><span className="font-medium">Rahmadini</span> created task</p>
                         <p className="text-[10px] text-[#666D80] mt-0.5">Jan 7, 2024 at 02:00 PM</p>
@@ -393,7 +422,7 @@ export function TaskDetailDialog({ task, open, onOpenChange }: TaskDetailDialogP
             <div className="p-6 border-t border-[#DFE1E7] mt-auto">
               <span className="text-xs text-[#666D80] block mb-2">Created by</span>
               <div className="flex items-center gap-2">
-                <Avatar className="h-5 w-5"><AvatarImage src={mockUsers[0].avatar}/></Avatar>
+                <Avatar className="h-5 w-5"><AvatarImage src={users[0]?.avatar}/></Avatar>
                 <span className="text-sm font-medium text-[#15161E]">Rahmadini</span>
               </div>
             </div>

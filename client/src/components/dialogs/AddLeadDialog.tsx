@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Dialog, 
   DialogContent, 
@@ -25,13 +27,13 @@ interface AddLeadDialogProps {
   trigger?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onSubmit?: (data: any) => void;
 }
 
-export function AddLeadDialog({ children, trigger, open, onOpenChange }: AddLeadDialogProps) {
-  const { addLead, currentUser } = useStore();
+export function AddLeadDialog({ children, trigger, open, onOpenChange, onSubmit }: AddLeadDialogProps) {
+  const { currentUser, currentTeamId } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   
-  // Use controlled or uncontrolled state
   const show = open !== undefined ? open : isOpen;
   const setShow = onOpenChange || setIsOpen;
 
@@ -45,9 +47,19 @@ export function AddLeadDialog({ children, trigger, open, onOpenChange }: AddLead
     source: "Website"
   });
 
+  const addLeadMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/leads", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/leads"] });
+    }
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addLead({
+    const leadData = {
       name: formData.name,
       company: formData.company,
       email: formData.email,
@@ -55,9 +67,15 @@ export function AddLeadDialog({ children, trigger, open, onOpenChange }: AddLead
       value: Number(formData.value) || 0,
       service: formData.service || "Other",
       stage: "new",
-      assignedTo: currentUser.role === 'sales_executive' ? currentUser.id : null,
-      source: formData.source
-    });
+      assignedTo: currentUser?.role === 'sales_executive' ? currentUser.id : null,
+      source: formData.source,
+      teamId: currentTeamId
+    };
+    if (onSubmit) {
+      onSubmit(leadData);
+    } else {
+      addLeadMutation.mutate(leadData);
+    }
     setFormData({ name: "", company: "", email: "", phone: "", value: "", service: "", source: "Website" });
     setShow(false);
   };

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   DndContext, 
   closestCenter, 
@@ -22,10 +24,8 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, GripVertical, UserPlus, CheckCircle2 } from "lucide-react";
-import { Lead, User } from "@/lib/mock-data";
-
 // Draggable Lead Card for Assignment
-function DraggableLead({ lead }: { lead: Lead }) {
+function DraggableLead({ lead }: { lead: any }) {
   const {
     attributes,
     listeners,
@@ -65,7 +65,7 @@ function DraggableLead({ lead }: { lead: Lead }) {
 }
 
 // Droppable User Zone
-function UserAssignmentZone({ user, leads, onDrop }: { user: User, leads: Lead[], onDrop?: () => void }) {
+function UserAssignmentZone({ user, leads, onDrop }: { user: any, leads: any[], onDrop?: () => void }) {
   const { setNodeRef, isOver } = useSortable({ id: user.id, data: { type: 'user', user } });
   
   return (
@@ -110,10 +110,43 @@ function UserAssignmentZone({ user, leads, onDrop }: { user: User, leads: Lead[]
 }
 
 export default function Assignments() {
-  const { leads, users, updateLead } = useStore();
+  const { currentUser } = useStore();
+
+  const { data: leads = [] } = useQuery<any[]>({
+    queryKey: ['/api/leads'],
+    queryFn: async () => {
+      const res = await fetch('/api/leads', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ['/api/users'],
+    queryFn: async () => {
+      const res = await fetch('/api/users', { credentials: 'include' });
+      if (!res.ok) throw new Error(await res.text());
+      return res.json();
+    },
+    enabled: !!currentUser,
+  });
+
+  const updateLeadMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: any }) => {
+      const res = await apiRequest('PATCH', `/api/leads/${id}`, data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/leads'] });
+    },
+  });
+
+  const updateLead = (id: string, data: any) => updateLeadMutation.mutate({ id, data });
+
   const [autoAssign, setAutoAssign] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [activeLead, setActiveLead] = useState<Lead | null>(null);
+  const [activeLead, setActiveLead] = useState<any | null>(null);
 
   const unassignedLeads = leads.filter(l => !l.assignedTo);
   const salesUsers = users.filter(u => u.role === 'sales_executive');

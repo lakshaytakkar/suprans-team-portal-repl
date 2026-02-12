@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Dialog, 
   DialogContent, 
@@ -18,7 +20,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { mockUsers } from "@/lib/mock-data";
 import { Plus, CheckSquare } from "lucide-react";
 
 interface AddTaskDialogProps {
@@ -26,42 +27,63 @@ interface AddTaskDialogProps {
   trigger?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onSubmit?: (data: any) => void;
 }
 
-export function AddTaskDialog({ children, trigger, open, onOpenChange }: AddTaskDialogProps) {
-  const { addTask, currentUser, users } = useStore();
+export function AddTaskDialog({ children, trigger, open, onOpenChange, onSubmit }: AddTaskDialogProps) {
+  const { currentUser, currentTeamId } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   
   const show = open !== undefined ? open : isOpen;
   const setShow = onOpenChange || setIsOpen;
 
-  const isAdmin = currentUser.role === 'superadmin';
+  const { data: users = [] } = useQuery<any[]>({
+    queryKey: ["/api/users"],
+  });
+
+  const isAdmin = currentUser?.role === 'superadmin';
 
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     dueDate: "",
     priority: "medium",
-    assignedTo: currentUser.id
+    assignedTo: currentUser?.id || ""
+  });
+
+  const addTaskMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/tasks", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/tasks"] });
+    }
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addTask({
+    const taskData = {
       title: formData.title,
       description: formData.description,
       dueDate: formData.dueDate || new Date().toISOString(),
       priority: formData.priority as 'low' | 'medium' | 'high',
       status: 'todo',
       assignedTo: formData.assignedTo,
-      tags: []
-    });
+      tags: [],
+      teamId: currentTeamId
+    };
+    if (onSubmit) {
+      onSubmit(taskData);
+    } else {
+      addTaskMutation.mutate(taskData);
+    }
     setFormData({ 
       title: "", 
       description: "", 
       dueDate: "", 
       priority: "medium", 
-      assignedTo: currentUser.id 
+      assignedTo: currentUser?.id || ""
     });
     setShow(false);
   };
@@ -150,7 +172,7 @@ export function AddTaskDialog({ children, trigger, open, onOpenChange }: AddTask
                     <SelectValue placeholder="Select team member" />
                   </SelectTrigger>
                   <SelectContent>
-                    {users.map(user => (
+                    {users.map((user: any) => (
                       <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
                     ))}
                   </SelectContent>

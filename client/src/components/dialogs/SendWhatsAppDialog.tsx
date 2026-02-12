@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useStore } from "@/lib/store";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { 
   Dialog, 
   DialogContent, 
@@ -20,7 +22,6 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { MessageSquare, BookOpen, Loader2, Check } from "lucide-react";
-import { mockTemplates } from "@/lib/mock-data";
 
 interface SendWhatsAppDialogProps {
   leadId: string;
@@ -31,14 +32,33 @@ interface SendWhatsAppDialogProps {
 }
 
 export function SendWhatsAppDialog({ leadId, trigger, open, onOpenChange, defaultMessage }: SendWhatsAppDialogProps) {
-  const { leads, addActivity, currentUser } = useStore();
+  const { currentUser } = useStore();
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<'compose' | 'sending' | 'success'>('compose');
   
   const show = open !== undefined ? open : isOpen;
   const setShow = onOpenChange || setIsOpen;
 
-  const lead = leads.find(l => l.id === leadId);
+  const { data: lead } = useQuery<any>({
+    queryKey: ["/api/leads", leadId],
+    enabled: !!leadId,
+  });
+
+  const { data: templates } = useQuery<any>({
+    queryKey: ["/api/templates"],
+  });
+
+  const addActivityMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await apiRequest("POST", "/api/activities", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/activities"] });
+    }
+  });
+
+  const mockTemplates = templates || { scripts: [], emails: [], messages: [], objections: [] };
   
   const [content, setContent] = useState(defaultMessage || "");
   const [selectedTemplate, setSelectedTemplate] = useState("none");
@@ -49,32 +69,29 @@ export function SendWhatsAppDialog({ leadId, trigger, open, onOpenChange, defaul
     setSelectedTemplate(val);
     if (val === "none") return;
     
-    const template = mockTemplates.messages.find(t => t.id === val);
+    const template = (mockTemplates.messages || []).find((t: any) => t.id === val);
     if (template) {
       setContent(template.content
         .replace('[Name]', lead.name)
         .replace('[Company]', lead.company)
-        .replace('[Your Name]', currentUser.name)
+        .replace('[Your Name]', currentUser?.name || '')
       );
     }
   };
 
   const handleSend = () => {
     setStep('sending');
-    // Simulate API call
     setTimeout(() => {
       setStep('success');
       
-      // Log the activity
-      addActivity({
+      addActivityMutation.mutate({
         leadId,
-        userId: currentUser.id,
-        type: 'note', // Logging as note/interaction for now as 'whatsapp' isn't in ActivityType
+        userId: currentUser?.id,
+        type: 'note',
         notes: `Sent WhatsApp: ${content}`,
         outcome: 'sent'
       });
       
-      // Actually open WhatsApp Web
       window.open(`https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(content)}`, '_blank');
       
     }, 1000);
@@ -114,7 +131,7 @@ export function SendWhatsAppDialog({ leadId, trigger, open, onOpenChange, defaul
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">No Template</SelectItem>
-                    {mockTemplates.messages.map(t => (
+                    {(mockTemplates.messages || []).map((t: any) => (
                       <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>
                     ))}
                   </SelectContent>

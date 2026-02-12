@@ -78,7 +78,7 @@ export interface IStorage {
   // Leads
   getLead(id: string): Promise<Lead | undefined>;
   getLeadByPhone(phone: string): Promise<Lead | undefined>;
-  getLeads(userId?: string, role?: string): Promise<Lead[]>;
+  getLeads(options?: { userId?: string; teamId?: string; role?: string }): Promise<Lead[]>;
   createLead(lead: InsertLead): Promise<Lead>;
   updateLead(id: string, updates: Partial<InsertLead>): Promise<Lead | undefined>;
   deleteLead(id: string): Promise<boolean>;
@@ -93,7 +93,7 @@ export interface IStorage {
   
   // Tasks
   getTask(id: string): Promise<Task | undefined>;
-  getTasks(userId?: string): Promise<Task[]>;
+  getTasks(options?: { userId?: string; teamId?: string }): Promise<Task[]>;
   createTask(task: InsertTask): Promise<Task>;
   updateTask(id: string, updates: Partial<InsertTask>): Promise<Task | undefined>;
   deleteTask(id: string): Promise<boolean>;
@@ -398,14 +398,21 @@ export class Storage implements IStorage {
     return result[0];
   }
 
-  async getLeads(userId?: string, role?: string): Promise<Lead[]> {
-    if (role === 'superadmin') {
-      // Admin sees all leads
+  async getLeads(options?: { userId?: string; teamId?: string; role?: string }): Promise<Lead[]> {
+    const { userId, teamId, role } = options || {};
+    if (role === 'superadmin' && !teamId) {
       return await db.select().from(leads).orderBy(desc(leads.createdAt));
-    } else if (userId) {
-      // Sales exec sees only their leads
+    }
+    const conditions: any[] = [];
+    if (teamId) {
+      conditions.push(eq(leads.teamId, teamId));
+    }
+    if (userId) {
+      conditions.push(eq(leads.assignedTo, userId));
+    }
+    if (conditions.length > 0) {
       return await db.select().from(leads)
-        .where(eq(leads.assignedTo, userId))
+        .where(and(...conditions))
         .orderBy(desc(leads.createdAt));
     }
     return await db.select().from(leads).orderBy(desc(leads.createdAt));
@@ -480,10 +487,18 @@ export class Storage implements IStorage {
     return result[0];
   }
 
-  async getTasks(userId?: string): Promise<Task[]> {
+  async getTasks(options?: { userId?: string; teamId?: string }): Promise<Task[]> {
+    const { userId, teamId } = options || {};
+    const conditions: any[] = [];
+    if (teamId) {
+      conditions.push(eq(tasks.teamId, teamId));
+    }
     if (userId) {
+      conditions.push(eq(tasks.assignedTo, userId));
+    }
+    if (conditions.length > 0) {
       return await db.select().from(tasks)
-        .where(eq(tasks.assignedTo, userId))
+        .where(and(...conditions))
         .orderBy(desc(tasks.dueDate));
     }
     return await db.select().from(tasks).orderBy(desc(tasks.dueDate));
