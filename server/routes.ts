@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { passport, hashPassword, requireAuth, requireRole } from "./auth";
 import QRCode from "qrcode";
+import { eq } from "drizzle-orm";
+import { db } from "./db";
 import { 
   insertUserSchema, insertLeadSchema, insertActivitySchema, 
   insertTaskSchema, insertServiceSchema, insertTemplateSchema,
@@ -16,6 +18,8 @@ import {
   insertCandidateSchema, insertCandidateCallSchema, insertHrTemplateSchema, insertInterviewSchema,
   insertFaireStoreSchema, insertFaireSupplierSchema, insertFaireProductSchema, insertFaireOrderSchema, insertFaireShipmentSchema,
   insertLLCClientSchema, insertLLCClientDocumentSchema, insertLLCClientTimelineSchema,
+  insertTeamMemberSchema,
+  teamMembers, channels, channelMessages,
   type User
 } from "@shared/schema";
 import { fromError } from "zod-validation-error";
@@ -24,6 +28,8 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  import("./seed-team-members").then(m => m.seedTeamMembers()).catch(err => console.error("Team seeding error:", err));
+
   // Auth routes
   app.post("/api/auth/register", async (req, res, next) => {
     try {
@@ -152,6 +158,83 @@ export async function registerRoutes(
         return res.status(404).json({ message: "User not found" });
       }
       res.json({ message: "User deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // ========== TEAM MEMBERSHIP ROUTES ==========
+
+  app.get("/api/team-members", requireAuth, async (req, res, next) => {
+    try {
+      const { teamId } = req.query;
+      if (!teamId) {
+        return res.status(400).json({ message: "teamId is required" });
+      }
+      const members = await storage.getTeamMembers(teamId as string);
+      const membersWithUsers = await Promise.all(
+        members.map(async (m) => {
+          const user = await storage.getUser(m.userId);
+          return {
+            ...m,
+            user: user ? { id: user.id, name: user.name, email: user.email, avatar: user.avatar, role: user.role } : null
+          };
+        })
+      );
+      res.json(membersWithUsers);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/my-teams", requireAuth, async (req, res, next) => {
+    try {
+      const user = req.user as User;
+      const memberships = await storage.getUserTeams(user.id);
+      res.json(memberships);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/team-members", requireAuth, requireRole("superadmin"), async (req, res, next) => {
+    try {
+      const parsed = insertTeamMemberSchema.parse(req.body);
+      const member = await storage.createTeamMember(parsed);
+      res.json(member);
+    } catch (error: any) {
+      if (error.name === "ZodError") {
+        return res.status(400).json({ message: fromError(error).toString() });
+      }
+      next(error);
+    }
+  });
+
+  app.patch("/api/team-members/:id", requireAuth, requireRole("superadmin"), async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { role } = req.body;
+      if (!role || !['manager', 'executive'].includes(role)) {
+        return res.status(400).json({ message: "Valid role (manager/executive) is required" });
+      }
+      const result = await db.update(teamMembers).set({ role }).where(eq(teamMembers.id, id)).returning();
+      if (result.length === 0) {
+        return res.status(404).json({ message: "Team member not found" });
+      }
+      res.json(result[0]);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.delete("/api/team-members/:id", requireAuth, requireRole("superadmin"), async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const deleted = await storage.deleteTeamMember(id);
+      if (!deleted) {
+        return res.status(404).json({ message: "Team member not found" });
+      }
+      res.json({ message: "Team member removed" });
     } catch (error) {
       next(error);
     }

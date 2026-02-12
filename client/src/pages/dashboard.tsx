@@ -56,19 +56,17 @@ const revenueData = [
 ];
 
 export default function Dashboard() {
-  const { leads, tasks, currentUser, currentTeamId } = useStore();
+  const { leads, tasks, currentUser, currentTeamId, simulatedRole } = useStore();
   const [activeStage, setActiveStage] = useState('all');
 
-  // Show Events dashboard when on Events team
   if (currentTeamId === 'events') {
     return <EventsDashboard />;
   }
 
   const isAdmin = currentUser?.role === 'superadmin';
+  const effectiveManager = isAdmin && simulatedRole !== 'executive';
 
-  // Calculate stats
-  // If admin, show total company stats. If sales, show my stats.
-  const relevantLeads = isAdmin ? leads : leads.filter(l => l.assignedTo === currentUser?.id);
+  const relevantLeads = effectiveManager ? leads : leads.filter(l => l.assignedTo === currentUser?.id);
   
   const totalLeads = relevantLeads.length;
   const activeLeads = relevantLeads.filter(l => !['won', 'lost'].includes(l.stage)).length;

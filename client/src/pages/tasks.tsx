@@ -237,7 +237,7 @@ function TasksListView({ tasks, onTaskClick }: { tasks: Task[], onTaskClick: (ta
 }
 
 export default function Tasks() {
-  const { tasks, updateTaskStatus, currentUser } = useStore();
+  const { tasks, updateTaskStatus, currentUser, simulatedRole } = useStore();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -246,10 +246,12 @@ export default function Tasks() {
   
   const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
   const [searchQuery, setSearchQuery] = useState("");
+  
+  const isAdmin = currentUser?.role === 'superadmin';
+  const effectiveManager = isAdmin && simulatedRole !== 'executive';
 
   const myTasks = tasks.filter(t => 
-    // Filter by assigned user unless superadmin (can see all)
-    (currentUser.role === 'superadmin' ? true : (t.assignedTo === currentUser.id || t.assignedTo === 'u1')) &&
+    (effectiveManager ? true : (t.assignedTo === currentUser?.id || t.assignedTo === 'u1')) &&
     (t.title.toLowerCase().includes(searchQuery.toLowerCase()) || t.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 

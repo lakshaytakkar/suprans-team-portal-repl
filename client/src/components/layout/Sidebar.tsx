@@ -29,11 +29,17 @@ interface TeamMemberWithUser {
   } | null;
 }
 
+interface TeamMembership {
+  id: string;
+  teamId: string;
+  userId: string;
+  role: string;
+}
+
 interface SidebarProps {
   className?: string;
 }
 
-// Helper to check if a team is a business team
 const isBusinessTeam = (teamId: string) => 
   teamId.startsWith('travel-') || 
   teamId.startsWith('china-import-') || 
@@ -42,39 +48,21 @@ const isBusinessTeam = (teamId: string) =>
   teamId.startsWith('faire-') ||
   teamId === 'events';
 
-// Helper to check if a team is a functional team
 const isFunctionalTeam = (teamId: string) => 
-  teamId === 'hr-recruitment' || 
-  teamId === 'finance' || 
+  teamId === 'hr' || 
+  teamId === 'training' ||
   teamId === 'marketing' || 
   teamId === 'admin-it' ||
   teamId === 'sales' ||
   teamId === 'media';
 
-// Filter teams based on user membership
-const getUserTeams = (userEmail: string | undefined, userRole: string) => {
-  // Superadmin sees all teams
-  if (userRole === 'superadmin') {
-    return {
-      businessTeams: teams.filter(t => isBusinessTeam(t.id)),
-      functionalTeams: teams.filter(t => isFunctionalTeam(t.id))
-    };
-  }
-  
-  // Other users only see teams they're members of
-  const memberTeams = teams.filter(t => 
-    t.members?.some(m => m.email === userEmail)
-  );
-  
-  return {
-    businessTeams: memberTeams.filter(t => isBusinessTeam(t.id)),
-    functionalTeams: memberTeams.filter(t => isFunctionalTeam(t.id))
-  };
-};
-
 function TeamMemberAvatars({ teamId }: { teamId: string }) {
   const { data: members = [] } = useQuery<TeamMemberWithUser[]>({
-    queryKey: [`/api/team-members?teamId=${teamId}`],
+    queryKey: ['/api/team-members', teamId],
+    queryFn: async () => {
+      const res = await fetch(`/api/team-members?teamId=${teamId}`);
+      return res.json();
+    },
     staleTime: 60000,
   });
 
@@ -127,24 +115,38 @@ function TeamMemberAvatars({ teamId }: { teamId: string }) {
 
 export function Sidebar({ className }: SidebarProps) {
   const [location] = useLocation();
-  const { currentUser, currentTeamId, setCurrentTeamId } = useStore();
-  const role = currentUser?.role || 'sales_executive';
+  const { currentUser, currentTeamId, setCurrentTeamId, simulatedRole } = useStore();
+  const userRole = currentUser?.role || 'sales_executive';
+  const isSuperadmin = userRole === 'superadmin';
 
   const currentTeam = getTeamById(currentTeamId) || getDefaultTeam();
   
-  // Get teams filtered by user membership
-  const { businessTeams, functionalTeams } = getUserTeams(currentUser?.email, role);
+  const { data: myTeamMemberships = [] } = useQuery<TeamMembership[]>({
+    queryKey: ['/api/my-teams'],
+    enabled: !!currentUser,
+    staleTime: 30000,
+  });
+
+  const myTeamIds = new Set(myTeamMemberships.map(m => m.teamId));
   
-  // Check if user is manager for the current team (superadmin or team manager)
-  const isTeamAdmin = role === 'superadmin' || 
-    (currentTeam.members?.find(m => m.email === currentUser?.email)?.role === 'manager');
+  const accessibleTeams = isSuperadmin 
+    ? teams 
+    : teams.filter(t => myTeamIds.has(t.id));
+
+  const businessTeams = accessibleTeams.filter(t => isBusinessTeam(t.id));
+  const functionalTeams = accessibleTeams.filter(t => isFunctionalTeam(t.id));
+
+  const currentMembership = myTeamMemberships.find(m => m.teamId === currentTeamId);
+  const effectiveRole = isSuperadmin 
+    ? (simulatedRole || 'manager')
+    : (currentMembership?.role || 'executive');
   
-  // Use adminGroups if available and user is admin, otherwise use regular groups
+  const isTeamAdmin = effectiveRole === 'manager';
+  
   const navGroups = (isTeamAdmin && currentTeam.adminGroups) ? currentTeam.adminGroups : currentTeam.groups;
 
   return (
     <div className={cn("flex h-screen w-[280px] flex-col border-r bg-sidebar p-6 shrink-0 fixed left-0 top-0 overflow-y-auto z-50 no-scrollbar", className)}>
-      {/* Team Switcher */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button 
@@ -233,7 +235,6 @@ export function Sidebar({ className }: SidebarProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Main Menu */}
       <div className="space-y-6 flex-1">
         {navGroups.map((group, i) => (
           <div key={i} className="space-y-1">
@@ -275,8 +276,7 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         ))}
 
-        {/* Settings - Only show for admin */}
-        {role === 'superadmin' && currentTeam.id !== 'admin-it' && (
+        {isSuperadmin && currentTeam.id !== 'admin-it' && (
           <div className="space-y-1">
             <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70 mb-2">
               System

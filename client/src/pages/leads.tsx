@@ -63,15 +63,16 @@ import { SendEmailDialog } from "@/components/dialogs/SendEmailDialog";
 import { SendWhatsAppDialog } from "@/components/dialogs/SendWhatsAppDialog";
 
 export default function Leads() {
-  const { leads, activities, currentUser, updateLead, users, deleteLead } = useStore();
+  const { leads, activities, currentUser, updateLead, users, deleteLead, simulatedRole } = useStore();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
   
   const isAdmin = currentUser.role === 'superadmin';
+  const effectiveManager = isAdmin && simulatedRole !== 'executive';
 
   const baseLeads = leads.filter(lead => 
-    isAdmin ? true : lead.assignedTo === currentUser.id
+    effectiveManager ? true : lead.assignedTo === currentUser?.id
   );
 
   const filteredLeads = baseLeads
@@ -135,8 +136,8 @@ export default function Leads() {
     <div className="flex flex-col gap-6 w-full">
       {/* Page Header */}
       <div className="flex items-center justify-between w-full">
-        <h1 className="text-[20px] font-semibold text-[#0D0D12] leading-[1.35]">
-          {isAdmin ? "All Leads (Admin View)" : "My Leads"}
+        <h1 className="text-[20px] font-semibold text-[#0D0D12] leading-[1.35]" data-testid="text-leads-heading">
+          {effectiveManager ? "All Leads (Manager View)" : "My Leads"}
         </h1>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="bg-white border-[#DFE1E7] text-[#0D0D12] shadow-[0px_1px_2px_0px_rgba(13,13,18,0.06)] h-[40px] px-4 font-semibold">

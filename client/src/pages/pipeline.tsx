@@ -129,13 +129,13 @@ function LeadCard({ lead, lastActivity }: { lead: Lead, lastActivity?: Activity 
 }
 
 export default function Pipeline() {
-  const { leads, activities, updateLeadStage, currentUser } = useStore();
+  const { leads, activities, updateLeadStage, currentUser, simulatedRole } = useStore();
   const [activeId, setActiveId] = useState<string | null>(null);
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
   
-  // Admin sees all leads, Exec sees only theirs
-  const isAdmin = currentUser.role === 'superadmin';
-  const myLeads = isAdmin ? leads : leads.filter(l => l.assignedTo === currentUser.id);
+  const isAdmin = currentUser?.role === 'superadmin';
+  const effectiveManager = isAdmin && simulatedRole !== 'executive';
+  const myLeads = effectiveManager ? leads : leads.filter(l => l.assignedTo === currentUser?.id);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),

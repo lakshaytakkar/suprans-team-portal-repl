@@ -5,6 +5,7 @@ import { mockUsers, mockLeads, mockActivities, mockTasks, User, Lead, Activity, 
 interface AppState {
   currentUser: User | null;
   currentTeamId: string;
+  simulatedRole: 'manager' | 'executive' | null;
   users: User[];
   leads: Lead[];
   activities: Activity[];
@@ -12,6 +13,7 @@ interface AppState {
   
   setCurrentUser: (user: User | null) => void;
   setCurrentTeamId: (teamId: string) => void;
+  setSimulatedRole: (role: 'manager' | 'executive' | null) => void;
   setRole: (role: User['role']) => void;
   addLead: (lead: Omit<Lead, 'id' | 'createdAt'>) => void;
   updateLead: (id: string, updates: Partial<Lead>) => void;
@@ -30,6 +32,7 @@ export const useStore = create<AppState>()(
     (set, get) => ({
       currentUser: null,
       currentTeamId: 'travel-sales',
+      simulatedRole: null,
       users: mockUsers,
       leads: mockLeads,
       activities: mockActivities,
@@ -37,6 +40,7 @@ export const useStore = create<AppState>()(
 
       setCurrentUser: (user) => set({ currentUser: user }),
       setCurrentTeamId: (teamId) => set({ currentTeamId: teamId }),
+      setSimulatedRole: (role) => set({ simulatedRole: role }),
       setRole: (role) => set((state) => ({ 
         currentUser: state.currentUser ? { ...state.currentUser, role } : null 
       })),
@@ -117,7 +121,7 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'suprans-store',
-      partialize: (state) => ({ currentTeamId: state.currentTeamId }),
+      partialize: (state) => ({ currentTeamId: state.currentTeamId, simulatedRole: state.simulatedRole }),
     }
   )
 );

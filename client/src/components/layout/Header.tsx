@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { Link } from "wouter";
 import { 
   Bell, 
   Search,
@@ -11,7 +11,8 @@ import {
   User,
   LogOut,
   ChevronDown,
-  UserCog
+  Shield,
+  Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/lib/store";
@@ -32,11 +33,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getTeamById } from "@/lib/teams-config";
 
 export function Header() {
-  const { currentUser, setRole } = useStore();
+  const { currentUser, simulatedRole, setSimulatedRole, currentTeamId } = useStore();
   const [searchOpen, setSearchOpen] = useState(false);
   const [logoutOpen, setLogoutOpen] = useState(false);
+
+  const isSuperadmin = currentUser?.role === 'superadmin';
+  const currentTeam = getTeamById(currentTeamId);
+  const effectiveRole = isSuperadmin ? (simulatedRole || 'manager') : 'executive';
 
   const notifications = [
     {
@@ -78,18 +84,16 @@ export function Header() {
   ];
 
   const handleLogout = () => {
-    // Handle logout logic here
-    console.log("Logging out...");
     setLogoutOpen(false);
   };
 
   return (
     <>
       <header className="flex h-[80px] items-center justify-between px-8 bg-white border-b border-[#DFE1E7]">
-        {/* Search Section */}
         <button 
           onClick={() => setSearchOpen(true)}
           className="flex items-center gap-2 px-3 py-2 bg-white border border-[#DFE1E7] rounded-lg shadow-sm w-[288px] h-[40px] hover:bg-gray-50 transition-colors text-left"
+          data-testid="button-search"
         >
           <Search className="h-5 w-5 text-[#818898]" />
           <span className="flex-1 text-sm text-[#818898] font-normal">Search</span>
@@ -103,32 +107,38 @@ export function Header() {
           </div>
         </button>
 
-        {/* Right Actions */}
         <div className="flex items-center gap-2.5">
-          {/* Role Toggle (Temporary) */}
-          <div className="flex items-center gap-2 mr-2 bg-gray-100 p-1 rounded-lg">
-            <Button 
-              variant={currentUser.role === 'superadmin' ? 'default' : 'ghost'} 
-              size="sm" 
-              className={`h-7 text-xs ${currentUser.role === 'superadmin' ? 'bg-[#F34147] text-white hover:bg-[#D93036]' : 'text-[#666D80]'}`}
-              onClick={() => setRole('superadmin')}
-            >
-              Admin
-            </Button>
-            <Button 
-              variant={currentUser.role === 'sales_executive' ? 'default' : 'ghost'} 
-              size="sm" 
-              className={`h-7 text-xs ${currentUser.role === 'sales_executive' ? 'bg-[#F34147] text-white hover:bg-[#D93036]' : 'text-[#666D80]'}`}
-              onClick={() => setRole('sales_executive')}
-            >
-              Exec
-            </Button>
-          </div>
+          {isSuperadmin && (
+            <div className="flex items-center gap-1.5 mr-2 bg-gray-100 p-1 rounded-lg" data-testid="role-switcher">
+              <Button 
+                variant={effectiveRole === 'manager' ? 'default' : 'ghost'} 
+                size="sm" 
+                className={`h-7 text-xs gap-1.5 ${effectiveRole === 'manager' ? 'bg-[#F34147] text-white' : 'text-[#666D80]'}`}
+                onClick={() => setSimulatedRole('manager')}
+                data-testid="button-role-manager"
+              >
+                <Shield className="h-3 w-3" />
+                Manager
+              </Button>
+              <Button 
+                variant={effectiveRole === 'executive' ? 'default' : 'ghost'} 
+                size="sm" 
+                className={`h-7 text-xs gap-1.5 ${effectiveRole === 'executive' ? 'bg-[#F34147] text-white' : 'text-[#666D80]'}`}
+                onClick={() => setSimulatedRole('executive')}
+                data-testid="button-role-executive"
+              >
+                <Eye className="h-3 w-3" />
+                Executive
+              </Button>
+            </div>
+          )}
 
-          {/* Notification */}
           <Popover>
             <PopoverTrigger asChild>
-              <button className="relative flex items-center justify-center w-[40px] h-[40px] rounded-full border border-[#DFE1E7] bg-white hover:bg-gray-50 transition-colors outline-none">
+              <button 
+                className="relative flex items-center justify-center w-[40px] h-[40px] rounded-full border border-[#DFE1E7] bg-white hover:bg-gray-50 transition-colors outline-none"
+                data-testid="button-notifications"
+              >
                 <Bell className="h-5 w-5 text-[#666D80]" />
                 {notifications.some(n => !n.read) && (
                    <div className="absolute top-[8px] right-[8px] h-2 w-2 bg-[#F34147] border-[1.5px] border-white rounded-full"></div>
@@ -166,32 +176,37 @@ export function Header() {
                   </div>
                 ))}
               </div>
-              <div className="p-6 border-t border-[#DFE1E7] flex items-center justify-between">
+              <div className="p-6 border-t border-[#DFE1E7] flex items-center justify-between gap-2">
                  <button className="text-[16px] font-semibold text-[#F34147]">Mark as all read</button>
-                 <Button className="bg-[#F34147] hover:bg-[#D93036] text-white rounded-[10px] px-4 h-[48px] font-semibold text-[16px]">
+                 <Button className="bg-[#F34147] text-white rounded-[10px] px-4 h-[48px] font-semibold text-[16px]">
                    View All Notifications
                  </Button>
               </div>
             </PopoverContent>
           </Popover>
 
-          {/* Divider */}
           <div className="w-[20px] h-[20px] flex items-center justify-center rotate-90">
              <div className="w-[20px] h-[1px] bg-[#DFE1E7]" />
           </div>
 
-          {/* User Profile */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 outline-none">
+              <button className="flex items-center gap-2 outline-none" data-testid="button-user-menu">
                 <Avatar className="h-8 w-8 border border-white shadow-sm">
-                  <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
-                  <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
+                  <AvatarImage src={currentUser?.avatar} alt={currentUser?.name} />
+                  <AvatarFallback>{currentUser?.name?.charAt(0)}</AvatarFallback>
                   <div className="absolute bottom-0 right-0 h-2.5 w-2.5 bg-green-500 border-2 border-white rounded-full"></div>
                 </Avatar>
                 <div className="flex flex-col items-start leading-tight">
-                  <span className="text-xs font-semibold text-[#0D0D12]">{currentUser.name}</span>
-                  <span className="text-xs font-normal text-[#666D80]">{currentUser.role === 'superadmin' ? 'Super Admin' : 'Sales Executive'}</span>
+                  <span className="text-xs font-semibold text-[#0D0D12]" data-testid="text-user-name">{currentUser?.name}</span>
+                  <span className="text-xs font-normal text-[#666D80]" data-testid="text-user-role">
+                    {isSuperadmin ? 'Super Admin' : effectiveRole === 'manager' ? 'Manager' : 'Executive'}
+                    {isSuperadmin && simulatedRole && (
+                      <span className="ml-1 text-[#F34147]">
+                        (viewing as {simulatedRole})
+                      </span>
+                    )}
+                  </span>
                 </div>
                 <ChevronDown className="h-4 w-4 text-[#666D80]" />
               </button>
@@ -200,19 +215,19 @@ export function Header() {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <Link href="/team/profile">
-                <DropdownMenuItem>
+                <DropdownMenuItem data-testid="menuitem-profile">
                   <User className="mr-2 h-4 w-4" />
                   Profile
                 </DropdownMenuItem>
               </Link>
               <Link href="/team/admin/settings">
-                <DropdownMenuItem>
+                <DropdownMenuItem data-testid="menuitem-settings">
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
                 </DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={() => setLogoutOpen(true)}>
+              <DropdownMenuItem className="text-red-600 focus:text-red-600" onClick={() => setLogoutOpen(true)} data-testid="menuitem-logout">
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
               </DropdownMenuItem>
