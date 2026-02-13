@@ -4,11 +4,11 @@ import { hashPassword } from "./auth";
 import { eq } from "drizzle-orm";
 
 async function seedAllUsers() {
-  console.log("Seeding all users with password 'suprans'...");
+  console.log("Seeding all users with password 'Suprans@123'...");
 
-  const hashedPassword = await hashPassword("suprans");
+  const hashedPassword = await hashPassword("Suprans@123");
 
-  // All users from teams-config.ts - all with password "suprans"
+  // All users from teams-config.ts - all with password "Suprans@123"
   const allUsers = [
     // Admin
     { name: "Suprans Admin", email: "admin@suprans.in", role: "superadmin", phone: "+911234567890" },
@@ -155,7 +155,7 @@ async function seedAllUsers() {
 
   console.log("\n✅ All users seeded successfully!");
   console.log(`Total users: ${Object.keys(createdUsers).length}`);
-  console.log("\nAll users can login with password: suprans");
+  console.log("\nAll users can login with password: Suprans@123");
 }
 
 seedAllUsers()

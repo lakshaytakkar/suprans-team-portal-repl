@@ -12,7 +12,7 @@ async function seedFromGitHub() {
   try {
     // 1. Create admin@suprans.in superadmin user
     console.log("\n--- Creating admin@suprans.in superadmin user ---");
-    const hashedPassword = await hashPassword("suprans");
+    const hashedPassword = await hashPassword("Suprans@123");
     
     // Check if user exists
     const existingUser = await db.select().from(users).where(eq(users.email, "admin@suprans.in"));

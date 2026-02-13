@@ -10,19 +10,22 @@ A comprehensive team portal and CRM system for Suprans Business Consulting. The 
 - **Public Website**: Company information, services, travel packages, and contact forms
 
 ## User Credentials
-All users have password: **suprans**
+All users have password: **Suprans@123**
 
-- **Superadmin**: admin@suprans.in / suprans (primary admin, member of all 18 teams)
-- **Admin**: admin@suprans.com / suprans
-- **Sales Executive**: sales@suprans.com / suprans
+- **Superadmin**: admin@suprans.in / Suprans@123 (primary admin, member of all 18 teams)
 
-### Team Members (33 total users, all with password "suprans")
-- **Events Team**: bharti@suprans.in, love@suprans.in, sanjay@suprans.in, lakshay@suprans.in
-- **HR Team**: tina@suprans.in, neetu@suprans.in
-- **Media Team**: amit@suprans.in, aditya@suprans.in
-- **Sales Team**: himanshu@suprans.in, abhinandan@suprans.in, simran@suprans.in, sumit@suprans.in, punit@suprans.in, sunny@suprans.in, akshay@suprans.in, garima@suprans.in, sahil.solanki@suprans.in, yash@suprans.in, payal@suprans.in, parthiv@suprans.in, rudraksh@suprans.in
-- **LLC Team**: priya@suprans.in (sales), shivam@suprans.in (operations)
-- **Faire Team**: rahul@suprans.in (orders), vikram@suprans.in (products)
+### Team Members (42 total users, all with password "Suprans@123")
+- abhinandan@suprans.in, accounts@suprans.in, aditya@suprans.in, akansha@suprans.in
+- alerts@suprans.in, babita@suprans.in, bharti@suprans.in, bhartij@suprans.in
+- collab@suprans.in, cs@suprans.in, ds@suprans.in, events@suprans.in
+- franchise@suprans.in, garima@suprans.in, gaurav@suprans.in, harsh@suprans.in
+- himanshu@suprans.in, hr@suprans.in, import@suprans.in, info@suprans.in
+- kartik@suprans.in, krish@suprans.in, lakshay@suprans.in, llc@suprans.in
+- love@suprans.in, naveen@suprans.in, neetu@suprans.in, nitin@suprans.in
+- parthiv@suprans.in, payal@suprans.in, prachi@suprans.in, rudraksh@suprans.in
+- sahil@suprans.in, sales@suprans.in, sanjay@suprans.in, simran@suprans.in
+- sumit@suprans.in, sunny@suprans.in, travel@suprans.in, vikash@suprans.in
+- yashkumar@suprans.in
 
 ## Tech Stack
 - **Frontend**: React, Vite, TypeScript, TailwindCSS, Shadcn/ui
