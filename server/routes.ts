@@ -3,8 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { passport, hashPassword, requireAuth, requireRole } from "./auth";
 import QRCode from "qrcode";
-import { eq } from "drizzle-orm";
-import { db } from "./db";
+import { supabase } from "./db";
 import { 
   insertUserSchema, insertLeadSchema, insertActivitySchema, 
   insertTaskSchema, insertServiceSchema, insertTemplateSchema,
@@ -19,7 +18,6 @@ import {
   insertFaireStoreSchema, insertFaireSupplierSchema, insertFaireProductSchema, insertFaireOrderSchema, insertFaireShipmentSchema,
   insertLLCClientSchema, insertLLCClientDocumentSchema, insertLLCClientTimelineSchema,
   insertTeamMemberSchema,
-  teamMembers, channels, channelMessages,
   type User
 } from "@shared/schema";
 import { fromError } from "zod-validation-error";
@@ -217,11 +215,11 @@ export async function registerRoutes(
       if (!role || !['manager', 'executive'].includes(role)) {
         return res.status(400).json({ message: "Valid role (manager/executive) is required" });
       }
-      const result = await db.update(teamMembers).set({ role }).where(eq(teamMembers.id, id)).returning();
-      if (result.length === 0) {
+      const { data, error } = await supabase.from('team_members').update({ role }).eq('id', id).select().single();
+      if (error || !data) {
         return res.status(404).json({ message: "Team member not found" });
       }
-      res.json(result[0]);
+      res.json(data);
     } catch (error) {
       next(error);
     }

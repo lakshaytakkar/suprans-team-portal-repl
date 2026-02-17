@@ -1,19 +1,17 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import pg from 'pg';
-import * as schema from '@shared/schema';
+import { createClient } from '@supabase/supabase-js';
 
-const { Pool } = pg;
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-const supabaseDbPassword = process.env.SUPABASE_DB_PASSWORD;
-const projectRef = 'qqulobridinpfnarkeeu';
-const region = 'ap-northeast-2';
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error(
+    "SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set."
+  );
+}
 
-const connectionString = supabaseDbPassword
-  ? `postgresql://postgres.${projectRef}:${encodeURIComponent(supabaseDbPassword)}@aws-0-${region}.pooler.supabase.com:5432/postgres`
-  : process.env.DATABASE_URL!;
-
-const pool = new Pool({
-  connectionString,
+export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
 });
-
-export const db = drizzle(pool, { schema });
