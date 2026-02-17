@@ -1,5 +1,4 @@
-import { db } from "./db";
-import { teamMembers, channels, users } from "@shared/schema";
+import { supabase } from "./db";
 
 const ADMIN_ID = "cef223ad-1909-4c9b-bdee-239aa5e99387";
 
@@ -18,173 +17,149 @@ const USER_IDS: Record<string, string> = {
   "krish@suprans.in": "137a7f6b-5265-4d03-8d9a-157db8fd0264",
   "naveen@suprans.in": "86ea1c4e-6be5-49c0-9848-f9b5f3368123",
   "neetu@suprans.in": "b9bfce80-bbe1-47a7-a769-9bbde8cb71f9",
-  "nitin@suprans.in": "41dcf59d-2828-4b97-87ee-a812ad5dfe41",
-  "parth@suprans.in": "c17a641e-4c98-4510-93ce-5a9491fcc5a3",
-  "payal@suprans.in": "530e57b8-a80b-4642-94a0-067ac6b87a54",
-  "prachi@suprans.in": "9c5c1b08-7933-4ca5-ac50-7ba86d97ff41",
-  "punit@suprans.in": "13212822-2d95-4e37-b4b5-39880adfe008",
-  "rudraksh@suprans.in": "05473245-7abe-469e-b437-8bc1b45cc73f",
-  "sahil@suprans.in": "90c03228-5a7c-4f6d-aeb7-bc167516a181",
-  "simran@suprans.in": "539a6d73-8b4d-4178-a7b8-fa17fbc92e42",
-  "sumit@suprans.in": "1aa7fda8-8d51-40cf-8fd1-6a8f813e1c39",
-  "sunny@suprans.in": "004f8ad4-f813-41e4-9303-f2fa1e14b528",
-  "vikash@suprans.in": "8b96b097-7624-4558-9809-53cc8ed01142",
-  "yash@suprans.in": "d55bb655-8d2d-4148-afec-a547d512d3c5",
+  "nitin@suprans.in": "cb0e13bf-1b8d-4b5f-b9e3-6c6f4c85d1a4",
+  "payal@suprans.in": "cffc6d5a-d69b-4e99-a3fc-cc9f4d1bb36d",
+  "prachi@suprans.in": "dd5f18a6-1d75-42c0-bce3-01fac08c64f7",
+  "rudraksh@suprans.in": "3e3a0a60-8f62-4bd5-8f03-3f3c5ebadea5",
+  "sahil@suprans.in": "7fde9c6b-cfb9-4063-bc40-70ab38d2fb97",
+  "simran@suprans.in": "9e55e7b4-4d31-4e01-90e6-2bf8fd42ad74",
+  "sumit@suprans.in": "5a207741-ec1e-4baf-a3e0-ba0e0fc7e9c6",
+  "sunny@suprans.in": "3f478e6c-39d0-4fc8-b5d5-6e4f78f2f10d",
+  "vikash@suprans.in": "8bc42a05-8e36-4db1-9f4c-ef4c3f1e0678",
 };
 
 const ALL_TEAMS = [
-  "sales", "travel-sales", "travel-operations", "travel-accounts",
-  "china-import-sales", "china-import-operations",
-  "dropshipping-sales", "dropshipping-operations",
-  "llc-sales", "llc-operations",
-  "events", "hr", "training", "media", "marketing", "admin-it",
-  "faire-order-fulfilment", "faire-products",
+  "sales-consultation", "sales-mentorship", "sales-travel", "sales-events",
+  "sales-franchise", "sales-imports", "hr", "accounts", "operations",
+  "marketing", "tech", "admin", "events-management", "travel-management",
+  "faire-orders", "faire-products", "llc", "crm",
 ];
 
 const TEAM_CHANNEL_NAMES: Record<string, string> = {
-  "sales": "Sales",
-  "travel-sales": "Travel - Sales",
-  "travel-operations": "Travel - Operations",
-  "travel-accounts": "Travel - Accounts",
-  "china-import-sales": "Import From China - Sales",
-  "china-import-operations": "Import From China - Ops",
-  "dropshipping-sales": "USA Dropshipping - Sales",
-  "dropshipping-operations": "USA Dropshipping - Ops",
-  "llc-sales": "USA LLC Formation - Sales",
-  "llc-operations": "USA LLC Formation - Ops",
-  "events": "Events",
+  "sales-consultation": "Sales - Consultation",
+  "sales-mentorship": "Sales - Mentorship",
+  "sales-travel": "Sales - Travel",
+  "sales-events": "Sales - Events",
+  "sales-franchise": "Sales - Franchise",
+  "sales-imports": "Sales - Imports",
   "hr": "HR",
-  "training": "Training",
-  "media": "Media",
+  "accounts": "Accounts",
+  "operations": "Operations",
   "marketing": "Marketing",
-  "admin-it": "Admin IT",
-  "faire-order-fulfilment": "Faire Order Fulfilment",
+  "tech": "Tech",
+  "admin": "Admin",
+  "events-management": "Events Management",
+  "travel-management": "Travel Management",
+  "faire-orders": "Faire Orders",
   "faire-products": "Faire Products",
+  "llc": "LLC",
+  "crm": "CRM",
 };
 
-interface MemberEntry {
-  userId: string;
-  role: "manager" | "executive";
-}
-
-const TEAM_MEMBERS: Record<string, MemberEntry[]> = {
-  "sales": [
-    { userId: USER_IDS["himanshu@suprans.in"], role: "manager" },
-    { userId: USER_IDS["abhinandan@suprans.in"], role: "executive" },
-    { userId: USER_IDS["simran@suprans.in"], role: "executive" },
-    { userId: USER_IDS["sumit@suprans.in"], role: "executive" },
-    { userId: USER_IDS["punit@suprans.in"], role: "executive" },
-    { userId: USER_IDS["sunny@suprans.in"], role: "executive" },
-    { userId: USER_IDS["akshay@suprans.in"], role: "executive" },
-    { userId: USER_IDS["garima@suprans.in"], role: "executive" },
-    { userId: USER_IDS["sahil@suprans.in"], role: "executive" },
-    { userId: USER_IDS["yash@suprans.in"], role: "executive" },
-    { userId: USER_IDS["payal@suprans.in"], role: "executive" },
-    { userId: USER_IDS["parth@suprans.in"], role: "executive" },
+const TEAM_MEMBERS: Record<string, { userId: string; role: string }[]> = {
+  "sales-consultation": [
+    { userId: USER_IDS["sahil@suprans.in"], role: "manager" },
+    { userId: USER_IDS["akansha@suprans.in"], role: "executive" },
+    { userId: USER_IDS["prachi@suprans.in"], role: "executive" },
   ],
-  "travel-sales": [
-    { userId: USER_IDS["himanshu@suprans.in"], role: "manager" },
-    { userId: USER_IDS["abhinandan@suprans.in"], role: "executive" },
+  "sales-mentorship": [
+    { userId: USER_IDS["sahil@suprans.in"], role: "manager" },
     { userId: USER_IDS["simran@suprans.in"], role: "executive" },
-    { userId: USER_IDS["sumit@suprans.in"], role: "executive" },
-    { userId: USER_IDS["punit@suprans.in"], role: "executive" },
-    { userId: USER_IDS["sunny@suprans.in"], role: "executive" },
-    { userId: USER_IDS["akshay@suprans.in"], role: "executive" },
   ],
-  "travel-operations": [
-    { userId: USER_IDS["babita@suprans.in"], role: "manager" },
-    { userId: USER_IDS["naveen@suprans.in"], role: "executive" },
+  "sales-travel": [
+    { userId: USER_IDS["sahil@suprans.in"], role: "manager" },
+    { userId: USER_IDS["rudraksh@suprans.in"], role: "executive" },
+  ],
+  "sales-events": [
+    { userId: USER_IDS["sahil@suprans.in"], role: "manager" },
+    { userId: USER_IDS["sumit@suprans.in"], role: "executive" },
+    { userId: USER_IDS["sunny@suprans.in"], role: "executive" },
+  ],
+  "sales-franchise": [
+    { userId: USER_IDS["sahil@suprans.in"], role: "manager" },
+    { userId: USER_IDS["neetu@suprans.in"], role: "executive" },
+  ],
+  "sales-imports": [
+    { userId: USER_IDS["sahil@suprans.in"], role: "manager" },
     { userId: USER_IDS["vikash@suprans.in"], role: "executive" },
   ],
-  "travel-accounts": [
-    { userId: USER_IDS["jyoti@suprans.in"], role: "manager" },
-    { userId: USER_IDS["nitin@suprans.in"], role: "executive" },
-  ],
-  "china-import-sales": [
-    { userId: USER_IDS["garima@suprans.in"], role: "manager" },
-    { userId: USER_IDS["sahil@suprans.in"], role: "executive" },
-    { userId: USER_IDS["yash@suprans.in"], role: "executive" },
-  ],
-  "china-import-operations": [
-    { userId: USER_IDS["kartik@suprans.in"], role: "manager" },
-    { userId: USER_IDS["krish@suprans.in"], role: "executive" },
-  ],
-  "dropshipping-sales": [
-    { userId: USER_IDS["payal@suprans.in"], role: "manager" },
-    { userId: USER_IDS["parth@suprans.in"], role: "executive" },
-    { userId: USER_IDS["rudraksh@suprans.in"], role: "executive" },
-  ],
-  "dropshipping-operations": [
-    { userId: USER_IDS["prachi@suprans.in"], role: "manager" },
-  ],
-  "llc-sales": [
-    { userId: USER_IDS["himanshu@suprans.in"], role: "manager" },
-    { userId: USER_IDS["punit@suprans.in"], role: "executive" },
-    { userId: USER_IDS["sunny@suprans.in"], role: "executive" },
-  ],
-  "llc-operations": [
-    { userId: USER_IDS["babita@suprans.in"], role: "manager" },
-    { userId: USER_IDS["naveen@suprans.in"], role: "executive" },
-  ],
-  "events": [
-    { userId: USER_IDS["gaurav@suprans.in"], role: "manager" },
-    { userId: USER_IDS["akansha@suprans.in"], role: "executive" },
-  ],
   "hr": [
-    { userId: USER_IDS["neetu@suprans.in"], role: "manager" },
-    { userId: USER_IDS["jyoti@suprans.in"], role: "executive" },
+    { userId: USER_IDS["garima@suprans.in"], role: "manager" },
+    { userId: USER_IDS["babita@suprans.in"], role: "executive" },
   ],
-  "training": [
-    { userId: USER_IDS["neetu@suprans.in"], role: "manager" },
+  "accounts": [
+    { userId: USER_IDS["nitin@suprans.in"], role: "manager" },
+    { userId: USER_IDS["payal@suprans.in"], role: "executive" },
   ],
-  "media": [
-    { userId: USER_IDS["aditya@suprans.in"], role: "manager" },
-    { userId: USER_IDS["rudraksh@suprans.in"], role: "executive" },
+  "operations": [
+    { userId: USER_IDS["himanshu@suprans.in"], role: "manager" },
+    { userId: USER_IDS["gaurav@suprans.in"], role: "executive" },
   ],
   "marketing": [
     { userId: USER_IDS["aditya@suprans.in"], role: "manager" },
+    { userId: USER_IDS["naveen@suprans.in"], role: "executive" },
   ],
-  "admin-it": [],
-  "faire-order-fulfilment": [
+  "tech": [
+    { userId: USER_IDS["krish@suprans.in"], role: "manager" },
+    { userId: USER_IDS["abhinandan@suprans.in"], role: "executive" },
+  ],
+  "admin": [
+    { userId: USER_IDS["garima@suprans.in"], role: "manager" },
+  ],
+  "events-management": [
+    { userId: USER_IDS["himanshu@suprans.in"], role: "manager" },
+    { userId: USER_IDS["sumit@suprans.in"], role: "executive" },
+  ],
+  "travel-management": [
+    { userId: USER_IDS["himanshu@suprans.in"], role: "manager" },
+    { userId: USER_IDS["rudraksh@suprans.in"], role: "executive" },
+  ],
+  "faire-orders": [
     { userId: USER_IDS["kartik@suprans.in"], role: "manager" },
     { userId: USER_IDS["krish@suprans.in"], role: "executive" },
   ],
   "faire-products": [
     { userId: USER_IDS["kartik@suprans.in"], role: "manager" },
   ],
+  "llc": [],
+  "crm": [],
 };
 
 export async function seedTeamMembers() {
-  const existingMembers = await db.select().from(teamMembers).limit(1);
-  if (existingMembers.length === 0) {
+  const { data: existingMembers } = await supabase.from('team_members').select('id').limit(1);
+  if (!existingMembers || existingMembers.length === 0) {
     console.log("Seeding team members...");
 
-    const existingUsers = await db.select({ id: users.id }).from(users);
-    const existingUserIds = new Set(existingUsers.map(u => u.id));
+    const { data: existingUsers } = await supabase.from('users').select('id');
+    const existingUserIds = new Set((existingUsers ?? []).map((u: any) => u.id));
 
     if (existingUserIds.size === 0) {
       console.log("No users found in database - skipping team member seeding (create users first).");
       return;
     }
 
-    const allMemberRows: { teamId: string; userId: string; role: string }[] = [];
+    const allMemberRows: { team_id: string; user_id: string; role: string }[] = [];
 
     for (const teamId of ALL_TEAMS) {
       if (existingUserIds.has(ADMIN_ID)) {
-        allMemberRows.push({ teamId, userId: ADMIN_ID, role: "manager" });
+        allMemberRows.push({ team_id: teamId, user_id: ADMIN_ID, role: "manager" });
       }
 
       const members = TEAM_MEMBERS[teamId] || [];
       for (const member of members) {
         if (existingUserIds.has(member.userId)) {
-          allMemberRows.push({ teamId, userId: member.userId, role: member.role });
+          allMemberRows.push({ team_id: teamId, user_id: member.userId, role: member.role });
         }
       }
     }
 
     if (allMemberRows.length > 0) {
-      await db.insert(teamMembers).values(allMemberRows);
-      console.log(`Seeded ${allMemberRows.length} team member records.`);
+      const { error } = await supabase.from('team_members').insert(allMemberRows);
+      if (error) {
+        console.error("Error seeding team members:", error.message);
+      } else {
+        console.log(`Seeded ${allMemberRows.length} team member records.`);
+      }
     } else {
       console.log("No matching users found for team member seeding.");
     }
@@ -192,19 +167,20 @@ export async function seedTeamMembers() {
     console.log("Team members already seeded, skipping...");
   }
 
-  const existingChannels = await db.select().from(channels);
-  if (existingChannels.length < ALL_TEAMS.length) {
+  const { data: existingChannels } = await supabase.from('channels').select('id');
+  if (!existingChannels || existingChannels.length < ALL_TEAMS.length) {
     console.log("Seeding missing channels...");
-    const channelRows = ALL_TEAMS.map(teamId => ({
-      teamId,
-      name: TEAM_CHANNEL_NAMES[teamId] || teamId,
-      description: `Team channel for ${TEAM_CHANNEL_NAMES[teamId] || teamId}`,
-    }));
-
-    for (const row of channelRows) {
-      await db.insert(channels).values(row).onConflictDoNothing();
+    for (const teamId of ALL_TEAMS) {
+      const { error } = await supabase.from('channels').upsert({
+        team_id: teamId,
+        name: TEAM_CHANNEL_NAMES[teamId] || teamId,
+        description: `Team channel for ${TEAM_CHANNEL_NAMES[teamId] || teamId}`,
+      }, { onConflict: 'team_id' });
+      if (error) {
+        console.log(`Channel for ${teamId}: ${error.message}`);
+      }
     }
-    console.log(`Seeded channels (${channelRows.length} teams, skipped duplicates).`);
+    console.log(`Seeded channels (${ALL_TEAMS.length} teams, skipped duplicates).`);
   } else {
     console.log("Channels already seeded, skipping...");
   }

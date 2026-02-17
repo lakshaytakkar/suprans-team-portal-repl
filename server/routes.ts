@@ -219,7 +219,11 @@ export async function registerRoutes(
       if (error || !data) {
         return res.status(404).json({ message: "Team member not found" });
       }
-      res.json(data);
+      const camelData: Record<string, any> = {};
+      for (const [key, value] of Object.entries(data)) {
+        camelData[key.replace(/_([a-z])/g, (_, l) => l.toUpperCase())] = value;
+      }
+      res.json(camelData);
     } catch (error) {
       next(error);
     }
